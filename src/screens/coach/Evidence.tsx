@@ -6,7 +6,7 @@ import { localeFixed } from "@/lib/locale";
 import type { ReactNode } from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { ArrowUpRight } from "lucide-react-native";
+import { ArrowUpRight, CheckCircle2 } from "lucide-react-native";
 import type { CoachOutputs } from "@/coach/tools";
 import { i18n } from "@/i18n/config";
 import { normalizeReason, reasonCopy, type Metric } from "@/lib/reasons";
@@ -48,6 +48,20 @@ function EvidenceCard({ title, children }: { title: string; children: ReactNode 
 }
 
 type DayDigest = CoachOutputs["get_day"];
+
+function LogConfirmation({ title, message, href }: { title: string; message: string; href: string }) {
+  return (
+    <View className="gap-2">
+      <EvidenceCard title={title}>
+        <View className="flex-row items-center gap-2.5 py-1">
+          <Icon icon={CheckCircle2} size={18} tone="optimal" />
+          <Text className="flex-1 text-sm font-medium leading-5 text-foreground">{message}</Text>
+        </View>
+      </EvidenceCard>
+      <BasedOn href={href}>{title}</BasedOn>
+    </View>
+  );
+}
 
 function Ring({ label, variant, m, unit }: { label: string; variant: MiniRingVariant; m: { value: number | null; reason: string | null }; unit?: string }) {
   return (
@@ -218,5 +232,37 @@ export function Evidence({ name, output }: { name: string; output: unknown }) {
     );
   }
   if (name === "get_profile") return <BasedOn href="/settings?s=profile">{t("evidence.profile")}</BasedOn>;
+  if (name === "log_nutrition") {
+    const d = output as { ok: boolean; message: string };
+    return <LogConfirmation title="Nutrition Logged" message={d.message} href="/food" />;
+  }
+  if (name === "log_water") {
+    const d = output as { ok: boolean; message: string };
+    return <LogConfirmation title="Water Logged" message={d.message} href="/log?kind=water" />;
+  }
+  if (name === "log_weight") {
+    const d = output as { ok: boolean; message: string };
+    return <LogConfirmation title="Weight Logged" message={d.message} href="/log?kind=weight" />;
+  }
+  if (name === "log_spo2") {
+    const d = output as { ok: boolean; message: string };
+    return <LogConfirmation title="SpO2 Logged" message={d.message} href="/log?kind=spo2" />;
+  }
+  if (name === "log_mood") {
+    const d = output as { ok: boolean; message: string };
+    return <LogConfirmation title="Mood Logged" message={d.message} href="/log?kind=mood" />;
+  }
+  if (name === "log_symptoms") {
+    const d = output as { ok: boolean; message: string };
+    return <LogConfirmation title="Symptoms Logged" message={d.message} href="/log?kind=symptoms" />;
+  }
+  if (name === "log_journal_behavior") {
+    const d = output as { ok: boolean; message: string };
+    return <LogConfirmation title="Habit Logged" message={d.message} href="/journal" />;
+  }
+  if (name === "log_cycle") {
+    const d = output as { ok: boolean; message: string };
+    return <LogConfirmation title="Cycle Logged" message={d.message} href="/log?kind=period" />;
+  }
   return null;
 }

@@ -30,6 +30,14 @@
     "get_health": "Checking your Health Monitor…",
     "get_report": "Reading your report…",
     "get_profile": "Checking your profile…",
+    "log_nutrition": "Logging meal…",
+    "log_water": "Logging hydration…",
+    "log_weight": "Logging weight…",
+    "log_spo2": "Logging blood oxygen…",
+    "log_mood": "Logging mood…",
+    "log_symptoms": "Logging symptoms…",
+    "log_journal_behavior": "Logging journal habit…",
+    "log_cycle": "Logging cycle data…",
     "default": "Looking at your data…"
   },
   "errors": {

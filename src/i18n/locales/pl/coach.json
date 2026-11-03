@@ -30,7 +30,15 @@
     "get_health": "Sprawdzam Twój Health Monitor…",
     "get_report": "Czytam Twój raport…",
     "get_profile": "Sprawdzam Twój profil…",
-    "default": "Patrzę na Twoje dane…"
+    "default": "Patrzę na Twoje dane…",
+    "log_nutrition": "Zapisywanie posiłku…",
+    "log_water": "Zapisywanie wody…",
+    "log_weight": "Zapisywanie wagi…",
+    "log_spo2": "Zapisywanie natlenienia krwi…",
+    "log_mood": "Zapisywanie nastroju…",
+    "log_symptoms": "Zapisywanie objawów…",
+    "log_journal_behavior": "Zapisywanie nawyku…",
+    "log_cycle": "Zapisywanie cyklu…"
   },
   "errors": {
     "limit": "Zwolnij trochę. Spróbuj ponownie za chwilę.",

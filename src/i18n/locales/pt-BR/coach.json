@@ -30,7 +30,15 @@
     "get_health": "Verificando seu Health Monitor…",
     "get_report": "Lendo seu relatório…",
     "get_profile": "Verificando seu perfil…",
-    "default": "Olhando seus dados…"
+    "default": "Olhando seus dados…",
+    "log_nutrition": "Registrando refeição…",
+    "log_water": "Registrando água…",
+    "log_weight": "Registrando peso…",
+    "log_spo2": "Registrando SpO2…",
+    "log_mood": "Registrando humor…",
+    "log_symptoms": "Registrando sintomas…",
+    "log_journal_behavior": "Registrando hábito…",
+    "log_cycle": "Registrando ciclo…"
   },
   "errors": {
     "limit": "Vá com calma. Tente de novo daqui a pouco.",

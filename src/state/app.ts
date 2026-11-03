@@ -23,6 +23,7 @@ import { setLocale } from "@/lib/locale";
 import { seedDemoFood } from "@/data/seedFood";
 import { forgetChanges } from "@/health/sync";
 import { localDay } from "@/lib/time";
+import { dataChanged, dataVersion, useDataVersion } from "./dataVersion";
 import type { DisplayPrefs } from "@/lib/units";
 import type { QueryCtx } from "@/queries/ctx";
 import { ensureDefaultTags } from "@/queries/journal";
@@ -93,22 +94,7 @@ export function useApp<T>(select?: (s: AppInfo) => T) {
 export const appState = () => state;
 
 // ── The data version ────────────────────────────────────────────────────────
-// Bumped after every scoring run and every write a screen reads (a check-in, a log entry, the dashboard): every
-// mounted screen's query reloads (src/screens/useScreen.ts).
-
-let version = 0;
-const versionListeners = new Set<() => void>();
-export function dataChanged() {
-  version++;
-  for (const l of versionListeners) l();
-}
-const subscribeVersion = (l: () => void) => {
-  versionListeners.add(l);
-  return () => versionListeners.delete(l);
-};
-const inactiveSubscribe = () => () => {};
-export const dataVersion = () => version;
-export const useDataVersion = (active = true) => useSyncExternalStore(active ? subscribeVersion : inactiveSubscribe, dataVersion);
+export { dataChanged, dataVersion, useDataVersion };
 
 // ── Contexts ────────────────────────────────────────────────────────────────
 

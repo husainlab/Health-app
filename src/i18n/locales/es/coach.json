@@ -30,7 +30,15 @@
     "get_health": "Revisando tu Health Monitor…",
     "get_report": "Leyendo tu informe…",
     "get_profile": "Revisando tu perfil…",
-    "default": "Mirando tus datos…"
+    "default": "Mirando tus datos…",
+    "log_nutrition": "Registrando comida…",
+    "log_water": "Registrando agua…",
+    "log_weight": "Registrando peso…",
+    "log_spo2": "Registrando oxígeno en sangre…",
+    "log_mood": "Registrando estado de ánimo…",
+    "log_symptoms": "Registrando síntomas…",
+    "log_journal_behavior": "Registrando hábito…",
+    "log_cycle": "Registrando ciclo…"
   },
   "errors": {
     "limit": "Ve un poco más despacio. Inténtalo de nuevo en un momento.",

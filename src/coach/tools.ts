@@ -14,13 +14,18 @@ import { getActivity } from "@/queries/activity";
 import { dayStartOf, firstDay, loadDays, maybe, meanSd, todayOf, type QueryCtx } from "@/queries/common";
 import { acwrStatus, getFitness, getHealthHub, getMonitor, getStress } from "@/queries/health";
 import { energyBankVM, latestReport } from "@/queries/home";
-import { getJournalInsights } from "@/queries/journal";
+import { getJournalInsights, tagRows, addTag } from "@/queries/journal";
+import { behavior } from "@/lib/behaviors";
 import { getRecovery } from "@/queries/recovery";
 import { getReport } from "@/queries/reports";
 import { getSleep } from "@/queries/sleep";
 import { getStrain } from "@/queries/strain";
 import { TREND_METRICS, trendMetric, type TrendMetricKey } from "@/queries/trends";
 import { SCORE_DOCS } from "@/screens/more/howItWorksContent";
+import { logEntry } from "@/actions/log";
+import { saveJournalEntry } from "@/actions/journal";
+import { dataChanged } from "@/state/dataVersion";
+import type { Flow, Meal, Mood, OvulationResult, Symptom, Valence } from "@/queries/log";
 import { defaultTexts, type Texts } from "./texts";
 
 const round = (v: number, dp = 0) => Math.round(v * 10 ** dp) / 10 ** dp;
@@ -376,6 +381,198 @@ export function coachTools(ctx: QueryCtx, t: Texts = defaultTexts) {
       description: t("tool.get_app_stats"),
       inputSchema: z.object({}),
       execute: async () => appStatsDigest(ctx),
+    }),
+    log_nutrition: tool({
+      description: t("tool.log_nutrition"),
+      inputSchema: z.object({
+        name: z.string().describe(t("tool.log_nutrition.name")),
+        meal: z.enum(["BREAKFAST", "LUNCH", "DINNER", "SNACK"]).describe(t("tool.log_nutrition.meal")),
+        kcal: z.number().int().min(1).max(10000).describe(t("tool.log_nutrition.kcal")),
+        protein: z.number().min(0).max(1000).optional().describe(t("tool.log_nutrition.protein")),
+        carbs: z.number().min(0).max(1000).optional().describe(t("tool.log_nutrition.carbs")),
+        fat: z.number().min(0).max(1000).optional().describe(t("tool.log_nutrition.fat")),
+        fiber: z.number().min(0).max(1000).optional().describe(t("tool.log_nutrition.fiber")),
+        portion: z.string().optional().describe(t("tool.log_nutrition.portion")),
+        at: z.string().optional().describe(t("tool.log_nutrition.at")),
+      }),
+      execute: async ({ name, meal, kcal, protein, carbs, fat, fiber, portion, at }) => {
+        const actCtx = { store: ctx.store, profile: ctx.profile, timeZone: ctx.timeZone, nowS: () => ctx.now };
+        const r = await logEntry(actCtx, {
+          kind: "food",
+          meal: meal as Meal,
+          name: name.trim(),
+          kcal,
+          protein: protein != null ? Math.round(protein * 10) / 10 : null,
+          carbs: carbs != null ? Math.round(carbs * 10) / 10 : null,
+          fat: fat != null ? Math.round(fat * 10) / 10 : null,
+          fiber: fiber != null ? Math.round(fiber * 10) / 10 : null,
+          portion: portion?.trim(),
+          via: "text",
+          at,
+        });
+        if (!r.ok) return { ok: false, error: r.error, message: `Failed to log meal: ${r.error}` };
+        dataChanged();
+        return {
+          ok: true,
+          entry: { kind: "food", name: name.trim(), meal, kcal, protein: protein ?? null, carbs: carbs ?? null, fat: fat ?? null, fiber: fiber ?? null, portion: portion ?? null },
+          message: `Logged ${name.trim()} (${kcal} kcal) for ${meal.toLowerCase()}. Saved and synced to Health Connect.`,
+        };
+      },
+    }),
+    log_water: tool({
+      description: t("tool.log_water"),
+      inputSchema: z.object({
+        ml: z.number().int().min(10).max(5000).describe(t("tool.log_water.ml")),
+        at: z.string().optional().describe(t("tool.log_water.at")),
+      }),
+      execute: async ({ ml, at }) => {
+        const actCtx = { store: ctx.store, profile: ctx.profile, timeZone: ctx.timeZone, nowS: () => ctx.now };
+        const r = await logEntry(actCtx, { kind: "water", ml, at });
+        if (!r.ok) return { ok: false, error: r.error, message: `Failed to log water: ${r.error}` };
+        dataChanged();
+        return {
+          ok: true,
+          entry: { kind: "water", ml },
+          message: `Logged ${ml} ml of water. Saved and synced to Health Connect.`,
+        };
+      },
+    }),
+    log_weight: tool({
+      description: t("tool.log_weight"),
+      inputSchema: z.object({
+        kg: z.number().min(20).max(300).describe(t("tool.log_weight.kg")),
+        fatPct: z.number().min(2).max(75).optional().describe(t("tool.log_weight.fatPct")),
+        at: z.string().optional().describe(t("tool.log_weight.at")),
+      }),
+      execute: async ({ kg, fatPct, at }) => {
+        const actCtx = { store: ctx.store, profile: ctx.profile, timeZone: ctx.timeZone, nowS: () => ctx.now };
+        const roundedKg = Math.round(kg * 10) / 10;
+        const roundedFat = fatPct != null ? Math.round(fatPct * 10) / 10 : null;
+        const r = await logEntry(actCtx, { kind: "weight", kg: roundedKg, fatPct: roundedFat, at });
+        if (!r.ok) return { ok: false, error: r.error, message: `Failed to log weight: ${r.error}` };
+        dataChanged();
+        return {
+          ok: true,
+          entry: { kind: "weight", kg: roundedKg, fatPct: roundedFat },
+          message: `Logged weight ${roundedKg} kg${roundedFat != null ? ` (${roundedFat}% body fat)` : ""}. Saved, updated Health Age, and synced to Health Connect.`,
+        };
+      },
+    }),
+    log_spo2: tool({
+      description: t("tool.log_spo2"),
+      inputSchema: z.object({
+        pct: z.number().min(70).max(100).describe(t("tool.log_spo2.pct")),
+        at: z.string().optional().describe(t("tool.log_spo2.at")),
+      }),
+      execute: async ({ pct, at }) => {
+        const actCtx = { store: ctx.store, profile: ctx.profile, timeZone: ctx.timeZone, nowS: () => ctx.now };
+        const roundedPct = Math.round(pct * 10) / 10;
+        const r = await logEntry(actCtx, { kind: "spo2", pct: roundedPct, at });
+        if (!r.ok) return { ok: false, error: r.error, message: `Failed to log SpO2: ${r.error}` };
+        dataChanged();
+        return {
+          ok: true,
+          entry: { kind: "spo2", pct: roundedPct },
+          message: `Logged blood oxygen (SpO2) at ${roundedPct}%.`,
+        };
+      },
+    }),
+    log_mood: tool({
+      description: t("tool.log_mood"),
+      inputSchema: z.object({
+        moods: z.array(z.enum(["HAPPY", "CALM", "ENERGIZED", "CONTENT", "GRATEFUL", "EXCITED", "FATIGUED", "STRESSED", "ANXIOUS", "IRRITATED", "SAD", "OVERWHELMED", "LONELY"])).min(1).max(5).describe(t("tool.log_mood.moods")),
+        valence: z.enum(["UNPLEASANT", "BASELINE", "PLEASANT"]).optional().describe(t("tool.log_mood.valence")),
+        at: z.string().optional().describe(t("tool.log_mood.at")),
+      }),
+      execute: async ({ moods, valence, at }) => {
+        const actCtx = { store: ctx.store, profile: ctx.profile, timeZone: ctx.timeZone, nowS: () => ctx.now };
+        const r = await logEntry(actCtx, { kind: "mood", moods: moods as Mood[], valence: (valence as Valence) ?? null, at });
+        if (!r.ok) return { ok: false, error: r.error, message: `Failed to log mood: ${r.error}` };
+        dataChanged();
+        return {
+          ok: true,
+          entry: { kind: "mood", moods, valence: valence ?? null },
+          message: `Logged mood: ${moods.join(", ").toLowerCase()}${valence ? ` (${valence.toLowerCase()})` : ""}.`,
+        };
+      },
+    }),
+    log_symptoms: tool({
+      description: t("tool.log_symptoms"),
+      inputSchema: z.object({
+        symptoms: z.array(z.enum(["HEADACHE", "FATIGUE", "SICK", "FEVER", "COUGH", "NAUSEA", "DIZZINESS", "BRAIN_FOG", "BACK_PAIN", "JOINT_PAIN", "INSOMNIA", "HEARTBURN", "BLOATED", "DIARRHEA", "CONSTIPATION", "CRAMPS", "TENDER_BREASTS", "PMS", "ACNE", "HOT_FLASHES"])).min(1).describe(t("tool.log_symptoms.symptoms")),
+        at: z.string().optional().describe(t("tool.log_symptoms.at")),
+      }),
+      execute: async ({ symptoms, at }) => {
+        const actCtx = { store: ctx.store, profile: ctx.profile, timeZone: ctx.timeZone, nowS: () => ctx.now };
+        const r = await logEntry(actCtx, { kind: "symptoms", symptoms: symptoms as Symptom[], at });
+        if (!r.ok) return { ok: false, error: r.error, message: `Failed to log symptoms: ${r.error}` };
+        dataChanged();
+        return {
+          ok: true,
+          entry: { kind: "symptoms", symptoms },
+          message: `Logged symptoms: ${symptoms.map((s) => s.toLowerCase().replaceAll("_", " ")).join(", ")}.`,
+        };
+      },
+    }),
+    log_journal_behavior: tool({
+      description: t("tool.log_journal_behavior"),
+      inputSchema: z.object({
+        tag: z.string().describe(t("tool.log_journal_behavior.tag")),
+        value: z.union([z.boolean(), z.number().int().min(0).max(1000)]).describe(t("tool.log_journal_behavior.value")),
+        day: z.string().optional().describe(t("tool.log_journal_behavior.day")),
+      }),
+      execute: async ({ tag, value, day }) => {
+        const d = day && day <= ctx.today ? day : ctx.today;
+        const actCtx = { store: ctx.store, profile: ctx.profile, timeZone: ctx.timeZone, nowS: () => ctx.now };
+        const rows = await tagRows(ctx.store);
+        const known = rows.some((t) => t.tag === tag);
+        if (!known) {
+          const cat = behavior(tag);
+          if (cat) {
+            await ctx.store.insertJournalTags([{ tag, label: cat.label, isDefault: false, hidden: false, position: 0 }]);
+          } else {
+            await addTag(ctx.store, tag, tag.replaceAll("_", " "));
+          }
+        }
+        const r = await saveJournalEntry(actCtx, { day: d, tag, value });
+        if (!r.ok) return { ok: false, error: r.error, message: `Failed to log journal habit: ${r.error}` };
+        dataChanged();
+        return {
+          ok: true,
+          entry: { kind: "journal", tag, value, day: d },
+          message: `Logged habit '${tag}' (${value}) for ${d}. Health will calculate its impact on Recovery.`,
+        };
+      },
+    }),
+    log_cycle: tool({
+      description: t("tool.log_cycle"),
+      inputSchema: z.object({
+        kind: z.enum(["period", "ovulation"]).describe(t("tool.log_cycle.kind")),
+        start: z.string().optional().describe(t("tool.log_cycle.start")),
+        end: z.string().optional().describe(t("tool.log_cycle.end")),
+        flow: z.enum(["SPOTTING", "LIGHT", "MEDIUM", "HEAVY"]).optional().describe(t("tool.log_cycle.flow")),
+        ovulationResult: z.enum(["NEGATIVE", "POSITIVE", "LUTEINIZING_HORMONE_SURGE", "ESTROGEN_SURGE", "INDETERMINATE"]).optional().describe(t("tool.log_cycle.ovulationResult")),
+        at: z.string().optional().describe(t("tool.log_cycle.at")),
+      }),
+      execute: async ({ kind, start, end, flow, ovulationResult, at }) => {
+        if (ctx.profile.sex !== "female") {
+          return { ok: false, error: "Cycle tracking is only available for female profiles.", message: "Cycle tracking is only available for female profiles." };
+        }
+        const actCtx = { store: ctx.store, profile: ctx.profile, timeZone: ctx.timeZone, nowS: () => ctx.now };
+        if (kind === "period") {
+          if (!start || !end) return { ok: false, error: "Start and end dates are required for period tracking.", message: "Start and end dates are required." };
+          const r = await logEntry(actCtx, { kind: "period", start, end, flow: (flow as Flow) ?? null });
+          if (!r.ok) return { ok: false, error: r.error, message: `Failed to log period: ${r.error}` };
+          dataChanged();
+          return { ok: true, entry: { kind: "period", start, end, flow: flow ?? null }, message: `Logged period from ${start} to ${end}${flow ? ` (${flow.toLowerCase()})` : ""}.` };
+        } else {
+          if (!ovulationResult) return { ok: false, error: "Ovulation result is required.", message: "Ovulation result is required." };
+          const r = await logEntry(actCtx, { kind: "ovulation", result: ovulationResult as OvulationResult, at });
+          if (!r.ok) return { ok: false, error: r.error, message: `Failed to log ovulation: ${r.error}` };
+          dataChanged();
+          return { ok: true, entry: { kind: "ovulation", result: ovulationResult }, message: `Logged ovulation test result: ${ovulationResult.toLowerCase()}.` };
+        }
+      },
     }),
   };
 }

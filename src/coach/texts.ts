@@ -23,6 +23,17 @@ Engine & Scoring Knowledge:
 - Health Monitor: Tracks 5 vitals against personal 30-night baseline ± 1 standard deviation. Deviations in multiple vitals simultaneously indicate potential illness before overt symptoms appear.
 - Explaining how the app works: When the user asks how a metric, formula, weight, or band is calculated, call get_how_it_works.
 - For user history or internal app statistics: Call get_app_stats.
+- Logging via Coach:
+  - You can log anything the user asks you to log directly to on-device storage and Health Connect:
+    - Meals & Food: Call log_nutrition. If calories or macros are not given (e.g. "I ate chicken fried rice"), estimate realistic calories (kcal), protein, carbs and fat, select the meal (BREAKFAST, LUNCH, DINNER, SNACK), and log it.
+    - Water: Call log_water in ml (convert 1 glass ~ 250 ml, 8 oz ~ 237 ml, 1 liter = 1000 ml).
+    - Weight & Body Fat: Call log_weight in kg (convert lbs to kg if needed: 1 lb = 0.453592 kg).
+    - Blood Oxygen: Call log_spo2.
+    - Mood & Valence: Call log_mood.
+    - Symptoms: Call log_symptoms.
+    - Habits & Behaviors: Call log_journal_behavior (e.g. caffeine, alcohol, magnesium, cold_shower, meditation, sauna, late_meal).
+    - Menstrual Cycle & Ovulation: Call log_cycle (for female profiles).
+  - When the user asks to log something or states they did/ate/weighed something, immediately invoke the appropriate log tool and warmly confirm what was logged, noting that it is saved on their device and synced to Health Connect.
 
 Grounding:
 - Fetch relevant tools before discussing the user's measurements. Never invent readings, baselines, workout details or calculated targets. Saved conversation summaries are historical context, not fresh measurements.
@@ -103,6 +114,76 @@ export const TOOL_DOCS: Record<string, ToolDoc> = {
   get_app_stats: {
     description: "Read internal statistics and aggregate baseline summaries of the user's Health database: total days recorded, first sync day, 60-day HRV and RHR baselines, average recovery/strain/sleep, total workouts, and calibration progress. Use for big-picture summaries and overall health trends.",
     params: {},
+  },
+  log_nutrition: {
+    description: "Log a meal or food item to Health and Health Connect. Estimate calories and macros if not provided by user.",
+    params: {
+      name: { type: "string", description: "Food name or description (e.g. 'Oatmeal with blueberries', 'Chicken rice bowl')" },
+      meal: { type: "one of: BREAKFAST, LUNCH, DINNER, SNACK", description: "Meal classification" },
+      kcal: { type: "number", description: "Estimated or exact calories in kcal" },
+      protein: { type: "number, optional", description: "Grams of protein" },
+      carbs: { type: "number, optional", description: "Grams of carbohydrates" },
+      fat: { type: "number, optional", description: "Grams of fat" },
+      fiber: { type: "number, optional", description: "Grams of dietary fiber" },
+      portion: { type: "string, optional", description: "Portion description (e.g. '1 bowl', '200g')" },
+      at: { type: "date-time (YYYY-MM-DDTHH:mm), optional", description: "Wall clock time for the meal; omit for now" },
+    },
+  },
+  log_water: {
+    description: "Log water or fluid intake in milliliters to Health and Health Connect. Convert glasses or fluid ounces if needed.",
+    params: {
+      ml: { type: "number (10 to 5000)", description: "Amount in milliliters (e.g. 250 for a glass, 500 for a bottle)" },
+      at: { type: "date-time (YYYY-MM-DDTHH:mm), optional", description: "Wall clock time; omit for now" },
+    },
+  },
+  log_weight: {
+    description: "Log body weight in kilograms (and optional body fat percentage) to Health and Health Connect. Updates Health Age and body composition. Convert lbs to kg if user gives lbs.",
+    params: {
+      kg: { type: "number (20 to 300)", description: "Weight in kilograms" },
+      fatPct: { type: "number (2 to 75), optional", description: "Body fat percentage" },
+      at: { type: "date-time (YYYY-MM-DDTHH:mm), optional", description: "Wall clock time; omit for now" },
+    },
+  },
+  log_spo2: {
+    description: "Log blood oxygen saturation reading (SpO2 percentage).",
+    params: {
+      pct: { type: "number (70 to 100)", description: "SpO2 percentage" },
+      at: { type: "date-time (YYYY-MM-DDTHH:mm), optional", description: "Wall clock time; omit for now" },
+    },
+  },
+  log_mood: {
+    description: "Log mood and emotional valence.",
+    params: {
+      moods: { type: "array of moods (1 to 5)", description: "Moods from: HAPPY, CALM, ENERGIZED, CONTENT, GRATEFUL, EXCITED, FATIGUED, STRESSED, ANXIOUS, IRRITATED, SAD, OVERWHELMED, LONELY" },
+      valence: { type: "one of: UNPLEASANT, BASELINE, PLEASANT, optional", description: "Overall valence" },
+      at: { type: "date-time (YYYY-MM-DDTHH:mm), optional", description: "Wall clock time; omit for now" },
+    },
+  },
+  log_symptoms: {
+    description: "Log physical symptoms.",
+    params: {
+      symptoms: { type: "array of symptoms", description: "Symptoms from: HEADACHE, FATIGUE, SICK, FEVER, COUGH, NAUSEA, DIZZINESS, BRAIN_FOG, BACK_PAIN, JOINT_PAIN, INSOMNIA, HEARTBURN, BLOATED, DIARRHEA, CONSTIPATION, CRAMPS, TENDER_BREASTS, PMS, ACNE, HOT_FLASHES" },
+      at: { type: "date-time (YYYY-MM-DDTHH:mm), optional", description: "Wall clock time; omit for now" },
+    },
+  },
+  log_journal_behavior: {
+    description: "Log a daily habit or behavior (e.g. caffeine, alcohol, magnesium, cold_shower, meditation, sauna, late_meal) to the check-in journal to measure statistical impact on next-day Recovery and HRV.",
+    params: {
+      tag: { type: "string", description: "Behavior tag: caffeine, alcohol, magnesium, cold_shower, meditation, sauna, late_meal, etc." },
+      value: { type: "boolean or number", description: "true/false for yes/no, or count number (e.g. 2 for 2 drinks)" },
+      day: { type: "date (YYYY-MM-DD), optional", description: "Calendar day; defaults to today" },
+    },
+  },
+  log_cycle: {
+    description: "Log menstrual period dates or ovulation test result (for female profiles).",
+    params: {
+      kind: { type: "'period' or 'ovulation'", description: "Cycle tracking kind" },
+      start: { type: "date (YYYY-MM-DD), optional", description: "Period start date (for kind='period')" },
+      end: { type: "date (YYYY-MM-DD), optional", description: "Period end date (for kind='period')" },
+      flow: { type: "one of: SPOTTING, LIGHT, MEDIUM, HEAVY, optional", description: "Period flow intensity" },
+      ovulationResult: { type: "one of: NEGATIVE, POSITIVE, LUTEINIZING_HORMONE_SURGE, ESTROGEN_SURGE, INDETERMINATE, optional", description: "Ovulation result" },
+      at: { type: "date-time (YYYY-MM-DDTHH:mm), optional", description: "Wall clock time" },
+    },
   },
 };
 

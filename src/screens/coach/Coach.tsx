@@ -28,7 +28,25 @@ type CoachSuggestion = { key: CoreSuggestion["key"]; text: string };
 const SUGGESTION_ICONS: Record<CoachSuggestion["key"], LucideIcon> = { brief: Activity, recovery: Activity, training: Dumbbell, hrv: Activity, sleep: Moon, strain: Dumbbell, sync: RefreshCw };
 
 /** The tools with a progress line (`coach:running.<tool>`); any other tool reads the default. */
-const RUNNING = ["get_day", "get_sleep", "get_activity", "get_trend", "get_activities", "get_journal_impacts", "get_health", "get_report", "get_profile"];
+const RUNNING = [
+  "get_day",
+  "get_sleep",
+  "get_activity",
+  "get_trend",
+  "get_activities",
+  "get_journal_impacts",
+  "get_health",
+  "get_report",
+  "get_profile",
+  "log_nutrition",
+  "log_water",
+  "log_weight",
+  "log_spo2",
+  "log_mood",
+  "log_symptoms",
+  "log_journal_behavior",
+  "log_cycle",
+];
 
 const PROBLEMS = ["limit", "key", "profile", "provider", "network"] as const;
 /** The composer's least gap to the screen's bottom edge, and its gap above the keyboard. */

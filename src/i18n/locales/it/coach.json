@@ -30,7 +30,15 @@
     "get_health": "Controllo il tuo Health Monitor…",
     "get_report": "Leggo il tuo rapporto…",
     "get_profile": "Controllo il tuo profilo…",
-    "default": "Guardo i tuoi dati…"
+    "default": "Guardo i tuoi dati…",
+    "log_nutrition": "Registrazione del pasto…",
+    "log_water": "Registrazione dell’acqua…",
+    "log_weight": "Registrazione del peso…",
+    "log_spo2": "Registrazione SpO2…",
+    "log_mood": "Registrazione dell’umore…",
+    "log_symptoms": "Registrazione dei sintomi…",
+    "log_journal_behavior": "Registrazione dell’abitudine…",
+    "log_cycle": "Registrazione del ciclo…"
   },
   "errors": {
     "limit": "Vai un po’ più piano. Riprova tra un attimo.",

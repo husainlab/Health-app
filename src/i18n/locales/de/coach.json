@@ -30,7 +30,15 @@
     "get_health": "Ich prüfe deinen Health Monitor…",
     "get_report": "Ich lese deinen Bericht…",
     "get_profile": "Ich prüfe dein Profil…",
-    "default": "Ich sehe mir deine Daten an…"
+    "default": "Ich sehe mir deine Daten an…",
+    "log_nutrition": "Mahlzeit protokollieren…",
+    "log_water": "Wasser protokollieren…",
+    "log_weight": "Gewicht protokollieren…",
+    "log_spo2": "Sauerstoffsättigung protokollieren…",
+    "log_mood": "Stimmung protokollieren…",
+    "log_symptoms": "Symptome protokollieren…",
+    "log_journal_behavior": "Gewohnheit protokollieren…",
+    "log_cycle": "Zyklusdaten protokollieren…"
   },
   "errors": {
     "limit": "Etwas langsamer bitte. Versuch es gleich noch einmal.",

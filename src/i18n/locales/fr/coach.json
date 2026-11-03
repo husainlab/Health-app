@@ -30,7 +30,15 @@
     "get_health": "Je vérifie ton Health Monitor…",
     "get_report": "Je lis ton rapport…",
     "get_profile": "Je vérifie ton profil…",
-    "default": "J’examine tes données…"
+    "default": "J’examine tes données…",
+    "log_nutrition": "Enregistrement du repas…",
+    "log_water": "Enregistrement de l’eau…",
+    "log_weight": "Enregistrement du poids…",
+    "log_spo2": "Enregistrement de la SpO2…",
+    "log_mood": "Enregistrement de l’humeur…",
+    "log_symptoms": "Enregistrement des symptômes…",
+    "log_journal_behavior": "Enregistrement de l’habitude…",
+    "log_cycle": "Enregistrement du cycle…"
   },
   "errors": {
     "limit": "Doucement. Réessaie dans un instant.",

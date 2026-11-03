@@ -194,4 +194,91 @@ describe("coach tools", () => {
     expect(s[0]).toEqual({ key: "brief", text: "Today's brief" });
     expect(s.length).toBeLessThanOrEqual(4);
   });
+
+  describe("coach logging tools", () => {
+    it("log_nutrition logs food into store and confirms to user", async () => {
+      const tools = coachTools(ctx);
+      const res = await call(tools.log_nutrition, {
+        name: "Greek Yogurt with Berries",
+        meal: "BREAKFAST",
+        kcal: 250,
+        protein: 20,
+        carbs: 30,
+        fat: 5,
+      });
+      expect(res.ok).toBe(true);
+      expect(res.message).toContain("Greek Yogurt with Berries");
+      expect(res.message).toContain("250 kcal");
+      const logged = await ctx.store.loggedEntries(NOW - 3600, 7200);
+      expect(logged.some((e) => e.type === "nutrition-log")).toBe(true);
+    });
+
+    it("log_water logs hydration into store and confirms to user", async () => {
+      const tools = coachTools(ctx);
+      const res = await call(tools.log_water, { ml: 500 });
+      expect(res.ok).toBe(true);
+      expect(res.message).toContain("500 ml");
+      const logged = await ctx.store.loggedEntries(NOW - 3600, 7200);
+      expect(logged.some((e) => e.type === "hydration-log")).toBe(true);
+    });
+
+    it("log_weight logs weight and fatPct into store and confirms to user", async () => {
+      const tools = coachTools(ctx);
+      const res = await call(tools.log_weight, { kg: 72.5, fatPct: 15.2 });
+      expect(res.ok).toBe(true);
+      expect(res.message).toContain("72.5 kg");
+      expect(res.message).toContain("15.2% body fat");
+      const logged = await ctx.store.loggedEntries(NOW - 3600, 7200);
+      expect(logged.some((e) => e.type === "weight")).toBe(true);
+      expect(logged.some((e) => e.type === "body-fat")).toBe(true);
+    });
+
+    it("log_spo2 logs blood oxygen reading into store", async () => {
+      const tools = coachTools(ctx);
+      const res = await call(tools.log_spo2, { pct: 98.4 });
+      expect(res.ok).toBe(true);
+      expect(res.message).toContain("98.4%");
+      const logged = await ctx.store.loggedEntries(NOW - 3600, 7200);
+      expect(logged.some((e) => e.type === "oxygen-saturation")).toBe(true);
+    });
+
+    it("log_mood logs mood and valence", async () => {
+      const tools = coachTools(ctx);
+      const res = await call(tools.log_mood, { moods: ["CALM", "GRATEFUL"], valence: "PLEASANT" });
+      expect(res.ok).toBe(true);
+      expect(res.message).toContain("calm, grateful");
+      const logged = await ctx.store.loggedEntries(NOW - 3600, 7200);
+      expect(logged.some((e) => e.type === "moods")).toBe(true);
+    });
+
+    it("log_symptoms logs symptoms into store", async () => {
+      const tools = coachTools(ctx);
+      const res = await call(tools.log_symptoms, { symptoms: ["HEADACHE", "FATIGUE"] });
+      expect(res.ok).toBe(true);
+      expect(res.message).toContain("headache, fatigue");
+      const logged = await ctx.store.loggedEntries(NOW - 3600, 7200);
+      expect(logged.some((e) => e.type === "symptoms")).toBe(true);
+    });
+
+    it("log_journal_behavior logs habit into journal", async () => {
+      const tools = coachTools(ctx);
+      const res = await call(tools.log_journal_behavior, { tag: "magnesium", value: true });
+      expect(res.ok).toBe(true);
+      expect(res.message).toContain("magnesium");
+      const j = await ctx.store.allJournal();
+      expect(j.some((row) => row.day === TODAY && row.tag === "magnesium" && row.value === 1)).toBe(true);
+    });
+
+    it("log_cycle rejects on male profile and succeeds on female profile", async () => {
+      const maleTools = coachTools(ctx);
+      const maleRes = await call(maleTools.log_cycle, { kind: "period", start: TODAY, end: TODAY });
+      expect(maleRes.ok).toBe(false);
+
+      const femaleCtx: QueryCtx = { ...ctx, profile: { ...PROFILE, sex: "female" } };
+      const femaleTools = coachTools(femaleCtx);
+      const femaleRes = await call(femaleTools.log_cycle, { kind: "period", start: "2026-10-01", end: TODAY, flow: "MEDIUM" });
+      expect(femaleRes.ok).toBe(true);
+      expect(femaleRes.message).toContain("Logged period");
+    });
+  });
 });
