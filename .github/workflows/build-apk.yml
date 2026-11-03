@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: build-apk-release
+  cancel-in-progress: false
+
 jobs:
   build:
     name: Build Signed Release APK
@@ -123,14 +127,49 @@ jobs:
 
       - name: Commit and push APK and version bump to root of repository
         run: |
-          git rm -f Health-*.apk 2>/dev/null || true
-          cp "android/app/build/outputs/apk/release/Health-${{ steps.bump_version.outputs.new_version }}.apk" "./Health-${{ steps.bump_version.outputs.new_version }}.apk"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f "Health-${{ steps.bump_version.outputs.new_version }}.apk" app.json package.json
-          git commit -m "chore(release): bump version to ${{ steps.bump_version.outputs.new_version }} and update APK [skip ci]" || exit 0
-          git pull --rebase origin main || true
-          git push origin main
+
+          NEW_VER="${{ steps.bump_version.outputs.new_version }}"
+          APK_SRC="android/app/build/outputs/apk/release/Health-${NEW_VER}.apk"
+          APK_DEST="./Health-${NEW_VER}.apk"
+
+          # Robust retry loop in case concurrent pushes or ref locks occur during the 55MB APK upload
+          MAX_RETRIES=5
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Push attempt $i of $MAX_RETRIES..."
+
+            # Pull latest changes from remote main
+            git fetch origin main
+            git rebase origin/main || {
+              # Resolve any conflicts on version files in favor of this release
+              git checkout --ours app.json package.json 2>/dev/null || git checkout --theirs app.json package.json 2>/dev/null || true
+              git add app.json package.json
+              git rebase --continue || git rebase --abort
+            }
+
+            # Ensure only the new APK is present
+            git rm -f Health-*.apk 2>/dev/null || true
+            cp "$APK_SRC" "$APK_DEST"
+            git add -f "$APK_DEST" app.json package.json
+
+            # Commit if changes exist
+            if ! git diff --cached --quiet; then
+              git commit -m "chore(release): bump version to ${NEW_VER} and update APK [skip ci]" || true
+            fi
+
+            # Push to origin main
+            if git push origin HEAD:main; then
+              echo "Successfully pushed APK and version bump to main branch!"
+              exit 0
+            fi
+
+            echo "Push failed. Waiting 10 seconds before retry..."
+            sleep 10
+          done
+
+          echo "Failed to push release after $MAX_RETRIES attempts"
+          exit 1
 
       - name: Publish to GitHub Releases
         env:
