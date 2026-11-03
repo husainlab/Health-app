@@ -20,6 +20,15 @@ jobs:
         with:
           persist-credentials: true
 
+      - name: Free runner disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo docker system prune -af || true
+          df -h
+
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
 
@@ -85,21 +94,25 @@ jobs:
       - name: Generate Android project (prebuild)
         run: npx expo prebuild --platform android --clean
 
-      - name: Build Release APK
+      - name: Build Release APK (arm64-v8a for OnePlus Nord)
         env:
           RELEASE_STORE_FILE: ${{ github.workspace }}/credentials/release.keystore
           RELEASE_STORE_PASSWORD: healthapp123
           RELEASE_KEY_ALIAS: health
           RELEASE_KEY_PASSWORD: healthapp123
+          ORG_GRADLE_PROJECT_reactNativeArchitectures: arm64-v8a
+          GRADLE_OPTS: -Xmx4096m -XX:MaxMetaspaceSize=1024m -Dorg.gradle.jvmargs=-Xmx4096m -Dorg.gradle.workers.max=2 -Dorg.gradle.parallel=true
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon
+          ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
 
       - name: Verify Signed APK
         run: |
-          $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose android/app/build/outputs/apk/release/app-release.apk
-          cp android/app/build/outputs/apk/release/app-release.apk "android/app/build/outputs/apk/release/Health-${{ steps.bump_version.outputs.new_version }}.apk"
+          APK_FILE=$(find android/app/build/outputs/apk/release -name "*.apk" ! -name "*unsigned*" | head -n 1)
+          echo "Found APK: $APK_FILE"
+          $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose "$APK_FILE"
+          cp "$APK_FILE" "android/app/build/outputs/apk/release/Health-${{ steps.bump_version.outputs.new_version }}.apk"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v7

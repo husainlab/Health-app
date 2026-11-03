@@ -5,7 +5,6 @@ import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ground } from "@/ui/Ground";
 import { useKeyboardInset } from "@/ui/keyboard";
-import { Wordmark } from "@/ui/brand";
 
 /** `wordmark` false: the screen draws its own brand (Welcome puts the wordmark under the mark). */
 export function Frame({ children, footer, wordmark = true }: { children: ReactNode; footer?: ReactNode; wordmark?: boolean }) {
@@ -24,11 +23,6 @@ export function Frame({ children, footer, wordmark = true }: { children: ReactNo
         keyboardDismissMode="on-drag"
       >
         <View className="mx-auto w-full max-w-[400px] px-5">
-          {wordmark && (
-            <View className="mb-10 items-center">
-              <Wordmark height={16} />
-            </View>
-          )}
           {children}
           {!!footer && <View className="mt-10 gap-1">{footer}</View>}
         </View>

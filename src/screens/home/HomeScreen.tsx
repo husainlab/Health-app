@@ -16,7 +16,6 @@ import { activityHref, dayHref, napHref } from "@/lib/url";
 import { getHome } from "@/queries/home";
 import { dashboardKeys, getHomeDashboard, type HomeDashboard } from "@/queries/homeExtras";
 import type { HomeVM, KeyStat, StressLevel } from "@/queries/types";
-import { Wordmark } from "@/ui/brand";
 import { EnergyBankChart } from "@/ui/charts/EnergyBankChart";
 import { StrainRecoveryChart } from "@/ui/charts/StrainRecoveryChart";
 import { StressChart } from "@/ui/charts/StressChart";
@@ -147,11 +146,8 @@ function Home({ vm, timeZone }: { vm: HomePageVM; timeZone: string }) {
       }}
       slots={{
         top: (
-          <View className="-mt-2">
+          <View className="pt-1">
             <View className="gap-3">
-              <View accessibilityElementsHidden className="items-center">
-                <Wordmark height={17} tone="foreground-secondary" />
-              </View>
               <FirstSync />
               {/* No provisional or other tags under the dials, as WHOOP's Home (owner, 2026-10-13); the dials' own pages show them. */}
               <View className="flex-row items-start justify-around">

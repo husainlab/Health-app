@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { View } from "react-native";
 import Animated, { Easing, useAnimatedProps, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import Svg, { Circle, Defs, RadialGradient, Rect, Stop } from "react-native-svg";
-import { Wordmark } from "@/ui/brand";
 import { useTheme } from "@/ui/theme";
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
@@ -72,7 +71,6 @@ export function HeartbeatMark() {
           <AnimatedRect x={12.9} width={4.2} height={11} rx={2.1} fill={c["strain-text"]} animatedProps={downProps} />
         </Svg>
       </View>
-      <Wordmark height={22} />
     </View>
   );
 }

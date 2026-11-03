@@ -7,7 +7,6 @@ import { ChevronRight } from "lucide-react-native";
 import { BAND_WORD, DATA_COLORS, dialColor, recoveryBand, STRESS_COLOR, STRESS_WORD, stressLevel, type DataColor } from "@/lib/bands";
 import { dialAriaLabel, formatValue, type FormatKey, unitLabel } from "@/lib/format";
 import { reasonCopy, type MetricTag, type ReasonCode } from "@/lib/reasons";
-import { Wordmark } from "../brand";
 import { arcPath, polar } from "../charts/geometry";
 import { cn } from "../cn";
 import { Icon } from "../Icon";
@@ -210,12 +209,6 @@ export function ScoreDial(props: ScoreDialProps) {
 
       {/* The hole: the square inside the stroke. One centred column whose type and gaps scale with the inner diameter. */}
       <View pointerEvents="none" className="absolute items-center justify-center" style={{ left: holeInset, right: holeInset, top: holeInset, bottom: holeInset }}>
-        {lg && (!empty || loading) && !gauge && (
-          // The wordmark over the value (brand.md: never "PULSE" in a font); never under the brand minimum (h 15 px).
-          <View style={{ marginBottom: 10 * cqi }}>
-            <Wordmark height={Math.max(15, 6.8 * cqi)} tone="foreground-secondary" />
-          </View>
-        )}
         {loading ? (
           size !== "sm" && (
             <View style={{ width: valueSize * (lg ? 1.4 : 1.2) }}>
