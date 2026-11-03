@@ -341,11 +341,11 @@ describe("metrics", () => {
     expect(metrics[0]).toMatchObject({ day: "2026-10-02", respBpm: 15.2 });
   });
 
-  it("skips own Hydration and Nutrition writes originating from in.portlabs.pulse in mapExternalEntries", () => {
+  it("skips own Hydration and Nutrition writes originating from in.portlabs.health and in.portlabs.pulse in mapExternalEntries", () => {
     const entries = mapExternalEntries(
       {
         Hydration: [
-          { metadata: { id: "h1", dataOrigin: "in.portlabs.pulse" }, startTime: at("2026-10-02", "10:00:00"), endTime: at("2026-10-02", "10:00:01"), volume: { inMilliliters: 500 } } as never,
+          { metadata: { id: "h1", dataOrigin: "in.portlabs.health" }, startTime: at("2026-10-02", "10:00:00"), endTime: at("2026-10-02", "10:00:01"), volume: { inMilliliters: 500 } } as never,
           { metadata: { id: "h2", dataOrigin: "com.fitbit.FitbitMobile" }, startTime: at("2026-10-02", "11:00:00"), endTime: at("2026-10-02", "11:00:01"), volume: { inMilliliters: 250 } } as never,
         ],
         Nutrition: [

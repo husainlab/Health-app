@@ -41,7 +41,7 @@ describe("Activity Cost wording", () => {
     expect(costSentence(run(-8, 2), vm)).toBe("After running, your Recovery the next morning averages 8% below your rest days and takes about 2 days to come back.");
     expect(costSentence(run(-8, null), { ...vm, baselineKind: "all" })).toBe("After running, your Recovery the next morning averages 8% below your average and is still lower a week later.");
     expect(costSentence(run(3, 1), vm)).toBe("After running, your Recovery the next morning averages 3% above your rest days.");
-    expect(costSentence(short, vm)).toBe("Pulse needs 4 strength sessions with a Recovery the next morning to measure what they cost you; it has 2 so far.");
+    expect(costSentence(short, vm)).toBe("Health needs 4 strength sessions with a Recovery the next morning to measure what they cost you; it has 2 so far.");
   });
 
   it("digests every kind for the coach, with reasons for the short ones", () => {

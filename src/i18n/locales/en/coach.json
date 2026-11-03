@@ -47,9 +47,9 @@
     "shareAnswer": "Share answer",
     "regenerate": "Regenerate answer",
     "emptyTitle": "What would you like to know?",
-    "emptyBody": "The coach looks up your own Pulse numbers before it answers, using {{provider}}. It’s not medical advice.",
+    "emptyBody": "The coach looks up your own Health numbers before it answers, using {{provider}}. It’s not medical advice.",
     "checkIn": "Check in for today",
-    "chatLabel": "Chat with Pulse’s coach",
+    "chatLabel": "Chat with Health’s coach",
     "retry": "Retry",
     "placeholder": "Message Coach",
     "askLabel": "Ask Coach",
@@ -117,8 +117,8 @@
   },
   "setup": {
     "consentTitle": "Before you start",
-    "consentSend": "To answer, the coach sends your questions and the Pulse numbers it looks up (scores, vitals, workouts, journal behaviours) to the AI provider you choose next, straight from this phone, with your own key. Nothing identifies you.",
-    "consentTerms": "Your provider’s terms and pricing apply. Pulse adds no cost.",
+    "consentSend": "To answer, the coach sends your questions and the Health numbers it looks up (scores, vitals, workouts, journal behaviours) to the AI provider you choose next, straight from this phone, with your own key. Nothing identifies you.",
+    "consentTerms": "Your provider’s terms and pricing apply. Health adds no cost.",
     "consentLocal": "Chats are saved on this phone, visible only to you. Delete them any time.",
     "consentAccuracy": "Answers can be wrong, and they are not medical advice.",
     "consentFailed": "Couldn’t save that. Try again.",
@@ -138,8 +138,8 @@
     "modelHint": "Any model your provider offers.",
     "testing": "Testing…",
     "testAndSave": "Test and save",
-    "checkServer": "Pulse checks the server with one tiny request before saving it.",
-    "checkKey": "Pulse checks the key with one tiny request before saving it."
+    "checkServer": "Health checks the server with one tiny request before saving it.",
+    "checkKey": "Health checks the key with one tiny request before saving it."
   },
   "validate": {
     "pickProvider": "Pick a provider.",

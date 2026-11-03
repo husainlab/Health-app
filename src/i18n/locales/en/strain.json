@@ -1,5 +1,5 @@
 {
-  "sourceNote": "Pulse scores, computed from your Fitbit data.",
+  "sourceNote": "Health scores, computed from your Fitbit data.",
   "training": {
     "readiness": "Training Readiness",
     "status": "Training Status",
@@ -11,13 +11,13 @@
     "readinessP1": "How ready you are for hard training today, from 1 to 100, in the manner of Garmin’s Training Readiness. Last night’s sleep and your recovery time weigh most (a quarter each), then your HRV status and load ratio, then your sleep over the last 3 nights and your stress over the last 3 days. One very weak factor caps the score, and a very long day awake before last night takes 10 off.",
     "readinessP2": "95-100 Prime, 75-94 High, 50-74 Moderate, 25-49 Low, 1-24 Poor. It is set at wake and drops after training as recovery time builds.",
     "readinessP3": "Recovery time is how long until you are ready for another hard session: each workout adds hours from its Training Effect (about a day at 3.5, three at 5), up to 96. It counts down faster during good sleep and slower in stressful hours or after a poor night.",
-    "readinessP4": "Garmin doesn’t publish its weights; these are Pulse’s.",
+    "readinessP4": "Garmin doesn’t publish its weights; these are Health’s.",
     "statusP1": "What your recent training is doing, in the manner of Garmin’s Training Status: from your load ratio (Garmin’s acute against chronic load), the trend of Fitbit’s VO2 max over 28 days, and your HRV Status.",
     "statusP2": "Productive: load at your usual or above, with VO2 max rising or HRV steady. Maintaining: enough to hold fitness. Recovery: a lighter stretch. Peaking: fitness up while load eases. Unproductive: steady load but VO2 max falling. Overreaching: very high load that is starting to cost you. Strained: HRV low under load. Detraining: far below your usual load for a week.",
     "statusP3": "Fitbit’s VO2 max moves slowly, so the trend is read over 28 days, not Garmin’s 14. Needs about 3 weeks of data, and a VO2 max or an HRV Status.",
-    "effectP1": "How much this workout improves your aerobic fitness, from 0 to 5, in the manner of Garmin’s Aerobic Training Effect. Pulse estimates the session’s EPOC (the extra oxygen your body uses afterwards to recover) from your heart rate and VO2 max, and compares it with what your fitness and recent training make routine: the same run counts for less the fitter and busier you are.",
+    "effectP1": "How much this workout improves your aerobic fitness, from 0 to 5, in the manner of Garmin’s Aerobic Training Effect. Health estimates the session’s EPOC (the extra oxygen your body uses afterwards to recover) from your heart rate and VO2 max, and compares it with what your fitness and recent training make routine: the same run counts for less the fitter and busier you are.",
     "effectP2": "0-0.9 No benefit, 1-1.9 Minor, 2-2.9 Maintaining, 3-3.9 Improving, 4-4.9 Highly improving, 5 Overreaching.",
-    "effectP3": "Garmin estimates EPOC with beat-to-beat data and constants it doesn’t publish; Pulse’s comes from heart rate alone, fitted to Firstbeat’s published figures. There is no anaerobic Training Effect: it needs pace or power."
+    "effectP3": "Garmin estimates EPOC with beat-to-beat data and constants it doesn’t publish; Health’s comes from heart rate alone, fitted to Firstbeat’s published figures. There is no anaerobic Training Effect: it needs pace or power."
   },
   "hours": {
     "whole": "{{h}} h",
@@ -174,7 +174,7 @@
     "early": "{{bounce}} · {{sessions}}, early estimate"
   },
   "costSentence": {
-    "needs": "Pulse needs {{needed}} with a Recovery the next morning to measure what they cost you; it has {{have}} so far.",
+    "needs": "Health needs {{needed}} with a Recovery the next morning to measure what they cost you; it has {{have}} so far.",
     "same": "After {{activity}}, your next-morning Recovery is about the same as on {{against}}.",
     "above": "After {{activity}}, your Recovery the next morning averages {{pts}}% above {{against}}.",
     "belowOpen": "After {{activity}}, your Recovery the next morning averages {{pts}}% below {{against}} and is still lower a week later.",
@@ -326,7 +326,7 @@
   "live": {
     "title": "Live workout",
     "infoTitle": "About Live Workout",
-    "infoBody": "Strain Coach on your band’s live heart rate. Day Strain builds as you train, on the same Strain math as the rest of Pulse, starting from what today already holds. The coach compares it with today’s Strain Target, and your heart rate with a band set by today’s Recovery: it says push when you’re easy for the day and ease off once you’re in range or climbing past what Recovery can pay for. Nothing here is saved to your scores: the workout counts when Fitbit syncs it.",
+    "infoBody": "Strain Coach on your band’s live heart rate. Day Strain builds as you train, on the same Strain math as the rest of Health, starting from what today already holds. The coach compares it with today’s Strain Target, and your heart rate with a band set by today’s Recovery: it says push when you’re easy for the day and ease off once you’re in range or climbing past what Recovery can pay for. Nothing here is saved to your scores: the workout counts when Fitbit syncs it.",
     "dayStrain": "Day strain",
     "end": "End workout",
     "start": "Start workout",

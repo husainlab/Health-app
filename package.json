@@ -1,5 +1,5 @@
 {
-  "name": "pulse-mobile",
+  "name": "health-mobile",
   "main": "index.ts",
   "version": "0.4.1",
   "dependencies": {

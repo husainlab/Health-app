@@ -727,7 +727,7 @@ export function mapExternalEntries(input: HealthInput, tz: string): LoggedEntryR
   });
 
   for (const r of input.Hydration ?? []) {
-    if (r.metadata?.dataOrigin === "in.portlabs.pulse") continue;
+    if (r.metadata?.dataOrigin === "in.portlabs.health" || r.metadata?.dataOrigin === "in.portlabs.pulse") continue;
     const ml = Math.round(r.volume.inMilliliters);
     if (!(ml > 0)) continue;
     const t = ts(r.startTime);
@@ -735,7 +735,7 @@ export function mapExternalEntries(input: HealthInput, tz: string): LoggedEntryR
   }
 
   for (const r of input.Nutrition ?? []) {
-    if (r.metadata?.dataOrigin === "in.portlabs.pulse") continue;
+    if (r.metadata?.dataOrigin === "in.portlabs.health" || r.metadata?.dataOrigin === "in.portlabs.pulse") continue;
     const t = ts(r.startTime);
     const grams = (m: { inGrams: number } | undefined) => (m && m.inGrams > 0 ? round1(m.inGrams) : null);
     const data = {

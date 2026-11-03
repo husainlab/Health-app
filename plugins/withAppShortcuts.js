@@ -57,7 +57,7 @@ const shortcutsXml = (pkg) => `<?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
 ${SHORTCUTS.map(
   (s) => `  <shortcut android:shortcutId="${s.id}" android:enabled="true" android:icon="@drawable/shortcut_${s.id}" android:shortcutShortLabel="@string/shortcut_${s.id}_short" android:shortcutLongLabel="@string/shortcut_${s.id}_long">
-    <intent android:action="android.intent.action.VIEW" android:data="pulse://${s.id}" android:targetPackage="${pkg}" android:targetClass="${pkg}.MainActivity"/>
+    <intent android:action="android.intent.action.VIEW" android:data="health://${s.id}" android:targetPackage="${pkg}" android:targetClass="${pkg}.MainActivity"/>
   </shortcut>`,
 ).join("\n")}
 </shortcuts>

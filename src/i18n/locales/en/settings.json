@@ -275,7 +275,7 @@
     "step2Title": "Always visible (optional)",
     "step2Body": "Turn it on so the band keeps sharing outside workouts. It uses more of the band’s battery.",
     "step3Title": "Connect",
-    "step3Body": "Come back to Pulse: it looks for the band. Tap it in the list to connect.",
+    "step3Body": "Come back to Health: it looks for the band. Tap it in the list to connect.",
     "stepLabel": "Step {{n}}: {{title}}. {{body}}",
     "openGoogleHealth": "Open Google Health",
     "googleHealthFailed": "Couldn’t open Google Health. Open it from your home screen.",
@@ -291,12 +291,12 @@
     "noBluetoothTitle": "No Bluetooth here",
     "bluetoothUnavailableTitle": "Bluetooth isn’t available",
     "noBluetoothBody": "This phone (or emulator) has no Bluetooth Low Energy, so live heart rate can’t work on it.",
-    "bluetoothUnavailableBody": "This build of Pulse can’t use Bluetooth.",
+    "bluetoothUnavailableBody": "This build of Health can’t use Bluetooth.",
     "bluetoothOffTitle": "Bluetooth is off",
     "bluetoothOffBody": "Turn it on to find your band.",
     "allowNearbyTitle": "Allow Nearby devices",
-    "nearbyBlockedBody": "Nearby devices is off for Pulse. Allow it in Android settings › Apps › Pulse › Permissions.",
-    "nearbyBody": "Pulse needs it to find and connect to your band. It doesn’t use your location.",
+    "nearbyBlockedBody": "Nearby devices is off for Health. Allow it in Android settings › Apps › Health › Permissions.",
+    "nearbyBody": "Health needs it to find and connect to your band. It doesn’t use your location.",
     "reconnectingTo": "Reconnecting to {{name}}…",
     "connectingTo": "Connecting to {{name}}…",
     "retryIn": "Trying again in {{seconds}} s.",
@@ -313,7 +313,7 @@
     "goLive": "Go live",
     "goLiveIntro": "Beat by beat from your band, over Bluetooth.",
     "yourBand": "Your band",
-    "batteryNote": "Sharing uses the band’s battery, and the band takes one connection at a time: while Pulse holds it, gym equipment or another app can’t connect. Pulse lets go {{seconds}} seconds after you leave it and reconnects when you come back.",
-    "viewingNote": "Live readings are for viewing; scores use what Pulse reads from Health Connect."
+    "batteryNote": "Sharing uses the band’s battery, and the band takes one connection at a time: while Health holds it, gym equipment or another app can’t connect. Health lets go {{seconds}} seconds after you leave it and reconnects when you come back.",
+    "viewingNote": "Live readings are for viewing; scores use what Health reads from Health Connect."
   }
 }

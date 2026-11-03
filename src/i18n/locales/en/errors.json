@@ -1,7 +1,7 @@
 {
   "screen": {
     "title": "This screen couldn’t be shown",
-    "body": "Pulse hit an error drawing it. Your data is safe."
+    "body": "Health hit an error drawing it. Your data is safe."
   },
   "log": {
     "invalidOption": "Invalid option",
@@ -119,7 +119,7 @@
     "disconnected": "{{device}} disconnected.",
     "refusedStream": "{{device}} refused the heart-rate stream. If Android asks to pair, accept it, then connect again.",
     "notSharing": "{{device}} isn’t sharing heart rate. Turn on Share heart rate in Google Health.",
-    "needsNearby": "Pulse needs the Nearby devices permission.",
+    "needsNearby": "Health needs the Nearby devices permission.",
     "btOff": "Bluetooth is off.",
     "scanPaused": "Android paused scanning for a moment (too many scans in a row). Try again in 30 seconds.",
     "needsLocation": "Turn on Location: this Android version needs it to scan for Bluetooth devices.",

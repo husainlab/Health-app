@@ -1,6 +1,6 @@
 Legend: production dependency, optional only, dev only
 
-pulse-mobile@0.4.1 /Users/husain/Projects/Pulse_App (PRIVATE)
+health-mobile@0.4.1 /Users/husain/Projects/Pulse_App (PRIVATE)
 │
 │   dependencies:
 ├── @ai-sdk/anthropic@4.0.71

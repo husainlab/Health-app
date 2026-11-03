@@ -124,9 +124,9 @@
   "update": {
     "failed": "Couldn’t download the update. Try again, or get it from GitHub.",
     "available": "Update available",
-    "body": "Pulse {{version}} is out. Updating keeps your data.",
+    "body": "Health {{version}} is out. Updating keeps your data.",
     "downloading": "Downloading… {{percent}}%",
-    "toVersion": "Update to Pulse {{version}}",
+    "toVersion": "Update to Health {{version}}",
     "update": "Update",
     "whatsNew": "What’s new",
     "later": "Later"
@@ -271,9 +271,9 @@
     "summary_other": "Strain and Recovery over the last {{count}} days: Strain {{strain}}, Recovery {{recovery}}."
   },
   "infoCards": {
-    "sourceNote": "Pulse scores, computed from your Fitbit data.",
+    "sourceNote": "Health scores, computed from your Fitbit data.",
     "recoveryTitle": "How Recovery works",
-    "recoveryIntro": "Recovery shows how ready your body is to take on strain, from 1 to 100%. Pulse scores it each morning from last night’s heart rate variability (40%), resting heart rate (30%) and Sleep Performance (30%), the first two against your last 60 days. Breathing faster than usual, or running warm, lowers it.",
+    "recoveryIntro": "Recovery shows how ready your body is to take on strain, from 1 to 100%. Health scores it each morning from last night’s heart rate variability (40%), resting heart rate (30%) and Sleep Performance (30%), the first two against your last 60 days. Breathing faster than usual, or running warm, lowers it.",
     "recoveryGreen": "Green, 67-100%: your body is primed for strain.",
     "recoveryYellow": "Yellow, 34-66%: you are maintaining; moderate strain fits.",
     "recoveryRed": "Red, 1-33%: your body needs rest.",
@@ -301,7 +301,7 @@
     "strainRecovery1": "Your last 7 days side by side: Day Strain in blue on the left scale, from 0 to 100%, and Recovery on the right scale, from 0 to 100%.",
     "strainRecovery2": "High strain on one day often shows up as lower Recovery the next morning. Days without a score are left as gaps.",
     "addActivityTitle": "Add an activity",
-    "addActivity1": "Pulse reads your workouts from Fitbit through Health Connect, so it cannot add one here.",
+    "addActivity1": "Health reads your workouts from Fitbit through Health Connect, so it cannot add one here.",
     "addActivity2": "Start or log the workout in the Fitbit app. It appears in your activities after the next sync, with its Strain."
   },
   "legend": {

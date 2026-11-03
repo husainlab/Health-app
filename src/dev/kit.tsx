@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
-import { BookOpen, CalendarRange, ChevronRight, Code, HeartPulse, Maximize2, Timer } from "lucide-react-native";
+import { BookOpen, CalendarRange, ChevronRight, HeartPulse, Maximize2, Timer } from "lucide-react-native";
 import { REASON_CODES, type Metric } from "@/lib/reasons";
 import { Button } from "@/ui/Button";
 import { cn } from "@/ui/cn";
@@ -258,7 +258,7 @@ export default function Kit() {
         </Entry>
         <Entry name="LinkList" file="src/ui/shells/LinkList.tsx" use="More, Settings and the Reports archive: a caps group label over 56 px rows." props={["title", "rows: { label, href, icon?, aside?, description?, external? }[]"]}>
           <Frame name="icons, aside, description, external">
-            <LinkList title="Learn" rows={[{ label: "How Pulse works", href: "/dev/kit", icon: BookOpen, description: "How each score is made" }, { label: "Weekly report", href: "/dev/kit", icon: CalendarRange, aside: "Sep 22 - Sep 28" }, { label: "Source code", href: "https://github.com/adityaongit", icon: Code, external: true }]} />
+            <LinkList title="Learn" rows={[{ label: "How Health works", href: "/dev/kit", icon: BookOpen, description: "How each score is made" }, { label: "Weekly report", href: "/dev/kit", icon: CalendarRange, aside: "Sep 22 - Sep 28" }]} />
           </Frame>
           <Frame name="long label at 320 px" narrow><LinkList title="Data" rows={[{ label: "Export everything Pulse has stored", href: "/dev/kit", icon: BookOpen, aside: "CSV" }]} /></Frame>
         </Entry>

@@ -11,15 +11,15 @@ import { useSyncExternalStore } from "react";
 import { apkFor, isNewer, parseRelease, type Release } from "@/lib/release";
 import { APP_VERSION } from "@/queries/settings";
 
-/** GitHub's latest-release endpoint for Pulse's repository. */
-export const RELEASES_URL = "https://api.github.com/repos/adityaongit/pulse-mobile/releases/latest";
+/** GitHub's latest-release endpoint for Health's repository. */
+export const RELEASES_URL = "https://api.github.com/repos/husainlab/Pulse-app/releases/latest";
 
 const CHECK_EVERY_MS = 24 * 60 * 60 * 1000;
 const TIMEOUT_MS = 15_000;
 /** The last check: when, and the release it found ({ checkedAt, release }). */
-const CACHE_KEY = "pulse.update";
+const CACHE_KEY = "health.update";
 /** "off" when the person turned the check off. */
-const CHECK_KEY = "pulse.update.check";
+const CHECK_KEY = "health.update.check";
 /** Android's FLAG_GRANT_READ_URI_PERMISSION: the installer may read the APK through Pulse's file provider. */
 const GRANT_READ_URI = 1;
 
@@ -98,7 +98,7 @@ export function putOffUpdate(): void {
 export async function installUpdate(): Promise<void> {
   const u = state.available;
   if (!u || state.progress !== null) return;
-  const file = new File(Paths.cache, `pulse-${u.version}.apk`);
+  const file = new File(Paths.cache, `health-${u.version}.apk`);
   if (file.exists) file.delete();
   patch({ progress: 0 });
   try {

@@ -6,12 +6,10 @@ import { useTranslation } from "react-i18next";
 import { Activity, Archive, Bluetooth, BotMessageSquare, BookOpen, CalendarDays, CalendarRange, ChartLine, Database, ListChecks, Palette, Plug, Target, UserRound, Wind } from "lucide-react-native";
 import { i18n } from "@/i18n/config";
 import { formatDay, rangeLabel } from "@/lib/format";
-import { SCORING_VERSION } from "@/pipeline";
-import { APP_VERSION, getMore } from "@/queries/settings";
+import { getMore } from "@/queries/settings";
 import { LinkList, LinkListSkeleton, MORE_COLUMN, type LinkListRow } from "@/ui/shells/LinkList";
 import { PageShell } from "@/ui/shells/PageShell";
 import { useScreen } from "../useScreen";
-import { About } from "./About";
 import { SCORE_DOCS } from "./howItWorksContent";
 
 /** Each part of Settings is a row here, as the reference app's "Account & settings". Notifications sit under App. */
@@ -56,7 +54,6 @@ export function MoreScreen() {
           <LinkListSkeleton title={t("group.journal")} rows={[{ icon: ListChecks, label: t("row.behaviours") }]} />
           <LinkListSkeleton title={t("group.help")} rows={[{ icon: BookOpen, label: t("row.howPulseWorks") }]} />
           <LinkListSkeleton title={t("group.yourData")} rows={[{ icon: Database, label: t("row.export") }]} />
-          <About version={APP_VERSION} scoringVersion={SCORING_VERSION} />
         </View>
       </PageShell>
     );
@@ -77,7 +74,6 @@ export function MoreScreen() {
         <LinkList title={t("group.journal")} rows={[{ icon: ListChecks, label: t("row.behaviours"), aside: t("row.behavioursAside", { shown: vm.behaviours.shown, total: vm.behaviours.total }), href: "/more/behaviours" }]} />
         <LinkList title={t("group.help")} rows={[{ icon: BookOpen, label: t("row.howPulseWorks"), aside: t("row.scoresAside", { count: SCORE_DOCS.length }), href: "/more/how-it-works" }]} />
         <LinkList title={t("group.yourData")} rows={[{ icon: Database, label: t("row.export"), aside: t("row.exportAside"), href: "/more/data" }]} />
-        <About version={vm.version} scoringVersion={vm.scoringVersion} />
       </View>
     </PageShell>
   );

@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Pulse",
-    "slug": "pulse",
+    "name": "Health",
+    "slug": "health",
     "platforms": [
       "android"
     ],
     "version": "0.4.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "pulse",
+    "scheme": "health",
     "userInterfaceStyle": "automatic",
     "android": {
       "adaptiveIcon": {
@@ -17,7 +17,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": true,
-      "package": "in.portlabs.pulse",
+      "package": "in.portlabs.health",
       "permissions": [
         "android.permission.health.READ_STEPS",
         "android.permission.health.READ_DISTANCE",
@@ -87,6 +87,7 @@
       ],
       "./plugins/withHighRefreshRate.js",
       "./plugins/withAppShortcuts.js",
+      "./plugins/withReleaseSigning.js",
       "react-native-health-connect",
       [
         "react-native-ble-plx",
@@ -107,8 +108,8 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Pulse uses the camera for your profile picture, or for a meal photo your own AI provider estimates. Profile pictures stay on this phone; a meal photo is sent once and not kept.",
-          "photosPermission": "Pulse uses a photo you choose as your profile picture, or as a meal photo your own AI provider estimates.",
+          "cameraPermission": "Health uses the camera for your profile picture, or for a meal photo your own AI provider estimates. Profile pictures stay on this phone; a meal photo is sent once and not kept.",
+          "photosPermission": "Health uses a photo you choose as your profile picture, or as a meal photo your own AI provider estimates.",
           "microphonePermission": false
         }
       ],
@@ -119,11 +120,7 @@
       "reactCompiler": true
     },
     "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "8901b7ae-3c84-4057-9ef2-613ec7c4343e"
-      }
-    },
-    "owner": "adityajindals-team"
+      "router": {}
+    }
   }
 }

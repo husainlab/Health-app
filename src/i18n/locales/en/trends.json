@@ -67,7 +67,7 @@
   },
   "aboutBody": {
     "recovery1": "Recovery is how ready your body is to take on strain today, on a scale from 1 to 100%.",
-    "recovery2": "Pulse scores it each morning from your heart rate variability, resting heart rate, respiratory rate, sleep performance and skin temperature, each compared with your own recent baseline.",
+    "recovery2": "Health scores it each morning from your heart rate variability, resting heart rate, respiratory rate, sleep performance and skin temperature, each compared with your own recent baseline.",
     "recovery3": "Green (67% and up) means you are primed for a hard day, yellow means maintain, and red means your body is asking for rest.",
     "hrv1": "Heart rate variability (HRV) is the variation in time between your heartbeats, measured in milliseconds while you sleep.",
     "hrv2": "A higher HRV usually means your nervous system is relaxed and ready for stress; a lower one often follows hard training, poor sleep, alcohol or illness.",
@@ -104,7 +104,7 @@
     "calories1": "Calories are everything you burned in the day: your resting burn plus movement and workouts.",
     "vo2max1": "VO2 max is the most oxygen your body can use during hard exercise, in millilitres per kilogram of body weight per minute. Fitbit estimates it from your runs, or from your resting heart rate when you don't run.",
     "vo2max2": "It is one of the strongest signs of long-term health: higher fitness goes with a longer life. Steady aerobic training raises it over weeks and months.",
-    "lean_mass1": "Lean body mass is your weight minus your body fat: muscle, bone, organs and water. Pulse works it out from the weight and body fat your scale or the Fitbit app records.",
+    "lean_mass1": "Lean body mass is your weight minus your body fat: muscle, bone, organs and water. Health works it out from the weight and body fat your scale or the Fitbit app records.",
     "lean_mass2": "More lean mass for your height is linked to a longer life, whatever your body fat. Strength training and enough protein build it."
   },
   "viewCard": {
@@ -170,7 +170,7 @@
     "steps": "Steps counted through the day.",
     "calories": "Everything you burned: your resting burn plus movement. Resting is the total minus active calories, since the source sends no separate resting roll-up.",
     "hrv": "Variation in time between heartbeats during sleep, measured in milliseconds. Compare it with your own usual range.",
-    "rhr": "Your resting heart rate as Fitbit reports it to Health Connect, or Pulse's estimate from your night's sleep when Fitbit has none for the day. Recovery and Health Monitor score this same number.",
+    "rhr": "Your resting heart rate as Fitbit reports it to Health Connect, or Health's estimate from your night's sleep when Fitbit has none for the day. Recovery and Health Monitor score this same number.",
     "resp": "Breaths per minute during sleep, measured by your band.",
     "spo2": "Estimated blood oxygen saturation during sleep, measured by your band.",
     "skin": "Nightly skin temperature above or below your personal baseline. This is a temperature difference, not your body temperature.",
@@ -195,10 +195,10 @@
     "swim_strokes": "Strokes counted during pool swims."
   },
   "metricSource": {
-    "activity": "Your health app's daily roll-up, counted by your band or your phone. Pulse shows it as it comes and does not score it.",
+    "activity": "Your health app's daily roll-up, counted by your band or your phone. Health shows it as it comes and does not score it.",
     "body": "Readings synced from your health app. A day without a reading shows the latest one before it.",
-    "nutrition": "Your health app's daily total of your logs, plus what you log in Pulse's Journal. A meal logged in both Pulse and Fitbit counts once.",
-    "vitals": "Your health app's daily value, from your band or a connected device. Pulse shades your usual range from the last 90 days.",
+    "nutrition": "Your health app's daily total of your logs, plus what you log in Health's Journal. A meal logged in both Health and Fitbit counts once.",
+    "vitals": "Your health app's daily value, from your band or a connected device. Health shades your usual range from the last 90 days.",
     "monitor": "From Health Connect. The shaded range matches Health Monitor: your average ± 1 SD over the last 30 nights, including the selected night.",
     "monitorUnavailable": "From Health Connect. No Health Monitor range is available for this day."
   },
@@ -386,7 +386,7 @@
     "workoutsBurned": "Workouts burned {{burned}} of the day’s {{active}} active kcal.",
     "noWorkouts": "No workouts recorded on this day.",
     "loggedEntries": "Logged entries",
-    "noEntries": "Nothing logged in Pulse on this day. Entries made in other apps count in the total once they sync.",
+    "noEntries": "Nothing logged in Health on this day. Entries made in other apps count in the total once they sync.",
     "eatenVsBurned": "Eaten vs. burned",
     "macros": "Macros",
     "readings": "Readings",

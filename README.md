@@ -2,14 +2,14 @@
 
 <img src="assets/brand/logo-round.svg" alt="" width="88" height="88">
 
-# Pulse Mobile
+# Health
 
 **Recovery, strain and sleep from your Fitbit, scored on your Android phone.**
 
-No server, no account, no cloud: Pulse reads your Fitbit data from Health Connect and keeps every byte on the phone.
+No server, no account, no cloud: Health reads your Fitbit data from Health Connect and keeps every byte on the phone.
 
-[![CI](https://github.com/adityaongit/pulse-mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/adityaongit/pulse-mobile/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/adityaongit/pulse-mobile?label=release)](https://github.com/adityaongit/pulse-mobile/releases/latest)
+[![CI](https://github.com/husainlab/Pulse-app/actions/workflows/ci.yml/badge.svg)](https://github.com/husainlab/Pulse-app/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/husainlab/Pulse-app?label=release)](https://github.com/husainlab/Pulse-app/releases/latest)
 [![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue)](LICENSE)
 
 </div>
@@ -18,12 +18,10 @@ No server, no account, no cloud: Pulse reads your Fitbit data from Health Connec
 
 <div align="center">
 
-<a href="https://github.com/adityaongit/pulse-mobile/releases/latest"><img src="assets/badges/android.svg" alt="Available on Android" height="56"></a>
+<a href="https://github.com/husainlab/Pulse-app/releases/latest"><img src="assets/badges/android.svg" alt="Available on Android" height="56"></a>
 
-Grab `pulse-mobile-<version>-arm64.apk` from the [latest release](https://github.com/adityaongit/pulse-mobile/releases/latest). Sideloading asks you to allow
+Grab the signed APK from the [latest release](https://github.com/husainlab/Pulse-app/releases/latest). Sideloading asks you to allow
 "Install unknown apps" for whichever app you download it with.
-
-Want it on a server instead, for the browser and several people? See [Pulse](https://github.com/adityaongit/pulse).
 
 </div>
 
@@ -33,15 +31,13 @@ Want it on a server instead, for the browser and several people? See [Pulse](htt
 - **Pulse Age**, **Stress** and **Energy Bank** through the day
 - **Health Monitor**, **Journal**, **Trends**, **Reports** and **My Dashboard**
 
-Every score is explained on the [metrics pages](https://pulse.portlabs.in/metrics/).
-
 ## How it works
 
 ```mermaid
 flowchart LR
   F[Fitbit band] --> G[Google Health app]
   G --> HC[(Health Connect)]
-  HC -->|read permissions| S[Import on the phone]
+  HC -->|read & write permissions| S[Sync on the phone]
   S --> DB[(SQLite: expo-sqlite, async)]
   DB --> P[Pipeline: stage 1, stage 2, scoring v19]
   P --> DB
@@ -49,12 +45,12 @@ flowchart LR
   Q --> UI[Screens: Expo Router, Skia charts]
 ```
 
-On first open, allow every Health Connect permission, including past data: Pulse imports the last 180 days and only ever reads.
+On first open, allow every Health Connect permission, including past data: Health imports the last 180 days and syncs data two-ways with Health Connect.
 
 ## Build from source
 
 ```sh
-git clone https://github.com/adityaongit/pulse-mobile.git && cd pulse-mobile
+git clone https://github.com/husainlab/Pulse-app.git && cd Pulse-app
 pnpm install && pnpm android
 ```
 
