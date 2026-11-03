@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
@@ -74,3 +74,22 @@ jobs:
           name: Health-release-apk
           path: android/app/build/outputs/apk/release/Health-0.4.1.apk
           if-no-files-found: error
+
+      - name: Commit and push APK to root of repository
+        run: |
+          cp android/app/build/outputs/apk/release/Health-0.4.1.apk ./Health-0.4.1.apk
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f Health-0.4.1.apk
+          git commit -m "build: update Health-0.4.1.apk in repository root [skip ci]" || exit 0
+          git pull --rebase origin main || true
+          git push origin main
+
+      - name: Publish to GitHub Releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v0.4.1 Health-0.4.1.apk \
+            --title "Health 0.4.1" \
+            --notes "Production signed APK for Health" \
+            --clobber || true
