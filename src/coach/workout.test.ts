@@ -43,7 +43,7 @@ describe("workout glance", () => {
     expect(prompts[0]).toContain("one sentence of at most 20 words");
     expect(prompts[0]).toContain(id);
     expect(prompts[0]).toContain("strainAverage");
-    expect(prompts[0]).toContain("You are Pulse's recovery and performance coach");
+    expect(prompts[0]).toContain("You are Health's recovery and performance coach");
   });
 
   it("refuses without a model, past the limit, or for an unknown workout; a provider failure is 'provider'", async () => {

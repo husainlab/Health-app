@@ -11,6 +11,7 @@
     "scheme": "health",
     "userInterfaceStyle": "automatic",
     "android": {
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#0f1113",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

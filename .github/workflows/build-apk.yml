@@ -46,6 +46,39 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Bump Version Number
+        id: bump_version
+        run: |
+          node -e '
+            const fs = require("fs");
+            const appJson = JSON.parse(fs.readFileSync("app.json", "utf8"));
+            const pkgJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+
+            // Parse version semver (major.minor.patch)
+            const parts = (appJson.expo.version || "0.4.1").split(".").map(Number);
+            parts[2] = (parts[2] || 0) + 1;
+            const newVersion = parts.join(".");
+
+            // Update app.json
+            appJson.expo.version = newVersion;
+            if (!appJson.expo.android) appJson.expo.android = {};
+            const currentCode = appJson.expo.android.versionCode || 1;
+            appJson.expo.android.versionCode = currentCode + 1;
+
+            // Update package.json
+            pkgJson.version = newVersion;
+
+            fs.writeFileSync("app.json", JSON.stringify(appJson, null, 2) + "\n");
+            fs.writeFileSync("package.json", JSON.stringify(pkgJson, null, 2) + "\n");
+
+            console.log(`Bumped version to ${newVersion} (versionCode: ${appJson.expo.android.versionCode})`);
+            const fsOutput = process.env.GITHUB_OUTPUT;
+            if (fsOutput) {
+              fs.appendFileSync(fsOutput, `new_version=${newVersion}\n`);
+              fs.appendFileSync(fsOutput, `version_code=${appJson.expo.android.versionCode}\n`);
+            }
+          '
+
       - name: Set up Expo types
         run: echo '/// <reference types="expo/types" />' > expo-env.d.ts
 
@@ -66,22 +99,23 @@ jobs:
       - name: Verify Signed APK
         run: |
           $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose android/app/build/outputs/apk/release/app-release.apk
-          cp android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/Health-0.4.1.apk
+          cp android/app/build/outputs/apk/release/app-release.apk "android/app/build/outputs/apk/release/Health-${{ steps.bump_version.outputs.new_version }}.apk"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v7
         with:
           name: Health-release-apk
-          path: android/app/build/outputs/apk/release/Health-0.4.1.apk
+          path: "android/app/build/outputs/apk/release/Health-${{ steps.bump_version.outputs.new_version }}.apk"
           if-no-files-found: error
 
-      - name: Commit and push APK to root of repository
+      - name: Commit and push APK and version bump to root of repository
         run: |
-          cp android/app/build/outputs/apk/release/Health-0.4.1.apk ./Health-0.4.1.apk
+          git rm -f Health-*.apk 2>/dev/null || true
+          cp "android/app/build/outputs/apk/release/Health-${{ steps.bump_version.outputs.new_version }}.apk" "./Health-${{ steps.bump_version.outputs.new_version }}.apk"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f Health-0.4.1.apk
-          git commit -m "build: update Health-0.4.1.apk in repository root [skip ci]" || exit 0
+          git add -f "Health-${{ steps.bump_version.outputs.new_version }}.apk" app.json package.json
+          git commit -m "chore(release): bump version to ${{ steps.bump_version.outputs.new_version }} and update APK [skip ci]" || exit 0
           git pull --rebase origin main || true
           git push origin main
 
@@ -89,7 +123,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v0.4.1 Health-0.4.1.apk \
-            --title "Health 0.4.1" \
-            --notes "Production signed APK for Health" \
+          gh release create "v${{ steps.bump_version.outputs.new_version }}" "Health-${{ steps.bump_version.outputs.new_version }}.apk" \
+            --title "Health ${{ steps.bump_version.outputs.new_version }}" \
+            --notes "Production signed APK for Health ${{ steps.bump_version.outputs.new_version }}" \
             --clobber || true

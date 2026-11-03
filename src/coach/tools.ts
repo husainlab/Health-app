@@ -20,6 +20,7 @@ import { getReport } from "@/queries/reports";
 import { getSleep } from "@/queries/sleep";
 import { getStrain } from "@/queries/strain";
 import { TREND_METRICS, trendMetric, type TrendMetricKey } from "@/queries/trends";
+import { SCORE_DOCS } from "@/screens/more/howItWorksContent";
 import { defaultTexts, type Texts } from "./texts";
 
 const round = (v: number, dp = 0) => Math.round(v * 10 ** dp) / 10 ** dp;
@@ -125,6 +126,105 @@ export async function dayDigest(ctx: QueryCtx, day: string) {
     },
     energyBank: { value: bank.value ? { current: round(bank.value.current), charged: round(bank.value.charged), drained: round(bank.value.drained), asOf: bank.value.until } : null, reason: bank.reason, provisional: bank.provisional },
     stress: stress.gauge.value ? { ...num({ ...stress.gauge, value: stress.gauge.value.value }), level: stress.gauge.value.level } : num({ ...stress.gauge, value: null }),
+  };
+}
+
+export function howItWorksDigest(topic?: string) {
+  const availableTopics = SCORE_DOCS.map((d) => ({
+    slug: d.slug === "pulse-age" ? "health-age" : d.slug,
+    name: d.slug === "pulse-age" ? "Health Age" : d.name,
+    summary: d.summary,
+  }));
+
+  if (!topic || !topic.trim()) {
+    return {
+      topic: null,
+      availableTopics,
+    };
+  }
+
+  const clean = topic.trim().toLowerCase().replace(/[\s_]+/g, "-");
+  const targetSlug = clean === "health-age" ? "pulse-age" : clean;
+
+  const doc = SCORE_DOCS.find(
+    (d) =>
+      d.slug === targetSlug ||
+      d.slug.toLowerCase().replace(/-/g, "") === clean.replace(/-/g, "") ||
+      d.name.toLowerCase().includes(clean.replace(/-/g, " ")) ||
+      d.name.toLowerCase() === topic.trim().toLowerCase(),
+  );
+
+  if (!doc) {
+    return {
+      topic: null,
+      notFound: topic,
+      message: `No exact guide found for "${topic}". Please pick one of the available topics.`,
+      availableTopics,
+    };
+  }
+
+  return {
+    topic: doc.slug === "pulse-age" ? "Health Age" : doc.name,
+    slug: doc.slug === "pulse-age" ? "health-age" : doc.slug,
+    summary: doc.summary,
+    sections: doc.sections.map((s) => ({
+      title: s.title,
+      paragraphs: s.paragraphs ?? [],
+      rows: s.rows ?? [],
+    })),
+    availableTopics,
+  };
+}
+
+export async function appStatsDigest(ctx: QueryCtx) {
+  const today = todayOf(ctx);
+  const first = await firstDay(ctx);
+  const totalDays = first ? Math.max(1, daysBetween(first, today) + 1) : 0;
+  const start60 = addDays(today, -59);
+  const from = first && first > start60 ? first : start60;
+  const [rows, rec, allExercises] = await Promise.all([
+    loadDays(ctx, from, today),
+    getRecovery(today, ctx),
+    ctx.store.allExercises(),
+  ]);
+
+  const recVals: number[] = [];
+  const strainVals: number[] = [];
+  const sleepHrs: number[] = [];
+  const sleepPerf: number[] = [];
+
+  for (const [, row] of rows) {
+    if (row.recovery?.value != null) recVals.push(row.recovery.value);
+    const st = row.s1?.engine?.strain?.value ?? null;
+    if (st != null) strainVals.push(st);
+    if (row.sleep?.main?.asleepMin != null) sleepHrs.push(row.sleep.main.asleepMin / 60);
+    if (row.sleep?.performance != null) sleepPerf.push(row.sleep.performance);
+  }
+
+  const hrvContrib = rec.contributors.find((c) => c.key === "hrv");
+  const rhrContrib = rec.contributors.find((c) => c.key === "rhr");
+
+  return {
+    today,
+    firstDayWithData: first,
+    totalDaysTracked: totalDays,
+    windowDays: rows.size,
+    calibration: {
+      isCalibrating: rec.recovery.reason === "calibrating" || (rec.recovery.nightsLeft != null && rec.recovery.nightsLeft > 0),
+      nightsLeft: rec.recovery.nightsLeft ?? null,
+    },
+    baselines: {
+      hrvMs: hrvContrib?.baseline ? round(hrvContrib.baseline.mean, 1) : null,
+      rhrBpm: rhrContrib?.baseline ? round(rhrContrib.baseline.mean, 1) : null,
+    },
+    averagesLast60Days: {
+      recoveryPct: recVals.length ? round(meanSd(recVals).mean ?? 0, 1) : null,
+      strain: strainVals.length ? round(meanSd(strainVals).mean ?? 0, 1) : null,
+      sleepHours: sleepHrs.length ? round(meanSd(sleepHrs).mean ?? 0, 1) : null,
+      sleepPerformancePct: sleepPerf.length ? round(meanSd(sleepPerf).mean ?? 0, 1) : null,
+      observedDays: recVals.length,
+    },
+    totalWorkouts: allExercises.length,
   };
 }
 
@@ -264,6 +364,18 @@ export function coachTools(ctx: QueryCtx, t: Texts = defaultTexts) {
         const age = Math.floor((Date.parse(todayOf(ctx)) - Date.parse(p.birthDate)) / (365.2425 * 86_400_000));
         return { age, sex: p.sex, maxHr: p.maxHr, timeZone: ctx.timeZone, firstDayWithData: await firstDay(ctx), today: todayOf(ctx), weekAgo: addDays(todayOf(ctx), -7) };
       },
+    }),
+    get_how_it_works: tool({
+      description: t("tool.get_how_it_works"),
+      inputSchema: z.object({
+        topic: z.string().optional().describe(t("tool.get_how_it_works.topic")),
+      }),
+      execute: async ({ topic }) => howItWorksDigest(topic),
+    }),
+    get_app_stats: tool({
+      description: t("tool.get_app_stats"),
+      inputSchema: z.object({}),
+      execute: async () => appStatsDigest(ctx),
     }),
   };
 }

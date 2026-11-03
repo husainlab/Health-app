@@ -152,6 +152,40 @@ describe("coach tools", () => {
     expect(p).toEqual({ age: 36, sex: "male", maxHr: 183, timeZone: TZ, firstDayWithData: ctx.sync.firstDay, today: TODAY, weekAgo: "2026-09-25" });
   });
 
+  it("get_how_it_works looks up score algorithms and guides, or lists all available topics", async () => {
+    const tools = coachTools(ctx);
+    const recDoc = await call(tools.get_how_it_works, { topic: "recovery" });
+    expect(recDoc.topic).toBe("Recovery");
+    expect(recDoc.slug).toBe("recovery");
+    expect(recDoc.sections?.length).toBeGreaterThan(0);
+    expect(recDoc.availableTopics.length).toBeGreaterThanOrEqual(15);
+
+    const ageDoc = await call(tools.get_how_it_works, { topic: "health-age" });
+    expect(ageDoc.topic).toBe("Health Age");
+    expect(ageDoc.slug).toBe("health-age");
+
+    const allTopics = await call(tools.get_how_it_works, {});
+    expect(allTopics.topic).toBeNull();
+    expect(allTopics.availableTopics.length).toBeGreaterThanOrEqual(15);
+    expect(allTopics.availableTopics.map((t) => t.slug)).toContain("health-age");
+  });
+
+  it("get_app_stats returns internal statistics, baselines and 60-day averages", async () => {
+    const stats = await call(coachTools(ctx).get_app_stats, {});
+    expect(stats.today).toBe(TODAY);
+    expect(stats.totalDaysTracked).toBeGreaterThan(0);
+    expect(stats.windowDays).toBeGreaterThan(0);
+    expect(typeof stats.calibration.isCalibrating).toBe("boolean");
+    expect(stats.averagesLast60Days.observedDays).toBeGreaterThan(0);
+    expect(stats.averagesLast60Days.recoveryPct).toBeGreaterThan(0);
+    expect(stats.totalWorkouts).toBeGreaterThan(0);
+
+    const emptyStats = await call((await blank()).get_app_stats, {});
+    expect(emptyStats.totalDaysTracked).toBe(0);
+    expect(emptyStats.totalWorkouts).toBe(0);
+    expect(emptyStats.averagesLast60Days.observedDays).toBe(0);
+  });
+
   it("suggestion baselines exclude today's HRV", async () => {
     const empty = new MemoryStore();
     await empty.upsertMetrics([metricsRow("2026-10-01", 60), metricsRow("2026-10-02", 50)]);
