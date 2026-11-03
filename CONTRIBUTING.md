@@ -1,16 +1,13 @@
-# Contributing to Pulse Mobile
+# Contributing to Health
 
-Thanks for wanting to help. Pulse Mobile is an Android app that reads Fitbit data from Health Connect and keeps
+Thanks for wanting to help. Health is an Android app that syncs Fitbit data from Health Connect and keeps
 everything on the phone. Contributions of every size are welcome: bug reports, docs, fixes, screens and better
 algorithms.
 
 ## Before you start
 
-- **Licence.** Pulse Mobile is source-available under [PolyForm Noncommercial 1.0.0](LICENSE), not an OSI
-  open-source licence. By contributing, you agree that your contribution is licensed under the same terms, and that
-  the maintainer may relicense the project in the future.
-- **Talk first for big changes.** Open an issue before a large feature or a change to how a score is computed, so
-  we agree on the approach before you write the code.
+- **Licence.** Health is source-available under [PolyForm Noncommercial 1.0.0](LICENSE), not an OSI
+  open-source licence. By contributing, you agree that your contribution is licensed under the same terms.
 - **Security issues** go through [SECURITY.md](SECURITY.md), never a public issue.
 - Be kind: see the [Code of Conduct](CODE_OF_CONDUCT.md).
 
@@ -24,9 +21,8 @@ pnpm install
 pnpm android    # builds a development build and runs it on a phone or emulator
 ```
 
-Or build one in the cloud with `npx eas-cli@latest build --profile development`, then `pnpm start` and open the project
-in that build. On the phone, let the Google Health app share with Health Connect, open Pulse, tap **Connect Health
-Connect** and allow every permission, including past data. Every command is in [AGENTS.md](AGENTS.md#commands).
+Or allow GitHub Actions to build the signed APK on push to `main`. On the phone, let the Google Health app share with Health Connect, open Health, tap **Connect Health
+Connect** and allow permissions, including past data. Every command is in [AGENTS.md](AGENTS.md#commands).
 
 ## How changes land
 

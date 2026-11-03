@@ -1,8 +1,8 @@
-# AGENTS.md
+# Health
 
-Guide for coding agents (and humans) working on Pulse Mobile: an Android app (Expo) where every byte lives on the phone. It reads the owner's Fitbit data from **Health Connect**, keeps it in SQLite, and turns it into recovery, strain, sleep, Pulse Age, stress, Energy Bank and journal insights. There is no server, no account and no Google sign-in: one install is one person.
+Guide for coding agents (and humans) working on Health (Health-app): an Android app (Expo) where every byte lives on the phone. It reads the owner's Fitbit data from **Health Connect**, keeps it in SQLite, and turns it into recovery, strain, sleep, Health Age, stress, Energy Bank and journal insights. It also syncs entries logged in the app (water, meals, weight, body fat) back to Health Connect. There is no server, no account and no Google sign-in: one install is one person.
 
-The engine (Health Connect source, storage, scoring, view models) comes from **halo**, a fork of the same pulse app, at `~/personal/halo`. halo is the reference for engine code: read it beside every change to `src/health`, `src/data`, `src/core`, `src/pipeline` and `src/queries`, and do things the way it does. The UI is Pulse's own and keeps the look of the pulse PWA. The move and its phases are in `docs/rewrite-plan.md`.
+The engine (Health Connect source, storage, scoring, view models) comes from **halo**, a fork of the pulse app. halo is the reference for engine code: read it beside every change to `src/health`, `src/data`, `src/core`, `src/pipeline` and `src/queries`, and do things the way it does. The UI keeps the look of the pulse PWA.
 
 ## Expo has changed: do not trust your training data
 
@@ -54,30 +54,31 @@ docs/         rewrite-plan.md, plan.md, design/spec.md, learning.md, onboarding.
 
 ## Rules
 
-- **Health Connect only, Android only.** No Google sign-in, no network source, no iOS config. The app asks for Health Connect read permissions only and never writes to Health Connect.
+- **Health Connect only, Android only.** No Google sign-in, no network source, no iOS config. Two-way sync: the app reads Fitbit data from Health Connect and writes back water, nutrition, weight, and body fat entries logged in the app (`src/actions/log.ts`, `src/health/write.ts`). Self-written records (`in.portlabs.health`, `in.portlabs.pulse`) are de-duplicated during import.
 - **No auth.** No accounts, no login screen, no user ids.
+- **Signing & Play Integrity.** Release APKs are signed with `credentials/release.keystore` via the `plugins/withReleaseSigning.js` Expo config plugin. Builds are non-debuggable (`android:debuggable="false"`) and verified with `apksigner` scheme v1 and v2 so sideloading succeeds without Play Integrity or Play Protect debug warnings.
 - **Owner's own name and photo are fine.** The rule against storing a Google account's email, name or picture is about Google accounts. A display name and photo the owner types or picks (Settings › Profile) stay in the profile, the photo as a file in the app's document directory; neither leaves the phone.
 - **Only `src/data` touches SQLite.** Everything else goes through the `Store` interface (`src/data/store.ts`). Tests use the in-memory store (`src/data/memory.ts`).
 - **No I/O in `src/core`.** Pure TypeScript only: no database, no network, no clock reads, no React.
-- **The reference study is the reference for `src/core/engine`.** The Pulse engine's kernels follow the study at `~/personal/pulse/docs/research/bevel/` (start at `pulse-gaps.md`), with the fixes in `docs/engine-plan.md`. Code, comments, copy, commits and docs call it the Pulse engine and never name the app the study describes; comments cite it as "reference study, `<doc>.md` § `<section>`".
-- **halo is the reference elsewhere.** Engine code outside `src/core/engine` (`src/health`, `src/data`, `src/pipeline`, `src/queries`, the old `src/core/scoring` and `src/core/algorithms`) follows halo. Copy its code and its way of doing things; it is the same pulse code under the same license and copyright owner. Pulse-only additions live in their own files (the `*Extras.ts` queries) so the copies stay comparable.
-- **No secrets in logs.** Never log health-record bodies or keys. Secrets (the coach key, later) live only in `expo-secure-store`.
+- **The reference study is the reference for `src/core/engine`.** The Pulse engine's kernels follow the study at `~/personal/pulse/docs/research/bevel/` (start at `pulse-gaps.md`), with the fixes in `docs/engine-plan.md`. Comments cite it as "reference study, `<doc>.md` § `<section>`".
+- **halo is the reference elsewhere.** Engine code outside `src/core/engine` follows halo. Copy its code and its way of doing things.
+- **No secrets in logs.** Never log health-record bodies or keys. Secrets (the coach key) live only in `expo-secure-store`.
 - **Honest states.** Every nullable metric is `{ value, reason, provisional }`, using the reason codes in `src/lib/reasons.ts`. Never show a fabricated number. Where a source has no data for a card, hide the card or show its reason; never invent a value.
-- **Scales.** Strain is a percent: 0 to 100 on most days, up to about 129; rings fill at 100 and labels show the real value. Recovery is 1 to 100, Stress and the Sleep Score 0 to 100, Energy Bank 1 to 100. Halo's Effort (0 to 100) still feeds halo's extras only. Recovery's `sleepPerf` is on [0, 1].
+- **Scales.** Strain is a percent: 0 to 100 on most days, up to about 129; rings fill at 100 and labels show the real value. Recovery is 1 to 100, Stress and the Sleep Score 0 to 100, Energy Bank 1 to 100.
 - **Causality.** A day's scores depend only on that day and earlier days. Baselines fold from earlier nights only. Never let a later night change history.
 - **Scoring version.** A change to what the pipeline stores bumps `SCORING_VERSION` (`src/pipeline/types.ts`), which rescores the history. A change to the import mapping bumps `IMPORT_VERSION` (`src/health/sync.ts`), which re-imports the history window.
 - **Long loops yield.** The import and the pipeline await `slice()` (`src/lib/yield.ts`) in long loops so taps and frames get through.
-- **UI.** The look is the pulse PWA's. Build from the shells and kit in `src/ui`, using NativeWind classes and the tokens. Spec decisions and deviations live in `docs/design/spec.md`. A screen that needs a changed view-model field adapts its code, not its look.
-- **Copy.** User-facing text goes through i18n keys (docs/i18n.md); no literal copy in components. It says Pulse, Pulse Age and Health Connect. Where the reference study and WHOOP (noop, `~/personal/noop`) name the same feature differently, the screens use WHOOP's name: Sleep Performance (the study's Sleep Score), Sleep Debt (Sleep Bank), Sleep Need (Sleep Needed), Strain Target (Target Strain), Training Load (Cardio Load), Stress Monitor (Stress). Biological Age is Pulse Age; Energy Bank keeps its name (WHOOP has none).
-- **Shared files.** The `Store` interface, the UI tokens and the kit's exports change only in the orchestrating session, between waves. A stream that needs a change asks for it in its report.
-- **No native edits.** `android/` is generated (Continuous Native Generation) and git-ignored. Never create or edit it by hand. Configure native behavior in `app.json` and config plugins.
+- **UI.** Build from the shells and kit in `src/ui`, using NativeWind classes and the tokens.
+- **Copy.** User-facing text goes through i18n keys (docs/i18n.md); no literal copy in components. It says Health and Health Connect.
+- **Shared files.** The `Store` interface, the UI tokens and the kit's exports change only in the orchestrating session, between waves.
+- **No native edits.** `android/` is generated (Continuous Native Generation) and git-ignored. Never create or edit it by hand. Configure native behavior in `app.json` and config plugins (`plugins/`).
 - **Development builds.** Health Connect is a native module, so the app needs a development build (`pnpm android` or `npx eas-cli@latest build --profile development`), not Expo Go.
 - **Prefer Expo modules** over third-party libraries. Docs: https://docs.expo.dev/versions/latest/index.md
 
 ## Git
 
 - Use the `git` CLI only, never `gh`.
-- Commit as `adityaongit`, email `74150665+adityaongit@users.noreply.github.com`. Check `git config user.email` before committing.
+- Commit as `husainlab`, email `husainlabwork@gmail.com`. Check `git config user.email` before committing.
 - Conventional commit messages, signed off (`git commit -s`).
 - Once typecheck, lint, test and the bundle check pass and the change has been tried on the phone, fast-forward `origin/main`. Never force-push.
 

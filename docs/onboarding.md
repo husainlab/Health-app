@@ -1,6 +1,6 @@
 # Onboarding
 
-First run should show Pulse working before it asks for much. A welcome screen with two ways in, the profile, a plain
+First run should show Health working before it asks for much. A welcome screen with two ways in, the profile, a plain
 explainer before Health Connect's permission sheet, then the first import with its progress. The tabs open when the
 first run has scored the history.
 

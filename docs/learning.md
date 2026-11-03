@@ -53,9 +53,29 @@ Expo Go is a prebuilt app that runs your JavaScript, but only with the native mo
 
 `npx expo install <pkg>` picks the version that matches the Expo SDK, then installs it with the project's package manager (pnpm here). `pnpm add` would take the latest version, which can break against the SDK's React Native.
 
-## Bundle id and Android package `in.portlabs.pulse`
+## Bundle id and Android package `in.portlabs.health`
 
-It comes from the owner's domain, portlabs.in, written in reverse. It is hard to change after a store release, and Health Connect's grants are tied to it, so it was fixed before anything shipped.
+Forked from `in.portlabs.pulse` to create our own private Health app. Health Connect's grants are tied to this package name. During Health Connect import (`src/health/import.ts`), records with `dataOrigin === "in.portlabs.health"` or `in.portlabs.pulse` are skipped to ensure data written back by the app does not duplicate.
+
+## Two-way Health Connect sync
+
+The app supports two-way sync with Health Connect. In addition to reading Fitbit vitals, workouts, sleep, and steps, Health writes back:
+- Hydration (water in ml)
+- Nutrition (meals, calories, macros)
+- Weight and body fat percentage
+Writes happen asynchronously upon logging in `src/actions/log.ts` using `writeHealthRecords` (`src/health/connect.ts` and `src/health/write.ts`).
+
+## Release signing and Play Integrity
+
+To allow sideloaded APKs to install smoothly without Play Protect warnings or Play Integrity check failures:
+- Continuous Native Generation uses `plugins/withReleaseSigning.js` to configure Gradle's `release` signing config during `npx expo prebuild`.
+- Builds are compiled with `android:debuggable="false"`.
+- Releases are signed with `credentials/release.keystore` (PKCS#12, RSA 2048, validity 28 years) using both v1 and v2 APK signature schemes.
+- Verified in CI with Android's `apksigner verify --verbose`.
+
+## Google Gemini Coach integration
+
+The coach runs on the user's own BYOK (Bring Your Own Key) provider key. In `src/coach/providers.ts`, Google Gemini defaults to `gemini-3.5-flash`, providing fast and reliable health insights directly from the phone.
 
 ## Vitest with the in-memory store
 
