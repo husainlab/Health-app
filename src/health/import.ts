@@ -727,6 +727,7 @@ export function mapExternalEntries(input: HealthInput, tz: string): LoggedEntryR
   });
 
   for (const r of input.Hydration ?? []) {
+    if (r.metadata?.dataOrigin === "in.portlabs.pulse") continue;
     const ml = Math.round(r.volume.inMilliliters);
     if (!(ml > 0)) continue;
     const t = ts(r.startTime);
@@ -734,6 +735,7 @@ export function mapExternalEntries(input: HealthInput, tz: string): LoggedEntryR
   }
 
   for (const r of input.Nutrition ?? []) {
+    if (r.metadata?.dataOrigin === "in.portlabs.pulse") continue;
     const t = ts(r.startTime);
     const grams = (m: { inGrams: number } | undefined) => (m && m.inGrams > 0 ? round1(m.inGrams) : null);
     const data = {
@@ -849,10 +851,24 @@ export function* mapMetricsSteps(input: MetricsInput, sessions: Session[], steps
     const morning = morningWindow(day, tz);
 
     // Nightly readings: inside the main sleep, else a fallback window.
+    // Includes a 30m lead and 2h trailing margin around sleep (Fitbit Air and other trackers timestamp
+    // respiration rate at exact wake time endTs or during morning sync right after sleep).
     const nightly = <T>(xs: { t: number; day: string; r: T }[], fallback: "morning" | "day") => {
-      const inNight = night ? xs.filter((x) => inside(x.t, night)) : [];
+      const inNight = night ? xs.filter((x) => x.t >= night.startTs - 1800 && x.t <= night.endTs + 7200) : [];
       if (inNight.length) return inNight.map((x) => x.r);
-      return xs.filter((x) => (fallback === "morning" ? inside(x.t, morning) : x.day === day)).map((x) => x.r);
+      return xs
+        .filter((x) => {
+          if (fallback === "morning") return inside(x.t, morning);
+          if (x.day !== day) return false;
+          // When falling back to the civil day, avoid claiming a reading that belongs to another night's sleep window
+          for (const [otherDay, otherNight] of mainSleep) {
+            if (otherDay !== day && x.t >= otherNight.startTs - 1800 && x.t <= otherNight.endTs + 7200) {
+              return false;
+            }
+          }
+          return true;
+        })
+        .map((x) => x.r);
     };
     const hrvMs = mean(nightly(hrv, "morning").map((r) => r.heartRateVariabilityMillis));
     const respBpm = mean(nightly(resp, "day").map((r) => r.rate));

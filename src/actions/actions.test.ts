@@ -1,6 +1,6 @@
 // halo's src/screens/journal/actions.test.ts (ported from pulse's journal and log action tests) on Pulse's actions:
 // the journal and log parts, plus Select Behaviors' save. There is one person per phone and no Google write.
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { openMemoryStore } from "@/data/memory";
 import type { Store } from "@/data/store";
 import type { Profile } from "@/data/types";
@@ -286,5 +286,31 @@ describe("logFoods and updateFoodEntry", () => {
     expect(await setFoodSeparate(c(), { id: row.id, ts: row.ts, separate: false })).toMatchObject({ ok: true });
     expect((await rows())[0].data).not.toHaveProperty("separate");
     expect(await setFoodSeparate(c(), { id: "gone", ts: row.ts, separate: true })).toEqual({ ok: false, error: "This food is no longer in your log." });
+  });
+
+  it("invokes Health Connect write mappers on food, water and weight logging", async () => {
+    const { insertRecords } = await import("react-native-health-connect");
+    const writeSpy = vi.mocked(insertRecords);
+    writeSpy.mockClear();
+
+    await logEntry(c(), { kind: "water", ml: 350 });
+    expect(writeSpy).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ recordType: "Hydration" })]),
+    );
+
+    writeSpy.mockClear();
+    await logEntry(c(), { kind: "weight", kg: 72.5, fatPct: 15.5 });
+    expect(writeSpy).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ recordType: "Weight" }),
+        expect.objectContaining({ recordType: "BodyFat" }),
+      ]),
+    );
+
+    writeSpy.mockClear();
+    await logFoods(c(), { meal: "LUNCH", via: "manual", items: [toast] });
+    expect(writeSpy).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ recordType: "Nutrition" })]),
+    );
   });
 });

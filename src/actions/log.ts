@@ -27,6 +27,14 @@ import {
 } from "@/queries/log";
 import type { FoodData, FoodVia } from "@/queries/food";
 import type { ActionCtx, ActionResult } from "./journal";
+import type { HealthConnectRecord } from "react-native-health-connect";
+import { writeHealthRecords } from "@/health/connect";
+import {
+  toHealthConnectBodyFatRecord,
+  toHealthConnectNutritionRecord,
+  toHealthConnectWaterRecord,
+  toHealthConnectWeightRecord,
+} from "@/health/write";
 
 /** One food: its name (blank: the meal's), portion, calories and grams; a nutrient not given is null (unknown). */
 export type FoodItemInput = { name: string; portion?: string; kcal: number; protein: number | null; carbs: number | null; fat: number | null; fiber?: number | null };
@@ -155,6 +163,12 @@ export async function logFoods(c: ActionCtx, input: { meal: Meal; via: FoodVia; 
   if (!when.ok) return when;
   const entries: NewEntry[] = input.items.map((item) => ({ type: "nutrition-log", ts: when.ts, data: foodData(item, input.meal, input.via) }));
   await saveEntries(c.store, entries, { tz: c.timeZone, now: nowOf(c) });
+  try {
+    const hcRecords = input.items.map((item) => toHealthConnectNutritionRecord(item, input.meal, when.ts));
+    if (hcRecords.length > 0) writeHealthRecords(hcRecords).catch(() => {});
+  } catch {
+    // Health Connect writes are best-effort; local storage is the source of truth
+  }
   return { ok: true, data: { count: entries.length } };
 }
 
@@ -176,6 +190,12 @@ export async function updateFoodEntry(c: ActionCtx, input: { id: string; ts: num
   const data = foodData(input.item, input.meal, via);
   if (before?.separate === true) data.separate = true;
   await c.store.addLoggedEntries([{ ...row, ts: when.ts, day: localDay(when.ts, c.timeZone), data }]);
+  try {
+    const hcRecord = toHealthConnectNutritionRecord(input.item, input.meal, when.ts);
+    writeHealthRecords([hcRecord]).catch(() => {});
+  } catch {
+    // Health Connect writes are best-effort
+  }
   return { ok: true, data: undefined };
 }
 
@@ -245,6 +265,22 @@ export async function logEntry(c: ActionCtx, input: LogInput): Promise<ActionRes
       break;
   }
   await saveEntries(c.store, entries, { tz, now });
+  try {
+    const hcRecords: HealthConnectRecord[] = [];
+    if (v.kind === "water") {
+      hcRecords.push(toHealthConnectWaterRecord(v.ml, ts));
+    } else if (v.kind === "food") {
+      hcRecords.push(toHealthConnectNutritionRecord(v, v.meal, ts));
+    } else if (v.kind === "weight") {
+      hcRecords.push(toHealthConnectWeightRecord(v.kg, ts));
+      if (v.fatPct != null) {
+        hcRecords.push(toHealthConnectBodyFatRecord(v.fatPct, ts));
+      }
+    }
+    if (hcRecords.length > 0) writeHealthRecords(hcRecords).catch(() => {});
+  } catch {
+    // Health Connect writes are best-effort
+  }
   return { ok: true, data: undefined };
 }
 

@@ -1,14 +1,17 @@
 // Thin wrapper over react-native-health-connect: availability, permissions and paginated range reads.
 // Everything Pulse needs is read-only; the Google Health app writes the Fitbit data into Health Connect.
 import {
+  deleteRecordsByUuids,
   getGrantedPermissions,
   getSdkStatus,
   initialize,
+  insertRecords,
   openHealthConnectSettings,
   readRecords,
   requestPermission,
   SdkAvailabilityStatus,
   type BackgroundAccessPermission,
+  type HealthConnectRecord,
   type Permission,
   type ReadHealthDataHistoryPermission,
   type ReadRecordsOptions,
@@ -49,7 +52,16 @@ export const READ_TYPES = [
 ] as const satisfies readonly RecordType[];
 export type ReadType = (typeof READ_TYPES)[number];
 
+export const WRITE_TYPES = [
+  "Hydration",
+  "Nutrition",
+  "Weight",
+  "BodyFat",
+] as const satisfies readonly RecordType[];
+export type WriteType = (typeof WRITE_TYPES)[number];
+
 const readPermissions: Permission[] = READ_TYPES.map((recordType) => ({ accessType: "read", recordType }));
+const writePermissions: Permission[] = WRITE_TYPES.map((recordType) => ({ accessType: "write", recordType }));
 /** Without it Health Connect only serves the 30 days before the grant; baselines want 180. */
 const historyPermission: ReadHealthDataHistoryPermission = { accessType: "read", recordType: "ReadHealthDataHistory" };
 /** Lets a closed Pulse read Health Connect (READ_HEALTH_DATA_IN_BACKGROUND), for the background sync task (src/background/task.ts); without it the task skips. */
@@ -77,6 +89,7 @@ export type PermissionState = {
   history: boolean;
   /** Background reads allowed (the background sync task needs it). */
   background: boolean;
+  writeGranted?: WriteType[];
 };
 
 /**
@@ -99,18 +112,20 @@ export async function permissionState(): Promise<PermissionState> {
   await ensureInitialized();
   const granted = await getGrantedPermissions();
   const has = (t: string) => granted.some((p) => p.accessType === "read" && p.recordType === t);
+  const hasWrite = (t: string) => granted.some((p) => p.accessType === "write" && p.recordType === t);
   return {
     granted: READ_TYPES.filter(has),
     missing: READ_TYPES.filter((t) => !has(t)),
     history: has("ReadHealthDataHistory") || (await historyGranted()),
     background: has("BackgroundAccessPermission"),
+    writeGranted: WRITE_TYPES.filter(hasWrite),
   };
 }
 
 /** Shows the system sheet. Returns what the person granted; they may grant a subset. */
 export async function askPermissions(): Promise<PermissionState> {
   await ensureInitialized();
-  await requestPermission([...readPermissions, historyPermission, backgroundPermission]);
+  await requestPermission([...readPermissions, ...writePermissions, historyPermission, backgroundPermission]);
   return permissionState();
 }
 
@@ -183,4 +198,22 @@ export async function readAll<T extends ReadType>(type: T, range: Range, opts: R
     const after = await readAll(type, { start: new Date(mid), end: range.end }, opts);
     return [...before, ...after];
   }
+}
+
+/** Inserts records into Health Connect. Returns an array of generated Health Connect record IDs. */
+export async function writeHealthRecords(records: HealthConnectRecord[]): Promise<string[]> {
+  if (Platform.OS !== "android" || records.length === 0) return [];
+  await ensureInitialized();
+  return await insertRecords(records);
+}
+
+/** Deletes records by their client record IDs or UUIDs from Health Connect. */
+export async function deleteHealthRecords(
+  recordType: RecordType,
+  recordIds: string[],
+  clientRecordIds: string[] = [],
+): Promise<void> {
+  if (Platform.OS !== "android" || (recordIds.length === 0 && clientRecordIds.length === 0)) return;
+  await ensureInitialized();
+  await deleteRecordsByUuids(recordType, recordIds, clientRecordIds);
 }

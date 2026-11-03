@@ -327,6 +327,38 @@ describe("metrics", () => {
     expect(metrics[0]).toMatchObject({ day: "2026-10-02", hrvMs: 30, respBpm: 14 });
   });
 
+  it("attributes respiration rate timestamped at sleep boundary or shortly after wake to the sleep night", () => {
+    // night ends at 06:00:00 on 2026-10-02
+    const { metrics } = mapRecords(
+      {
+        SleepSession: [night],
+        RespiratoryRate: [
+          { metadata: meta("b-end"), time: at("2026-10-02", "06:00:00"), rate: 15.2 },
+        ],
+      },
+      TZ,
+    );
+    expect(metrics[0]).toMatchObject({ day: "2026-10-02", respBpm: 15.2 });
+  });
+
+  it("skips own Hydration and Nutrition writes originating from in.portlabs.pulse in mapExternalEntries", () => {
+    const entries = mapExternalEntries(
+      {
+        Hydration: [
+          { metadata: { id: "h1", dataOrigin: "in.portlabs.pulse" }, startTime: at("2026-10-02", "10:00:00"), endTime: at("2026-10-02", "10:00:01"), volume: { inMilliliters: 500 } } as never,
+          { metadata: { id: "h2", dataOrigin: "com.fitbit.FitbitMobile" }, startTime: at("2026-10-02", "11:00:00"), endTime: at("2026-10-02", "11:00:01"), volume: { inMilliliters: 250 } } as never,
+        ],
+        Nutrition: [
+          { metadata: { id: "n1", dataOrigin: "in.portlabs.pulse" }, startTime: at("2026-10-02", "12:00:00"), endTime: at("2026-10-02", "12:00:01"), mealType: MealType.LUNCH, energy: { inKilocalories: 600 } } as never,
+          { metadata: { id: "n2", dataOrigin: "com.fitbit.FitbitMobile" }, startTime: at("2026-10-02", "13:00:00"), endTime: at("2026-10-02", "13:00:01"), mealType: MealType.LUNCH, energy: { inKilocalories: 400 } } as never,
+        ],
+      },
+      TZ,
+    );
+    expect(entries).toHaveLength(2);
+    expect(entries.map((e) => e.id)).toEqual(["hc-water-h2", "hc-food-n2"]);
+  });
+
   it("builds skin temperature from baseline + mean delta, or deviation-only with a zero baseline", () => {
     const skin = (id: string, baseline: number | undefined, deltas: number[]) => ({
       metadata: meta(id),
