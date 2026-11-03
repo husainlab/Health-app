@@ -55,7 +55,7 @@ export async function testKey(input: ProviderInput, fetch?: Fetch, timeoutMs = 2
     // The checked values, ready to save.
     return c;
   } catch (e) {
-    console.warn(`[coach] key test failed for ${c.provider}: ${e instanceof Error ? e.name : "error"}`);
+    console.warn(`[coach] key test failed for ${c.provider}: ${e instanceof Error ? e.message || e.name : "error"}`);
     return { ok: false, error: i18n.t("coach:validate.testFailed") };
   } finally {
     clearTimeout(timer);
