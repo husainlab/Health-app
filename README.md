@@ -8,8 +8,8 @@
 
 No server, no account, no cloud: Health reads your Fitbit data from Health Connect and keeps every byte on the phone.
 
-[![CI](https://github.com/husainlab/Pulse-app/actions/workflows/ci.yml/badge.svg)](https://github.com/husainlab/Pulse-app/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/husainlab/Pulse-app?label=release)](https://github.com/husainlab/Pulse-app/releases/latest)
+[![CI](https://github.com/husainlab/Health-app/actions/workflows/ci.yml/badge.svg)](https://github.com/husainlab/Health-app/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/husainlab/Health-app?label=release)](https://github.com/husainlab/Health-app/releases/latest)
 [![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue)](LICENSE)
 
 </div>
@@ -18,9 +18,9 @@ No server, no account, no cloud: Health reads your Fitbit data from Health Conne
 
 <div align="center">
 
-<a href="https://github.com/husainlab/Pulse-app/releases/latest"><img src="assets/badges/android.svg" alt="Available on Android" height="56"></a>
+<a href="https://github.com/husainlab/Health-app/releases/latest"><img src="assets/badges/android.svg" alt="Available on Android" height="56"></a>
 
-Grab the signed APK from the [latest release](https://github.com/husainlab/Pulse-app/releases/latest). Sideloading asks you to allow
+Grab the signed APK from the [latest release](https://github.com/husainlab/Health-app/releases/latest). Sideloading asks you to allow
 "Install unknown apps" for whichever app you download it with.
 
 </div>
@@ -50,7 +50,7 @@ On first open, allow every Health Connect permission, including past data: Healt
 ## Build from source
 
 ```sh
-git clone https://github.com/husainlab/Pulse-app.git && cd Pulse-app
+git clone https://github.com/husainlab/Health-app.git && cd Health-app
 pnpm install && pnpm android
 ```
 

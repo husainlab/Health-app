@@ -6,7 +6,7 @@
 # The token is $GH_TOKEN (~/.zshrc sets it to adityaongit's under ~/personal/; $GITHUB_TOKEN there is the work
 # account's, so it is not used), else the github.com password git's credential helper holds.
 set -euo pipefail
-REPO=husainlab/Pulse-app
+REPO=husainlab/Health-app
 version=${1:?usage: scripts/github-release.sh <version> <apk>...}
 shift
 [ $# -gt 0 ] || { echo "no APKs given" >&2; exit 1; }

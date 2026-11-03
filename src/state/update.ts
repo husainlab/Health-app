@@ -12,7 +12,7 @@ import { apkFor, isNewer, parseRelease, type Release } from "@/lib/release";
 import { APP_VERSION } from "@/queries/settings";
 
 /** GitHub's latest-release endpoint for Health's repository. */
-export const RELEASES_URL = "https://api.github.com/repos/husainlab/Pulse-app/releases/latest";
+export const RELEASES_URL = "https://api.github.com/repos/husainlab/Health-app/releases/latest";
 
 const CHECK_EVERY_MS = 24 * 60 * 60 * 1000;
 const TIMEOUT_MS = 15_000;
