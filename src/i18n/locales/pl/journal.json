@@ -259,7 +259,7 @@
     "checkedIn": "Check-in zrobiony",
     "behavioursLogged": "Zapisane zachowania",
     "edit": "Edytuj check-in",
-    "prompt": "Zapisz, jak minął Twój dzień. Pulse porówna to z jutrzejszym Recovery."
+    "prompt": "Zapisz, jak minął Twój dzień. Health porówna to z jutrzejszym Recovery."
   },
   "dismiss": {
     "title": "Odrzucić dziennik?",

@@ -20,7 +20,7 @@ export function Mark({ size = 24, color = "brand", tone = "foreground" }: { size
   const { c } = useTheme();
   const mono = color === "mono";
   return (
-    <Svg viewBox="4.5 4.5 15 15" width={size} height={size} accessibilityLabel="Pulse">
+    <Svg viewBox="4.5 4.5 15 15" width={size} height={size} accessibilityLabel="Health">
       <Rect x={6.9} y={4.5} width={4.2} height={11} rx={2.1} fill={mono ? c[tone] : c.optimal} />
       <Rect x={12.9} y={8.5} width={4.2} height={11} rx={2.1} fill={mono ? c[tone] : c["strain-text"]} />
     </Svg>

@@ -27,7 +27,7 @@
     "trendsAside": "Bis zu 1 Jahr",
     "behaviours": "Gewohnheiten",
     "behavioursAside": "{{shown}} von {{total}} angezeigt",
-    "howPulseWorks": "So funktioniert Pulse",
+    "howPulseWorks": "So funktioniert Health",
     "scoresAside_one": "{{count}} Wert",
     "scoresAside_other": "{{count}} Werte",
     "export": "Export",
@@ -35,7 +35,7 @@
   },
   "about": {
     "title": "Über",
-    "body": "Die Bewertung ist aus noop übernommen. Pulse ist für den persönlichen Gebrauch und kein Medizinprodukt.",
+    "body": "Die Bewertung ist aus noop übernommen. Health ist für den persönlichen Gebrauch und kein Medizinprodukt.",
     "version": "Version",
     "scoringVersion": "Bewertungsversion",
     "sourceCode": "Quellcode",
@@ -56,8 +56,8 @@
     "dailyBody": "Eine Zeile pro Tag: Recovery, Strain, Sleep Performance, Stunden und Konstanz, Herzfrequenzvariabilität, Ruheherzfrequenz, Atemfrequenz, Stress und Schritte.",
     "dailyBodySince": "Eine Zeile pro Tag seit {{date}}: Recovery, Strain, Sleep Performance, Stunden und Konstanz, Herzfrequenzvariabilität, Ruheherzfrequenz, Atemfrequenz, Stress und Schritte.",
     "journalBody": "Jede Check-in-Antwort, auch ausgeblendete Gewohnheiten. Die JSON-Datei listet außerdem deine Gewohnheiten auf.",
-    "storageNone": "Exporte enthalten nur das, was Pulse auf diesem Handy gespeichert hat.",
-    "storage": "Pulse belegt {{mb}} MB auf diesem Handy. Exporte enthalten nur, was es gespeichert hat."
+    "storageNone": "Exporte enthalten nur das, was Health auf diesem Handy gespeichert hat.",
+    "storage": "Health belegt {{mb}} MB auf diesem Handy. Exporte enthalten nur, was es gespeichert hat."
   },
   "behaviours": {
     "title": "Gewohnheiten",
@@ -76,7 +76,7 @@
     "exists": "Diese Gewohnheit gibt es schon.",
     "limit": "Du hast das Limit für Gewohnheiten erreicht.",
     "addFailed": "Konnte nicht hinzugefügt werden. Versuch es noch einmal.",
-    "tooMany": "Das sind mehr Gewohnheiten, als Pulse verfolgen kann. Wähle weniger.",
+    "tooMany": "Das sind mehr Gewohnheiten, als Health verfolgen kann. Wähle weniger.",
     "saveFailed": "Speichern fehlgeschlagen. Prüfe deine Verbindung und versuch es noch einmal.",
     "search": "Nach Gewohnheiten suchen",
     "tabAll": "Alle",
@@ -88,7 +88,7 @@
   "breathe": {
     "title": "Atmen",
     "aboutTitle": "Über Atmen",
-    "aboutBody": "Getaktetes Atmen mit einem Kreis und haptischen Hinweisen: ein leichter Impuls beim Einatmen, zwei beim Ausatmen, keiner beim Halten. Mit deinem Band live zeigt Pulse deine Herzfrequenz; wenn das Band auch Schlag-zu-Schlag-Intervalle sendet, misst es davor und danach eine Minute lang die HRV (RMSSD). Sitzungen bleiben auf diesem Handy und fließen nicht in die Werte ein.",
+    "aboutBody": "Getaktetes Atmen mit einem Kreis und haptischen Hinweisen: ein leichter Impuls beim Einatmen, zwei beim Ausatmen, keiner beim Halten. Mit deinem Band live zeigt Health deine Herzfrequenz; wenn das Band auch Schlag-zu-Schlag-Intervalle sendet, misst es davor und danach eine Minute lang die HRV (RMSSD). Sitzungen bleiben auf diesem Handy und fließen nicht in die Werte ein.",
     "hrvLine": "HRV {{value}} ms · RMSSD, letzte Minute",
     "hrvMeasuring": "HRV: wird gemessen…",
     "length": "Dauer",

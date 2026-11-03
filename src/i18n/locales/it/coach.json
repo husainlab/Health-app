@@ -3,7 +3,9 @@
   "settingsTitle": "Impostazioni del Coach",
   "chatsTitle": "Chat",
   "providerFallback": "il tuo provider",
-  "provider": { "custom": "Il tuo server" },
+  "provider": {
+    "custom": "Il tuo server"
+  },
   "suggestions": {
     "brief": "Il riepilogo di oggi",
     "sync": "Cosa posso fare mentre il sonno di stanotte si sincronizza?",
@@ -47,9 +49,9 @@
     "shareAnswer": "Condividi la risposta",
     "regenerate": "Rigenera la risposta",
     "emptyTitle": "Cosa vuoi sapere?",
-    "emptyBody": "Il Coach cerca i tuoi numeri Pulse prima di rispondere, usando {{provider}}. Non è un consiglio medico.",
+    "emptyBody": "Il Coach cerca i tuoi numeri Health prima di rispondere, usando {{provider}}. Non è un consiglio medico.",
     "checkIn": "Check-in di oggi",
-    "chatLabel": "Chatta con il Coach di Pulse",
+    "chatLabel": "Chatta con il Coach di Health",
     "retry": "Riprova",
     "placeholder": "Scrivi al Coach",
     "askLabel": "Chiedi al Coach",
@@ -117,8 +119,8 @@
   },
   "setup": {
     "consentTitle": "Prima di iniziare",
-    "consentSend": "Per rispondere, il Coach invia le tue domande e i numeri Pulse che cerca (punteggi, parametri vitali, allenamenti, abitudini del diario) al provider di IA che sceglierai ora, direttamente da questo telefono, con la tua chiave. Nulla ti identifica.",
-    "consentTerms": "Valgono i termini e i prezzi del tuo provider. Pulse non aggiunge costi.",
+    "consentSend": "Per rispondere, il Coach invia le tue domande e i numeri Health che cerca (punteggi, parametri vitali, allenamenti, abitudini del diario) al provider di IA che sceglierai ora, direttamente da questo telefono, con la tua chiave. Nulla ti identifica.",
+    "consentTerms": "Valgono i termini e i prezzi del tuo provider. Health non aggiunge costi.",
     "consentLocal": "Le chat sono salvate su questo telefono, visibili solo a te. Eliminale quando vuoi.",
     "consentAccuracy": "Le risposte possono essere sbagliate e non sono consigli medici.",
     "consentFailed": "Impossibile salvarlo. Riprova.",
@@ -138,8 +140,8 @@
     "modelHint": "Qualsiasi modello offerto dal tuo provider.",
     "testing": "Verifica…",
     "testAndSave": "Verifica e salva",
-    "checkServer": "Pulse controlla il server con una piccolissima richiesta prima di salvarlo.",
-    "checkKey": "Pulse controlla la chiave con una piccolissima richiesta prima di salvarla."
+    "checkServer": "Health controlla il server con una piccolissima richiesta prima di salvarlo.",
+    "checkKey": "Health controlla la chiave con una piccolissima richiesta prima di salvarla."
   },
   "validate": {
     "pickProvider": "Scegli un provider.",

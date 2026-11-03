@@ -258,7 +258,7 @@
     "checkedIn": "Check-in fatto",
     "behavioursLogged": "Abitudini registrate",
     "edit": "Modifica il check-in",
-    "prompt": "Registra cosa hai fatto oggi. Pulse lo confronta con la Recovery di domani."
+    "prompt": "Registra cosa hai fatto oggi. Health lo confronta con la Recovery di domani."
   },
   "dismiss": {
     "title": "Chiudere il diario?",

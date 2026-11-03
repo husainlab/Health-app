@@ -62,6 +62,7 @@ const INFO_KEY = {
   "Lean body mass": "leanBodyMass",
   "Pace of Aging": "paceOfAging",
   "Pulse Age history": "pulseAgeHistory",
+  "Health Age history": "pulseAgeHistory",
   "Percentile": "percentile",
   "VO2 max trend": "vo2MaxTrend",
   "Training load": "trainingLoad",

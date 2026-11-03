@@ -40,9 +40,9 @@
   },
   "agoShort": {
     "now": "Ahora",
-    "minutes": "{{count}}\u00a0min",
-    "hours": "{{count}}\u00a0h",
-    "days": "{{count}}\u00a0d"
+    "minutes": "{{count}} min",
+    "hours": "{{count}} h",
+    "days": "{{count}} d"
   },
   "unit": {
     "min": "min",

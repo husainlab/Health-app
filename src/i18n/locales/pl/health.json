@@ -10,7 +10,7 @@
     "percentile": "Percentyl",
     "vo2Trend": "Trend VO2 max",
     "fitnessLoad": "Kondycja, zmęczenie i forma",
-    "ageHistory": "Historia Pulse Age",
+    "ageHistory": "Historia Health Age",
     "sleep": "Sen",
     "totalDay": "Cały dzień",
     "trend30": "Trend z 30 dni",
@@ -44,7 +44,7 @@
     "onTrack": "Na dobrej drodze",
     "roomToImprove": "Jest co poprawiać",
     "bodyOutperforming": "Dzięki swojemu wynikowi ({{name}}) wzmacniasz długoterminowe zdrowie. Tak trzymaj, aby zachować korzyść.",
-    "bodyUnder": "Twój wynik ({{name}}) dodaje lat do Twojego Pulse Age. Zbliżenie go do celu dla Twojego wieku by je odjęło.",
+    "bodyUnder": "Twój wynik ({{name}}) dodaje lat do Twojego Health Age. Zbliżenie go do celu dla Twojego wieku by je odjęło.",
     "bodyOnTrack": "Twój wynik ({{name}}) jest blisko celu dla Twojego wieku. Małe postępy tutaj sumują się z biegiem lat."
   },
   "group": {
@@ -53,22 +53,22 @@
     "fitness": "Kondycja"
   },
   "contributor": {
-    "infoTitle": "{{title}} a Pulse Age",
-    "infoBody": "Pasek każdego czynnika pokazuje Twoją średnią z 28 dni do ostatniej niedzieli, od słabej do dobrej dla Twojego wieku. Lata obok to wpływ tego czynnika na Pulse Age: dodaje je lub odejmuje.",
+    "infoTitle": "{{title}} a Health Age",
+    "infoBody": "Pasek każdego czynnika pokazuje Twoją średnią z 28 dni do ostatniej niedzieli, od słabej do dobrej dla Twojego wieku. Lata obok to wpływ tego czynnika na Health Age: dodaje je lub odejmuje.",
     "target": "Cel dla Twojego wieku: {{value}}",
     "source": "Źródło: {{source}}.",
     "viewTrend": "Zobacz trend"
   },
   "orb": {
-    "ariaDelta": "Pulse Age {{age}}, {{delta}} niż Twój wiek",
-    "ariaDeltaProvisional": "Pulse Age {{age}}, {{delta}} niż Twój wiek, wstępnie",
-    "ariaSame": "Pulse Age {{age}}, tyle co Twój wiek",
-    "ariaSameProvisional": "Pulse Age {{age}}, tyle co Twój wiek, wstępnie",
-    "ariaUnavailable": "Pulse Age niedostępny. {{reason}}"
+    "ariaDelta": "Health Age {{age}}, {{delta}} niż Twój wiek",
+    "ariaDeltaProvisional": "Health Age {{age}}, {{delta}} niż Twój wiek, wstępnie",
+    "ariaSame": "Health Age {{age}}, tyle co Twój wiek",
+    "ariaSameProvisional": "Health Age {{age}}, tyle co Twój wiek, wstępnie",
+    "ariaUnavailable": "Health Age niedostępny. {{reason}}"
   },
   "firstAge": {
-    "title": "Zbuduj swój pierwszy Pulse Age",
-    "intro": "Pulse Age powstaje z Twojego profilu i zapisanych dni. To, czego brakuje, pozostaje puste, dopóki nie zostanie zapisane.",
+    "title": "Zbuduj swój pierwszy Health Age",
+    "intro": "Health Age powstaje z Twojego profilu i zapisanych dni. To, czego brakuje, pozostaje puste, dopóki nie zostanie zapisane.",
     "recordedDays": "Zapisane dni",
     "daysOf": "{{done}} z {{total}} dni",
     "measuresReady": "Gotowe pomiary: {{ready}} z {{total}}",
@@ -118,7 +118,7 @@
     "note": "Twój zakres to średnia ± 1 SD z ostatnich 30 nocy; temperatura skóry to zmiana względem bazy."
   },
   "hub": {
-    "noHealthspan": "Pulse Age potrzebuje co najmniej 5 z 9 danych wejściowych z 4 tygodni przed poniedziałkiem.",
+    "noHealthspan": "Health Age potrzebuje co najmniej 5 z 9 danych wejściowych z 4 tygodni przed poniedziałkiem.",
     "noReading": "brak odczytu",
     "inRange": "w normie",
     "outRange": "poza normą",
@@ -166,9 +166,9 @@
     "tsb": "Forma"
   },
   "healthspan": {
-    "needsInputs": "Pulse Age potrzebuje co najmniej 5 z 9 danych wejściowych z 4 tygodni przed poniedziałkiem.",
+    "needsInputs": "Health Age potrzebuje co najmniej 5 z 9 danych wejściowych z 4 tygodni przed poniedziałkiem.",
     "yourAge": "Twój wiek: {{age}}",
-    "firmsUp": "Pulse Age staje się dokładniejszy, gdy przybywa danych wejściowych.",
+    "firmsUp": "Health Age staje się dokładniejszy, gdy przybywa danych wejściowych.",
     "yearsOlder": "Lat więcej",
     "yearsYounger": "Lat mniej",
     "paceStat": "Pace of Aging",
@@ -177,13 +177,13 @@
     "nextUpdate_many": "Następna aktualizacja za {{count}} dni",
     "nextUpdate_other": "Następna aktualizacja za {{count}} dnia",
     "paceProvisional": "Pace of Aging korzysta z 6-miesięcznego okna. Staje się dokładniejszy wraz z historią.",
-    "paceNormal": "Porównuje Twoje ostatnie 30 dni z Twoim 6-miesięcznym Pulse Age.",
+    "paceNormal": "Porównuje Twoje ostatnie 30 dni z Twoim 6-miesięcznym Health Age.",
     "yourAgeRef": "Twój wiek",
     "historyEmpty": "Historia powstaje tydzień po tygodniu."
   },
   "info": {
     "monitorTitle": "O Health Monitor",
-    "monitorBody": "Health Monitor porównuje parametry z ostatniej nocy z Twoją osobistą normą: średnią z ostatnich 30 nocy plus minus jedno odchylenie standardowe. Saturacja krwi jest też oznaczana, gdy spada poniżej 95%. Zmiana kilku parametrów naraz może być wczesnym znakiem choroby. Pulse nie jest urządzeniem medycznym; jeśli źle się czujesz, porozmawiaj z lekarzem.",
+    "monitorBody": "Health Monitor porównuje parametry z ostatniej nocy z Twoją osobistą normą: średnią z ostatnich 30 nocy plus minus jedno odchylenie standardowe. Saturacja krwi jest też oznaczana, gdy spada poniżej 95%. Zmiana kilku parametrów naraz może być wczesnym znakiem choroby. Health nie jest urządzeniem medycznym; jeśli źle się czujesz, porozmawiaj z lekarzem.",
     "stressTitle": "O Stress Monitor",
     "stressIntro": "Stress Monitor ocenia od 0 do 100, jak bardzo pobudzone jest Twoje ciało, co 6 minut: porównuje Twoje tętno z tętnem w czuwaniu z ostatnich 30 dni, a w nocy Twoje HRV z jego 30-dniową bazą.",
     "stressLow": "Niski, 0 - 29: możesz czuć się spokojnie, odprężony lub senny.",
@@ -191,19 +191,19 @@
     "stressHigh": "Wysoki, 60 - 100: podekscytowanie, stres lub silne pobudzenie.",
     "stressNote": "Treningi i ćwiczenia są pomijane, więc bieg nigdy nie liczy się jako stres. Stres jest wstępny, dopóki dane nie obejmą 30 dni.",
     "fitnessTitle": "O kondycji",
-    "fitnessBody": "VO2 max to największa ilość tlenu, jaką Twoje ciało może wykorzystać podczas intensywnego wysiłku. Pulse porównuje go z osobami w Twoim wieku i tej samej płci z rejestru FRIEND. Training Load dzieli Twoje zmęczenie (około tydzień obciążenia treningowego) przez kondycję (około trzy tygodnie); powyżej 1,4 to skok.",
+    "fitnessBody": "VO2 max to największa ilość tlenu, jaką Twoje ciało może wykorzystać podczas intensywnego wysiłku. Health porównuje go z osobami w Twoim wieku i tej samej płci z rejestru FRIEND. Training Load dzieli Twoje zmęczenie (około tydzień obciążenia treningowego) przez kondycję (około trzy tygodnie); powyżej 1,4 to skok.",
     "healthspanTitle": "O Healthspan",
-    "healthspanBody": "Pulse Age szacuje, jak stare jest zachowanie Twojego ciała, na podstawie dziewięciu nawyków i parametrów z 28 dni kończących się w każdą niedzielę. Pace of Aging to Twój Pulse Age podzielony przez Twój wiek: 1,0x oznacza, że ciało zachowuje się zgodnie z wiekiem, poniżej 1,0x młodziej, powyżej 1,0x starzej. Oba wskaźniki to szacunki do osobistego wglądu, nie ocena medyczna.",
+    "healthspanBody": "Health Age szacuje, jak stare jest zachowanie Twojego ciała, na podstawie dziewięciu nawyków i parametrów z 28 dni kończących się w każdą niedzielę. Pace of Aging to Twój Health Age podzielony przez Twój wiek: 1,0x oznacza, że ciało zachowuje się zgodnie z wiekiem, poniżej 1,0x młodziej, powyżej 1,0x starzej. Oba wskaźniki to szacunki do osobistego wglądu, nie ocena medyczna.",
     "hrTitle": "O tętnie",
-    "hrBody1": "Opaska zapisuje tętno przez cały dzień. Aplikacja Google Health udostępnia je w Health Connect, a Pulse czyta je stamtąd.",
-    "hrBody2": "Gdy ten ekran jest otwarty na dzisiaj, Pulse co minutę sprawdza nowe odczyty. Odczyt zwykle dociera jedną do trzech minut po pomiarze opaski, więc najnowszy nigdy nie jest dokładnie z teraz.",
+    "hrBody1": "Opaska zapisuje tętno przez cały dzień. Aplikacja Google Health udostępnia je w Health Connect, a Health czyta je stamtąd.",
+    "hrBody2": "Gdy ten ekran jest otwarty na dzisiaj, Health co minutę sprawdza nowe odczyty. Odczyt zwykle dociera jedną do trzech minut po pomiarze opaski, więc najnowszy nigdy nie jest dokładnie z teraz.",
     "hrBody3": "Wykres pokazuje średnią z każdej minuty. Minuty bez odczytu, gdy opaska była zdjęta lub się nie synchronizowała, pozostają puste."
   },
   "hrv": {
     "infoTitle": "HRV Status",
     "info1": "Twoje średnie nocne HRV z ostatnich 7 nocy na tle Twojego zwykłego zakresu, na wzór HRV Status od Garmin. Zwykły zakres powstaje z 60 nocy wcześniej, w skali logarytmicznej, i potrzebuje 21 nocy.",
     "info2": "Balanced: średnia z 7 dni mieści się w zwykłym zakresie. Unbalanced: powyżej niego lub nieco poniżej. Low: wyraźnie poniżej, często oznaka wysiłku, choroby lub słabego snu. Pojedyncza noc niewiele zmienia; trend z kilku dni tak.",
-    "info3": "Garmin pokazuje też Poor, gdy Twój zwykły zakres jest niski jak na Twój wiek; Pulse tego nie robi, dopóki nie ma opublikowanej normy wiekowej do porównania.",
+    "info3": "Garmin pokazuje też Poor, gdy Twój zwykły zakres jest niski jak na Twój wiek; Health tego nie robi, dopóki nie ma opublikowanej normy wiekowej do porównania.",
     "calibrating": "HRV Status potrzebuje 21 nocy HRV, aby poznać Twój zwykły zakres.",
     "avg7": "Średnia z 7 dni",
     "spoken": "HRV Status {{status}}, średnia z 7 dni {{avg}} milisekund",
@@ -276,13 +276,13 @@
   "hsText": {
     "sleepHours": "Zarówno krótki, jak i długi sen wiążą się z wyższą śmiertelnością. Najniższe ryzyko to około 7,5 do 9 godzin na noc; 7 godzin kosztuje około pół roku, 6 godzin lub mniej około 2 lat.",
     "sri": "Spanie o tych samych porach każdego dnia wiąże się z dłuższym życiem, niezależnie od długości snu. Punkt odniesienia to regularność 70: poniżej niej lata ubywają szybko, powyżej niewiele się odejmuje. To ta sama regularność snu co na ekranie snu, uśredniona z okna.",
-    "zone13": "Umiarkowana aktywność wiąże się z wyraźnie niższą śmiertelnością; punkt odniesienia to 150 minut tygodniowo, a korzyść wypłaszcza się znacznie powyżej. Pulse liczy ją z Twojego tętna w Zone 2 i Zone 3 (60 do 80% tętna maksymalnego), jako tygodniową średnią z 28 dni.",
+    "zone13": "Umiarkowana aktywność wiąże się z wyraźnie niższą śmiertelnością; punkt odniesienia to 150 minut tygodniowo, a korzyść wypłaszcza się znacznie powyżej. Health liczy ją z Twojego tętna w Zone 2 i Zone 3 (60 do 80% tętna maksymalnego), jako tygodniową średnią z 28 dni.",
     "zone45": "Intensywna aktywność dodaje korzyść ponad umiarkowaną. Punkt odniesienia to 10 minut tygodniowo; trochę więcej pomaga, a korzyść szybko się wypłaszcza. Liczona z Twojego tętna w Zone 4 i Zone 5.",
     "strength": "Ćwiczenia wzmacniające mięśnie (trening siłowy, ciężary, kalistenika lub HIIT) wiążą się z niższą śmiertelnością. Punkt odniesienia to 10 minut tygodniowo, a korzyść wypłaszcza się powyżej około 40.",
     "steps": "Więcej kroków dziennie wiąże się z niższą śmiertelnością. Punkt odniesienia to 8 000 dziennie (6 000 od 60. roku życia), a zaliczanie kończy się na 10 000 (8 000 od 60). Dni bez tętna lub kroków są pomijane, więc opaska zostawiona na ładowarce nie jest odczytywana jako leniwy dzień.",
     "vo2max": "Wyższa wydolność krążeniowo-oddechowa to jeden z najsilniejszych predyktorów dłuższego życia. Punkt odniesienia pochodzi z tabeli dla Twojego wieku i płci; każdy ml/kg/min powyżej odejmuje około 0,4 roku, każdy poniżej dodaje tyle samo. Z odczytów VO2 max z Fitbit.",
     "restingHr": "Wyższe tętno spoczynkowe wiąże się z wyższą śmiertelnością. Punkt odniesienia pochodzi z tabeli dla Twojego wieku i płci; każde 10 bpm powyżej dodaje około 1,2 roku.",
-    "leanMass": "Część Twojej masy ciała bez tłuszczu, obliczona z odczytów tkanki tłuszczowej. Cel zależy od wieku i płci. Wynik poniżej celu dodaje lata do Pulse Age. W wieku 35 lat lub mniej osiągnięcie albo przekroczenie celu daje wkład 0,0 lat; nie obniża Pulse Age. Powyżej 35 lat przekroczenie celu może obniżyć Pulse Age, a efekt rośnie z wiekiem."
+    "leanMass": "Część Twojej masy ciała bez tłuszczu, obliczona z odczytów tkanki tłuszczowej. Cel zależy od wieku i płci. Wynik poniżej celu dodaje lata do Health Age. W wieku 35 lat lub mniej osiągnięcie albo przekroczenie celu daje wkład 0,0 lat; nie obniża Health Age. Powyżej 35 lat przekroczenie celu może obniżyć Health Age, a efekt rośnie z wiekiem."
   },
   "hs": {
     "source": "Populacyjne badania śmiertelności",
@@ -290,7 +290,7 @@
     "vo2Run": "Zmierzone",
     "vo2Daily": "Szacunek Fitbit",
     "vo2Estimate": "Szacowane z tętna spoczynkowego i aktywności",
-    "leanNeeds": "Wymaga tkanki tłuszczowej (inteligentna waga lub Dziennik › Zapis › Tkanka tłuszczowa) albo wagi i wzrostu w Profilu. Pominięte w Pulse Age.",
+    "leanNeeds": "Wymaga tkanki tłuszczowej (inteligentna waga lub Dziennik › Zapis › Tkanka tłuszczowa) albo wagi i wzrostu w Profilu. Pominięte w Health Age.",
     "leanBodyFat": "{{pct}}% tkanki tłuszczowej",
     "leanMass": "{{lean}} {{unit}} beztłuszczowej, {{fat}} {{unit}} tłuszczu",
     "leanIndex": "FFMI {{ffmi}}, FMI {{fmi}} kg/m²",
@@ -305,7 +305,7 @@
     "faster": "Starzenie szybsze",
     "steady": "Stabilnie i zdrowo",
     "paceNone": "Pace of Aging pojawi się, gdy {{days}} z ostatnich 30 dni będzie miało dane.",
-    "paceIs": "Twój Pace of Aging to {{pace}}x: Twój Pulse Age względem Twojego wieku.",
+    "paceIs": "Twój Pace of Aging to {{pace}}x: Twój Health Age względem Twojego wieku.",
     "boost": "Największy zysk daje: {{label}}, wart {{years}} lat.",
     "adds": "{{label}} dodaje najwięcej, {{years}} lat.",
     "termsSome": "Na podstawie {{used}} z {{total}} danych wejściowych; obecne są przeskalowane, by reprezentować wszystkie {{total}}.",

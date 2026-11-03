@@ -100,16 +100,16 @@ const round = (v: number) => (Math.abs(v) >= 100 ? Math.round(v) : Math.round(v 
 
 /** Plain-text report (for Share and for reading back from the device). */
 export function formatReport(days: DayCheck[]): string {
-  const out: string[] = ["Pulse data check — every app's records in Health Connect"];
+  const out: string[] = ["Health data check — every app's records in Health Connect"];
   for (const d of days) {
     out.push("", `■ ${d.day}`);
     for (const m of d.metrics) {
       if (!m.sources.length && m.pulse == null) continue;
-      out.push(`  ${m.label}: Pulse ${m.pulse == null ? "—" : round(m.pulse)}${m.unit ? ` ${m.unit}` : ""}`);
+      out.push(`  ${m.label}: Health ${m.pulse == null ? "—" : round(m.pulse)}${m.unit ? ` ${m.unit}` : ""}`);
       for (const s of m.sources) out.push(`    ${s.source}: ${s.value}${m.unit ? ` ${m.unit}` : ""} (${s.records} rec; ${s.detail})`);
     }
     if (d.sleep.sources.length || d.sleep.pulse.length) {
-      out.push(`  Sleep: Pulse ${d.sleep.pulse.join(" | ") || "—"}`);
+      out.push(`  Sleep: Health ${d.sleep.pulse.join(" | ") || "—"}`);
       for (const s of d.sleep.sources) out.push(`    ${s.source}: ${s.value} h (${s.detail})`);
     }
   }

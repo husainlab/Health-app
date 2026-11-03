@@ -27,7 +27,7 @@
     "trendsAside": "Hasta 1 año",
     "behaviours": "Hábitos",
     "behavioursAside": "{{shown}} de {{total}} visibles",
-    "howPulseWorks": "Cómo funciona Pulse",
+    "howPulseWorks": "Cómo funciona Health",
     "scoresAside_one": "{{count}} puntuación",
     "scoresAside_many": "{{count}} de puntuaciones",
     "scoresAside_other": "{{count}} puntuaciones",
@@ -36,7 +36,7 @@
   },
   "about": {
     "title": "Acerca de",
-    "body": "La puntuación está portada de noop. Pulse es para uso personal y no es un dispositivo médico.",
+    "body": "La puntuación está portada de noop. Health es para uso personal y no es un dispositivo médico.",
     "version": "Versión",
     "scoringVersion": "Versión de puntuación",
     "sourceCode": "Código fuente",
@@ -59,8 +59,8 @@
     "dailyBody": "Una fila por día: Recovery, Strain, Sleep Performance, horas y consistencia, variabilidad de la frecuencia cardíaca, frecuencia cardíaca en reposo, frecuencia respiratoria, estrés y pasos.",
     "dailyBodySince": "Una fila por día desde el {{date}}: Recovery, Strain, Sleep Performance, horas y consistencia, variabilidad de la frecuencia cardíaca, frecuencia cardíaca en reposo, frecuencia respiratoria, estrés y pasos.",
     "journalBody": "Cada respuesta del registro, incluidos los hábitos ocultos. El JSON también lista tus hábitos.",
-    "storageNone": "Las exportaciones incluyen solo lo que Pulse guardó en este teléfono.",
-    "storage": "Pulse guarda {{mb}} MB en este teléfono. Las exportaciones incluyen solo lo que guardó."
+    "storageNone": "Las exportaciones incluyen solo lo que Health guardó en este teléfono.",
+    "storage": "Health guarda {{mb}} MB en este teléfono. Las exportaciones incluyen solo lo que guardó."
   },
   "behaviours": {
     "title": "Hábitos",
@@ -79,7 +79,7 @@
     "exists": "Ese hábito ya existe.",
     "limit": "Llegaste al límite de hábitos.",
     "addFailed": "No se pudo añadir. Inténtalo de nuevo.",
-    "tooMany": "Son más hábitos de los que Pulse puede seguir. Elige menos.",
+    "tooMany": "Son más hábitos de los que Health puede seguir. Elige menos.",
     "saveFailed": "No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.",
     "search": "Buscar hábitos",
     "tabAll": "Todos",
@@ -91,7 +91,7 @@
   "breathe": {
     "title": "Respirar",
     "aboutTitle": "Sobre Respirar",
-    "aboutBody": "Respiración guiada con un círculo y avisos hápticos: un pulso suave al inhalar, dos al exhalar, ninguno en las pausas. Con tu pulsera en vivo, Pulse muestra tu frecuencia cardíaca; cuando la pulsera también envía intervalos latido a latido, toma una lectura de HRV (RMSSD) de un minuto antes y después. Las sesiones se quedan en este teléfono y las puntuaciones no las usan.",
+    "aboutBody": "Respiración guiada con un círculo y avisos hápticos: un pulso suave al inhalar, dos al exhalar, ninguno en las pausas. Con tu pulsera en vivo, Health muestra tu frecuencia cardíaca; cuando la pulsera también envía intervalos latido a latido, toma una lectura de HRV (RMSSD) de un minuto antes y después. Las sesiones se quedan en este teléfono y las puntuaciones no las usan.",
     "hrvLine": "HRV {{value}} ms · RMSSD, último minuto",
     "hrvMeasuring": "HRV: midiendo…",
     "length": "Duración",

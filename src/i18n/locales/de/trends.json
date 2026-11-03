@@ -67,7 +67,7 @@
   },
   "aboutBody": {
     "recovery1": "Recovery zeigt, wie bereit dein Körper heute für Strain ist, auf einer Skala von 1 bis 100%.",
-    "recovery2": "Pulse berechnet sie jeden Morgen aus deiner Herzfrequenzvariabilität, Ruheherzfrequenz, Atemfrequenz, Sleep Performance und Hauttemperatur, jeweils im Vergleich zu deiner eigenen jüngsten Baseline.",
+    "recovery2": "Health berechnet sie jeden Morgen aus deiner Herzfrequenzvariabilität, Ruheherzfrequenz, Atemfrequenz, Sleep Performance und Hauttemperatur, jeweils im Vergleich zu deiner eigenen jüngsten Baseline.",
     "recovery3": "Grün (ab 67%) heißt, du bist bereit für einen harten Tag, Gelb heißt halten, und Rot heißt, dein Körper braucht Ruhe.",
     "hrv1": "Die Herzfrequenzvariabilität (HRV) ist die Schwankung der Zeit zwischen deinen Herzschlägen, im Schlaf in Millisekunden gemessen.",
     "hrv2": "Ein höheres HRV bedeutet meist, dass dein Nervensystem entspannt und bereit für Stress ist; ein niedrigeres folgt oft auf hartes Training, schlechten Schlaf, Alkohol oder Krankheit.",
@@ -104,7 +104,7 @@
     "calories1": "Kalorien ist alles, was du am Tag verbrannt hast: dein Ruheverbrauch plus Bewegung und Workouts.",
     "vo2max1": "VO2 max ist die größte Sauerstoffmenge, die dein Körper bei intensiver Belastung nutzen kann, in Millilitern pro Kilogramm Körpergewicht pro Minute. Fitbit schätzt ihn aus deinen Läufen oder, wenn du nicht läufst, aus deiner Ruheherzfrequenz.",
     "vo2max2": "Er ist eines der stärksten Zeichen für langfristige Gesundheit: Höhere Fitness geht mit einem längeren Leben einher. Regelmäßiges Ausdauertraining hebt ihn über Wochen und Monate.",
-    "lean_mass1": "Die Magermasse ist dein Gewicht minus dein Körperfett: Muskeln, Knochen, Organe und Wasser. Pulse berechnet sie aus Gewicht und Körperfett, die deine Waage oder die Fitbit-App aufzeichnet.",
+    "lean_mass1": "Die Magermasse ist dein Gewicht minus dein Körperfett: Muskeln, Knochen, Organe und Wasser. Health berechnet sie aus Gewicht und Körperfett, die deine Waage oder die Fitbit-App aufzeichnet.",
     "lean_mass2": "Mehr Magermasse für deine Größe hängt mit einem längeren Leben zusammen, unabhängig von deinem Körperfett. Krafttraining und genug Eiweiß bauen sie auf."
   },
   "viewCard": {
@@ -170,7 +170,7 @@
     "steps": "Über den Tag gezählte Schritte.",
     "calories": "Alles, was du verbrannt hast: dein Ruheverbrauch plus Bewegung. Ruhe ist die Summe minus aktive Kalorien, da die Quelle keine eigene Ruhesumme sendet.",
     "hrv": "Schwankung der Zeit zwischen Herzschlägen im Schlaf, in Millisekunden gemessen. Vergleiche es mit deinem eigenen üblichen Bereich.",
-    "rhr": "Deine Ruheherzfrequenz, wie Fitbit sie an Health Connect meldet, oder die Schätzung von Pulse aus deinem Nachtschlaf, wenn Fitbit für den Tag keine hat. Recovery und Health Monitor bewerten genau diesen Wert.",
+    "rhr": "Deine Ruheherzfrequenz, wie Fitbit sie an Health Connect meldet, oder die Schätzung von Health aus deinem Nachtschlaf, wenn Fitbit für den Tag keine hat. Recovery und Health Monitor bewerten genau diesen Wert.",
     "resp": "Atemzüge pro Minute im Schlaf, von deinem Band gemessen.",
     "spo2": "Geschätzte Sauerstoffsättigung des Bluts im Schlaf, von deinem Band gemessen.",
     "skin": "Nächtliche Hauttemperatur über oder unter deiner persönlichen Baseline. Das ist ein Temperaturunterschied, nicht deine Körpertemperatur.",
@@ -195,10 +195,10 @@
     "swim_strokes": "Beim Schwimmen im Becken gezählte Züge."
   },
   "metricSource": {
-    "activity": "Die Tagessumme deiner Health-App, von deinem Band oder Handy gezählt. Pulse zeigt sie, wie sie kommt, und bewertet sie nicht.",
+    "activity": "Die Tagessumme deiner Health-App, von deinem Band oder Handy gezählt. Health zeigt sie, wie sie kommt, und bewertet sie nicht.",
     "body": "Aus deiner Health-App synchronisierte Werte. Ein Tag ohne Wert zeigt den letzten davor.",
-    "nutrition": "Die Tagessumme deiner Einträge in deiner Health-App, plus das, was du im Journal von Pulse erfasst. Eine Mahlzeit, die in Pulse und Fitbit erfasst wurde, zählt einmal.",
-    "vitals": "Der Tageswert deiner Health-App, von deinem Band oder einem verbundenen Gerät. Pulse schattiert deinen üblichen Bereich aus den letzten 90 Tagen.",
+    "nutrition": "Die Tagessumme deiner Einträge in deiner Health-App, plus das, was du im Journal von Health erfasst. Eine Mahlzeit, die in Health und Fitbit erfasst wurde, zählt einmal.",
+    "vitals": "Der Tageswert deiner Health-App, von deinem Band oder einem verbundenen Gerät. Health schattiert deinen üblichen Bereich aus den letzten 90 Tagen.",
     "monitor": "Aus Health Connect. Der schattierte Bereich entspricht Health Monitor: dein Mittelwert ± 1 SD der letzten 30 Nächte, einschließlich der ausgewählten Nacht.",
     "monitorUnavailable": "Aus Health Connect. Für diesen Tag ist kein Health Monitor-Bereich verfügbar."
   },
@@ -386,7 +386,7 @@
     "workoutsBurned": "Workouts verbrannten {{burned}} der {{active}} aktiven kcal des Tages.",
     "noWorkouts": "An diesem Tag keine Workouts erfasst.",
     "loggedEntries": "Erfasste Einträge",
-    "noEntries": "An diesem Tag nichts in Pulse erfasst. Einträge aus anderen Apps zählen nach der Synchronisierung zur Summe.",
+    "noEntries": "An diesem Tag nichts in Health erfasst. Einträge aus anderen Apps zählen nach der Synchronisierung zur Summe.",
     "eatenVsBurned": "Gegessen vs. verbrannt",
     "macros": "Makros",
     "readings": "Messwerte",
@@ -443,7 +443,7 @@
     "restorativeSleep": "Erholsamer Schlaf",
     "energyBank": "Energy Bank",
     "skinTempDeviation": "Hauttemp. (zur Baseline)",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "dayView": {
     "heartRate": "Herzfrequenz",

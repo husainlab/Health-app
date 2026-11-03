@@ -67,7 +67,7 @@
   },
   "aboutBody": {
     "recovery1": "Recovery es qué tan listo está tu cuerpo para asumir Strain hoy, en una escala de 1 a 100%.",
-    "recovery2": "Pulse lo puntúa cada mañana a partir de tu variabilidad de la frecuencia cardíaca, frecuencia cardíaca en reposo, frecuencia respiratoria, Sleep Performance y temperatura de la piel, cada una comparada con tu propia referencia reciente.",
+    "recovery2": "Health lo puntúa cada mañana a partir de tu variabilidad de la frecuencia cardíaca, frecuencia cardíaca en reposo, frecuencia respiratoria, Sleep Performance y temperatura de la piel, cada una comparada con tu propia referencia reciente.",
     "recovery3": "Verde (67% o más) significa que estás listo para un día exigente, amarillo significa mantener y rojo significa que tu cuerpo pide descanso.",
     "hrv1": "La variabilidad de la frecuencia cardíaca (HRV) es la variación del tiempo entre tus latidos, medida en milisegundos mientras duermes.",
     "hrv2": "Una HRV más alta suele indicar que tu sistema nervioso está relajado y listo para el estrés; una más baja suele aparecer tras un entrenamiento duro, mal sueño, alcohol o enfermedad.",
@@ -104,7 +104,7 @@
     "calories1": "Las calorías son todo lo que quemaste en el día: tu gasto en reposo más el movimiento y los entrenamientos.",
     "vo2max1": "VO2 max es la mayor cantidad de oxígeno que tu cuerpo puede usar durante un ejercicio intenso, en mililitros por kilogramo de peso corporal por minuto. Fitbit lo estima a partir de tus carreras, o de tu frecuencia cardíaca en reposo cuando no corres.",
     "vo2max2": "Es una de las señales más fuertes de salud a largo plazo: más condición física va de la mano con una vida más larga. El entrenamiento aeróbico constante lo sube con semanas y meses.",
-    "lean_mass1": "La masa corporal magra es tu peso menos tu grasa corporal: músculo, hueso, órganos y agua. Pulse la calcula con el peso y la grasa corporal que registran tu báscula o la app de Fitbit.",
+    "lean_mass1": "La masa corporal magra es tu peso menos tu grasa corporal: músculo, hueso, órganos y agua. Health la calcula con el peso y la grasa corporal que registran tu báscula o la app de Fitbit.",
     "lean_mass2": "Más masa magra para tu estatura se asocia con una vida más larga, sea cual sea tu grasa corporal. El entrenamiento de fuerza y suficientes proteínas la construyen."
   },
   "viewCard": {
@@ -170,7 +170,7 @@
     "steps": "Pasos contados durante el día.",
     "calories": "Todo lo que quemaste: tu gasto en reposo más el movimiento. El reposo es el total menos las calorías activas, ya que la fuente no envía un resumen de reposo por separado.",
     "hrv": "Variación del tiempo entre latidos durante el sueño, medida en milisegundos. Compárala con tu propio rango habitual.",
-    "rhr": "Tu frecuencia cardíaca en reposo tal como Fitbit la reporta a Health Connect, o la estimación de Pulse a partir de tu sueño de la noche cuando Fitbit no tiene una para el día. Recovery y Health Monitor puntúan este mismo número.",
+    "rhr": "Tu frecuencia cardíaca en reposo tal como Fitbit la reporta a Health Connect, o la estimación de Health a partir de tu sueño de la noche cuando Fitbit no tiene una para el día. Recovery y Health Monitor puntúan este mismo número.",
     "resp": "Respiraciones por minuto durante el sueño, medidas por tu pulsera.",
     "spo2": "Saturación de oxígeno en sangre estimada durante el sueño, medida por tu pulsera.",
     "skin": "Temperatura de la piel nocturna por encima o por debajo de tu referencia personal. Es una diferencia de temperatura, no tu temperatura corporal.",
@@ -195,10 +195,10 @@
     "swim_strokes": "Brazadas contadas durante nados en piscina."
   },
   "metricSource": {
-    "activity": "El resumen diario de tu app de salud, contado por tu pulsera o tu teléfono. Pulse lo muestra tal cual y no lo puntúa.",
+    "activity": "El resumen diario de tu app de salud, contado por tu pulsera o tu teléfono. Health lo muestra tal cual y no lo puntúa.",
     "body": "Lecturas sincronizadas desde tu app de salud. Un día sin lectura muestra la última anterior.",
-    "nutrition": "El total diario de tus registros en tu app de salud, más lo que registras en el Diario de Pulse. Una comida registrada en Pulse y en Fitbit cuenta una sola vez.",
-    "vitals": "El valor diario de tu app de salud, de tu pulsera o de un dispositivo conectado. Pulse sombrea tu rango habitual de los últimos 90 días.",
+    "nutrition": "El total diario de tus registros en tu app de salud, más lo que registras en el Diario de Health. Una comida registrada en Health y en Fitbit cuenta una sola vez.",
+    "vitals": "El valor diario de tu app de salud, de tu pulsera o de un dispositivo conectado. Health sombrea tu rango habitual de los últimos 90 días.",
     "monitor": "De Health Connect. El rango sombreado coincide con Health Monitor: tu media ± 1 SD de las últimas 30 noches, incluida la noche seleccionada.",
     "monitorUnavailable": "De Health Connect. No hay un rango de Health Monitor disponible para este día."
   },
@@ -393,7 +393,7 @@
     "workoutsBurned": "Los entrenamientos quemaron {{burned}} de las {{active}} kcal activas del día.",
     "noWorkouts": "No se registraron entrenamientos este día.",
     "loggedEntries": "Registros",
-    "noEntries": "No se registró nada en Pulse este día. Los registros hechos en otras apps cuentan en el total cuando se sincronizan.",
+    "noEntries": "No se registró nada en Health este día. Los registros hechos en otras apps cuentan en el total cuando se sincronizan.",
     "eatenVsBurned": "Consumidas vs. quemadas",
     "macros": "Macronutrientes",
     "readings": "Lecturas",
@@ -452,7 +452,7 @@
     "restorativeSleep": "Sueño reparador",
     "energyBank": "Energy Bank",
     "skinTempDeviation": "Temp. piel (vs. referencia)",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "dayView": {
     "heartRate": "Frecuencia cardíaca",

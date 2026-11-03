@@ -107,7 +107,7 @@ export function HealthspanScreen() {
       }
       insight={vm.insight ? <InsightCard title={vm.insight.title} body={vm.insight.body} /> : undefined}
       primary={
-        <SectionShell variant="card" title={t("title.ageHistory")} info={cardInfo("Pulse Age history")}>
+        <SectionShell variant="card" title={t("title.ageHistory")} info={cardInfo("Health Age history")}>
           {hasHistory ? (
             <TrendChart
               label={AGE_LABEL}
@@ -148,7 +148,7 @@ function Contributors({ title, n }: { title: string; n: number }) {
 }
 
 const loadingPrimary = () => (
-  <SectionShell variant="card" title={i18n.t("health:title.ageHistory")} info={cardInfo("Pulse Age history")}>
+  <SectionShell variant="card" title={i18n.t("health:title.ageHistory")} info={cardInfo("Health Age history")}>
     <TrendChartSkeleton />
   </SectionShell>
 );

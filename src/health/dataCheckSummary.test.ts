@@ -25,7 +25,7 @@ describe("data check summary", () => {
     const sp = day.metrics.find((x) => x.key === "spo2")!;
     expect(sp.sources[0].detail).toBe("06:30 96");
     const text = formatReport([day]);
-    expect(text).toContain("Steps: Pulse 6000");
+    expect(text).toContain("Steps: Health 6000");
     expect(text).toContain("Fitbit app/watch: 6000");
   });
 });

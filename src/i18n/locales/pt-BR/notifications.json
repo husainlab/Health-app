@@ -4,8 +4,8 @@
     "body": "{{percent}}%: {{band}}"
   },
   "cantSync": {
-    "title": "O Pulse não consegue sincronizar",
-    "body": "O Health Connect não sincroniza há {{gap}}. Abra o Pulse para sincronizar."
+    "title": "O Health não consegue sincronizar",
+    "body": "O Health Connect não sincroniza há {{gap}}. Abra o Health para sincronizar."
   },
   "since": {
     "hours_one": "{{count}} hora",

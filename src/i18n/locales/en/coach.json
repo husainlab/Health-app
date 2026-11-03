@@ -3,7 +3,9 @@
   "settingsTitle": "Coach settings",
   "chatsTitle": "Chats",
   "providerFallback": "your provider",
-  "provider": { "custom": "Your own server" },
+  "provider": {
+    "custom": "Your own server"
+  },
   "suggestions": {
     "brief": "Today's brief",
     "sync": "What can I do while last night's sleep syncs?",

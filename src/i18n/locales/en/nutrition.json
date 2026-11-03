@@ -1,8 +1,8 @@
 {
   "title": "Nutrition",
   "info": {
-    "title": "How Pulse counts food",
-    "body": "Totals add what you log in Pulse to the food logged in Fitbit (read from Health Connect). A food logged in both apps counts once: when Fitbit has the same food at the same meal, or the same calories within an hour and a half, Pulse leaves its own entry out. Photo and description estimates come from your own AI provider and are approximate. Pulse never keeps the photo."
+    "title": "How Health counts food",
+    "body": "Totals add what you log in Health to the food logged in Fitbit (read from Health Connect). A food logged in both apps counts once: when Fitbit has the same food at the same meal, or the same calories within an hour and a half, Health leaves its own entry out. Photo and description estimates come from your own AI provider and are approximate. Health never keeps the photo."
   },
   "target": {
     "kcal": "Calories",
@@ -38,7 +38,7 @@
     "macroA11y": "{{label}}: {{value}} of {{target}} g",
     "macroOf": " / {{target}} g",
     "macroBar": "{{label}} against target",
-    "fiber": "Fiber {{g}} g, from food logged in Pulse"
+    "fiber": "Fiber {{g}} g, from food logged in Health"
   },
   "row": {
     "fitbit": "Logged in Fitbit",
@@ -73,19 +73,19 @@
     "addFood": "Add food",
     "todaysFood": "Today’s food",
     "emptyToday": "Nothing logged today. Add a meal with a photo, a few words, or its numbers.",
-    "overlap": "{{meal}} is logged in both Pulse and Fitbit under different names. If it’s the same food, delete the Pulse entry so it counts once.",
+    "overlap": "{{meal}} is logged in both Health and Fitbit under different names. If it’s the same food, delete the Health entry so it counts once.",
     "unlistedTitle": "More from Fitbit’s food log",
     "unlistedNote": "Fitbit’s daily total holds more than the foods listed here, so the rest counts as one line.",
     "targets": "Daily targets",
     "deleteTitle": "Delete this food?",
-    "deleteBody": "{{food}}, {{numbers}}. It is deleted from Pulse.",
+    "deleteBody": "{{food}}, {{numbers}}. It is deleted from Health.",
     "delete": "Delete",
     "deleting": "Deleting…",
     "deleteFailed": "Couldn’t delete. Try again.",
     "deleted": "Deleted",
     "changeFailed": "Couldn’t change that. Try again.",
     "nowCounts": "{{title}} now counts too",
-    "rematched": "Pulse matches {{title}} with Fitbit again"
+    "rematched": "Health matches {{title}} with Fitbit again"
   },
   "food": {
     "titleEdit": "Edit food",
@@ -124,10 +124,10 @@
     "todayKcal": "Today: {{kcal}} kcal",
     "todayKcalProtein": "Today: {{kcal}} kcal · {{protein}} g protein",
     "noKeyTitle": "Photo estimates use your own AI key",
-    "noKeyBody": "Add a key from Anthropic, OpenAI, Google or another provider in the coach’s settings, and Pulse can estimate a meal from a photo or a few words. Until then, enter the food yourself.",
-    "cameraDenied": "Pulse needs the camera to take the photo. Allow it when Android asks, or choose a photo instead.",
-    "cameraBlockedTitle": "The camera is off for Pulse",
-    "cameraBlockedBody": "Allow it in Android’s settings for Pulse, or choose a photo instead.",
+    "noKeyBody": "Add a key from Anthropic, OpenAI, Google or another provider in the coach’s settings, and Health can estimate a meal from a photo or a few words. Until then, enter the food yourself.",
+    "cameraDenied": "Health needs the camera to take the photo. Allow it when Android asks, or choose a photo instead.",
+    "cameraBlockedTitle": "The camera is off for Health",
+    "cameraBlockedBody": "Allow it in Android’s settings for Health, or choose a photo instead.",
     "openSettings": "Open Android settings",
     "photoFailed": "That photo couldn’t be read. Try another, or enter the food yourself.",
     "photoAlt": "Your meal photo",
@@ -159,7 +159,7 @@
     "describeA11y": "Describe what you ate",
     "describePlaceholder": "e.g. 2 eggs and a slice of toast",
     "estimateFromDescription": "Estimate from description",
-    "privacy": "Your photo or description goes only to {{provider}}, with your own key, for this estimate. Pulse doesn’t save the photo.",
+    "privacy": "Your photo or description goes only to {{provider}}, with your own key, for this estimate. Health doesn’t save the photo.",
     "enterTitle": "Or enter it yourself",
     "typeFood": "Type the food and its numbers"
   },
@@ -176,7 +176,7 @@
     "busyTitle": "{{provider}} is busy",
     "busyBody": "Your provider is limiting requests right now. Try again in a minute, or enter the food yourself.",
     "networkTitle": "No connection",
-    "networkBody": "Pulse couldn’t reach {{provider}}. Check your connection and try again, or enter the food yourself.",
+    "networkBody": "Health couldn’t reach {{provider}}. Check your connection and try again, or enter the food yourself.",
     "noFoodTitle": "No food found",
     "noFoodBodyPhoto": "{{provider}} didn’t find food or drink in this photo. Try again, or enter the food yourself.",
     "noFoodBodyText": "{{provider}} didn’t find food or drink in that description. Try again, or enter the food yourself.",
@@ -190,7 +190,7 @@
     "proteinDefault": "A typical adult target. Log your weight for yours: {{perKg}} g per kg.",
     "kcalBurn_one": "What you burned a day, on average, over {{count}} day",
     "kcalBurn_other": "What you burned a day, on average, over {{count}} days",
-    "kcalDefault": "The usual food-label reference, until Pulse has a few days of your calories burned",
+    "kcalDefault": "The usual food-label reference, until Health has a few days of your calories burned",
     "own": "Your target",
     "fat": "{{pct}}% of your {{kcal}} kcal",
     "carbs": "The calories left after protein and fat",

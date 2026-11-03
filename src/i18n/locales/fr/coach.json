@@ -3,7 +3,9 @@
   "settingsTitle": "Réglages du Coach",
   "chatsTitle": "Discussions",
   "providerFallback": "ton fournisseur",
-  "provider": { "custom": "Ton propre serveur" },
+  "provider": {
+    "custom": "Ton propre serveur"
+  },
   "suggestions": {
     "brief": "Le point du jour",
     "sync": "Que puis-je faire pendant que le sommeil de cette nuit se synchronise ?",
@@ -47,9 +49,9 @@
     "shareAnswer": "Partager la réponse",
     "regenerate": "Régénérer la réponse",
     "emptyTitle": "Que veux-tu savoir ?",
-    "emptyBody": "Le Coach consulte tes propres chiffres Pulse avant de répondre, avec {{provider}}. Ce ne sont pas des conseils médicaux.",
+    "emptyBody": "Le Coach consulte tes propres chiffres Health avant de répondre, avec {{provider}}. Ce ne sont pas des conseils médicaux.",
     "checkIn": "Check-in du jour",
-    "chatLabel": "Discuter avec le Coach de Pulse",
+    "chatLabel": "Discuter avec le Coach de Health",
     "retry": "Réessayer",
     "placeholder": "Écrire au Coach",
     "askLabel": "Demander au Coach",
@@ -117,8 +119,8 @@
   },
   "setup": {
     "consentTitle": "Avant de commencer",
-    "consentSend": "Pour répondre, le Coach envoie tes questions et les chiffres Pulse qu’il consulte (scores, constantes, séances, comportements du journal) au fournisseur d’IA que tu choisis ensuite, directement depuis ce téléphone, avec ta propre clé. Rien ne t’identifie.",
-    "consentTerms": "Les conditions et tarifs de ton fournisseur s’appliquent. Pulse n’ajoute aucun coût.",
+    "consentSend": "Pour répondre, le Coach envoie tes questions et les chiffres Health qu’il consulte (scores, constantes, séances, comportements du journal) au fournisseur d’IA que tu choisis ensuite, directement depuis ce téléphone, avec ta propre clé. Rien ne t’identifie.",
+    "consentTerms": "Les conditions et tarifs de ton fournisseur s’appliquent. Health n’ajoute aucun coût.",
     "consentLocal": "Les discussions sont enregistrées sur ce téléphone, visibles par toi seul. Supprime-les quand tu veux.",
     "consentAccuracy": "Les réponses peuvent être fausses et ne sont pas des conseils médicaux.",
     "consentFailed": "Impossible d’enregistrer. Réessaie.",
@@ -138,8 +140,8 @@
     "modelHint": "N’importe quel modèle proposé par ton fournisseur.",
     "testing": "Test…",
     "testAndSave": "Tester et enregistrer",
-    "checkServer": "Pulse vérifie le serveur avec une toute petite requête avant de l’enregistrer.",
-    "checkKey": "Pulse vérifie la clé avec une toute petite requête avant de l’enregistrer."
+    "checkServer": "Health vérifie le serveur avec une toute petite requête avant de l’enregistrer.",
+    "checkKey": "Health vérifie la clé avec une toute petite requête avant de l’enregistrer."
   },
   "validate": {
     "pickProvider": "Choisis un fournisseur.",

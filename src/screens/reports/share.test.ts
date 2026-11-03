@@ -60,7 +60,7 @@ describe("reportShareText", () => {
   it("lays the report out as titled sections", () => {
     expect(reportShareText(VM)).toBe(
       [
-        "Pulse · Weekly performance assessment",
+        "Health · Weekly performance assessment",
         "Sep 21 - Sep 27, 2026",
         "",
         "Averages vs last week",
@@ -93,7 +93,7 @@ describe("reportShareText", () => {
   it("a month in progress, with no changes or focus, drops those sections", () => {
     const month: ReportPageVM = { ...VM, kind: "month", period: "2026-10", start: "2026-10-01", end: "2026-10-31", partial: true, performance: { ...VM.performance, improved: [], declined: [], focus: [] } };
     const text = reportShareText(month);
-    expect(text.split("\n").slice(0, 2)).toEqual(["Pulse · Monthly performance assessment", "October 2026 (so far)"]);
+    expect(text.split("\n").slice(0, 2)).toEqual(["Health · Monthly performance assessment", "October 2026 (so far)"]);
     expect(text).toContain("Averages vs last month");
     expect(text).not.toContain("Biggest changes");
     expect(text).not.toContain("Focus");

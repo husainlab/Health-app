@@ -67,7 +67,7 @@
     "strength": "Entrenamientos de fuerza, pesas, HIIT o calistenia. OMS: 2 o más días a la semana.",
     "steps": "Tu promedio diario de la semana. El beneficio se estabiliza hacia los 8.000 a 10.000 pasos al día (Paluch 2022).",
     "consistency": "Tu Sleep Consistency de las últimas 7 noches. 80% o más es lo óptimo.",
-    "sleepNeed": "Noches en que duermes el Sleep Need que Pulse fija para esa noche."
+    "sleepNeed": "Noches en que duermes el Sleep Need que Health fija para esa noche."
   },
   "planStatus": {
     "done": "Hecho",
@@ -136,9 +136,9 @@
     "spoken": "{{label}}: {{value}} {{target}}, {{status}}",
     "spokenLine": "{{label}}: {{value}} {{target}}. {{caption}}",
     "whyTitle": "Por qué estas",
-    "whyBody": "Estos son los hábitos que puntúa Pulse Age. Los valores por defecto siguen los 150 minutos moderados o 75 intensos de la OMS y dos días de fuerza a la semana, unos 8.000 pasos al día y un horario de sueño estable. Una marca en una barra señala dónde estarías a estas alturas con un ritmo parejo.",
+    "whyBody": "Estos son los hábitos que puntúa Health Age. Los valores por defecto siguen los 150 minutos moderados o 75 intensos de la OMS y dos días de fuerza a la semana, unos 8.000 pasos al día y un horario de sueño estable. Una marca en una barra señala dónde estarías a estas alturas con un ritmo parejo.",
     "editTargets": "Editar metas",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "card": {
     "titleToday": "Metas de hoy",
@@ -202,7 +202,7 @@
     "resetGoals": "Restablecer a los valores de Fitbit",
     "goalsReset": "Metas restablecidas a los valores de Fitbit",
     "planTitle": "Plan semanal",
-    "planBody": "Metas semanales para los hábitos que puntúa Pulse Age, de lunes a domingo, con una racha por cada semana que las cumplas. Borra un número para desactivarlo.",
+    "planBody": "Metas semanales para los hábitos que puntúa Health Age, de lunes a domingo, con una racha por cada semana que las cumplas. Borra un número para desactivarlo.",
     "resetPlan": "Restablecer plan semanal",
     "planReset": "Plan semanal restablecido a sus valores por defecto"
   },

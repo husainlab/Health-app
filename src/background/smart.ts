@@ -77,7 +77,7 @@ export const WEEKLY_REPORT_FROM_MIN = 7 * 60;
 /** ...through this many days of the new week, so a Monday without a run still hears on Tuesday. */
 export const WEEKLY_REPORT_DAYS = 2;
 
-export const reportLink = (period: string) => `pulse://reports/${period}`;
+export const reportLink = (period: string) => `health://reports/${period}`;
 
 /** Strain as a whole percent: "42%". */
 const pct = (x: number) => `${Math.round(x)}%`;

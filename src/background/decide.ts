@@ -75,13 +75,13 @@ export const CANT_SYNC_AFTER_S = 36 * 3600;
  * app/sleep.tsx with its `#planner` anchor, app/health/monitor.tsx; a report is smart.ts's reportLink).
  */
 export const DEEP_LINK = {
-  recovery: "pulse://recovery",
-  source: "pulse://settings?s=source",
-  journal: "pulse://journal",
-  notifications: "pulse://settings?s=notifications",
-  strain: "pulse://strain",
-  planner: "pulse://sleep#planner",
-  monitor: "pulse://health/monitor",
+  recovery: "health://recovery",
+  source: "health://settings?s=source",
+  journal: "health://journal",
+  notifications: "health://settings?s=notifications",
+  strain: "health://strain",
+  planner: "health://sleep#planner",
+  monitor: "health://health/monitor",
 } as const;
 
 /** The web's "Recovery ready" body: "78%: Green". */

@@ -117,8 +117,8 @@
     "perWeek": "{{value}} в неделю"
   },
   "share": {
-    "headerWeek": "Pulse · Оценка результатов за неделю",
-    "headerMonth": "Pulse · Оценка результатов за месяц",
+    "headerWeek": "Health · Оценка результатов за неделю",
+    "headerMonth": "Health · Оценка результатов за месяц",
     "periodSoFar": "{{period}} (пока)",
     "averagesVs": "Средние к {{period}}",
     "sleep": "Сон",

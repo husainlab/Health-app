@@ -59,13 +59,13 @@ describe("decide: Recovery ready", () => {
   });
 });
 
-describe("decide: Pulse can't sync", () => {
+describe("decide: Health can't sync", () => {
   const stale = { ...base, recoveryToday: null, lastSyncTs: NOW - CANT_SYNC_AFTER_S - 7200 };
 
   it("sends when the last sync is 36 h or older, naming the gap, linking to the data source", () => {
     const [a] = decide(stale);
-    expect(a).toMatchObject({ kind: "cant_sync", title: "Pulse can’t sync", url: DEEP_LINK.source, day: TODAY });
-    expect(a.body).toBe("Health Connect hasn’t synced for 38 hours. Open Pulse to sync.");
+    expect(a).toMatchObject({ kind: "cant_sync", title: "Health can’t sync", url: DEEP_LINK.source, day: TODAY });
+    expect(a.body).toBe("Health Connect hasn’t synced for 38 hours. Open Health to sync.");
   });
 
   it("is quiet under 36 h, and when there has never been a sync (that is onboarding)", () => {

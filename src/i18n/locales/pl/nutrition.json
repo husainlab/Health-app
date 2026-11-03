@@ -1,8 +1,8 @@
 {
   "title": "Odżywianie",
   "info": {
-    "title": "Jak Pulse liczy jedzenie",
-    "body": "Sumy dodają to, co zapisujesz w Pulse, do jedzenia zapisanego w Fitbit (odczytanego z Health Connect). Produkt zapisany w obu aplikacjach liczy się raz: gdy Fitbit ma ten sam produkt przy tym samym posiłku lub te same kalorie w ciągu półtorej godziny, Pulse pomija własny wpis. Szacunki ze zdjęcia i opisu pochodzą od Twojego własnego dostawcy AI i są przybliżone. Pulse nigdy nie zachowuje zdjęcia."
+    "title": "Jak Health liczy jedzenie",
+    "body": "Sumy dodają to, co zapisujesz w Health, do jedzenia zapisanego w Fitbit (odczytanego z Health Connect). Produkt zapisany w obu aplikacjach liczy się raz: gdy Fitbit ma ten sam produkt przy tym samym posiłku lub te same kalorie w ciągu półtorej godziny, Health pomija własny wpis. Szacunki ze zdjęcia i opisu pochodzą od Twojego własnego dostawcy AI i są przybliżone. Health nigdy nie zachowuje zdjęcia."
   },
   "target": {
     "kcal": "Kalorie",
@@ -38,7 +38,7 @@
     "macroA11y": "{{label}}: {{value}} z {{target}} g",
     "macroOf": " / {{target}} g",
     "macroBar": "{{label}} względem celu",
-    "fiber": "Błonnik {{g}} g, z jedzenia zapisanego w Pulse"
+    "fiber": "Błonnik {{g}} g, z jedzenia zapisanego w Health"
   },
   "row": {
     "fitbit": "Zapisane w Fitbit",
@@ -73,19 +73,19 @@
     "addFood": "Dodaj jedzenie",
     "todaysFood": "Dzisiejsze jedzenie",
     "emptyToday": "Dziś nic nie zapisano. Dodaj posiłek ze zdjęcia, kilku słów lub jego liczb.",
-    "overlap": "{{meal}} jest zapisany w Pulse i Fitbit pod różnymi nazwami. Jeśli to ten sam produkt, usuń wpis z Pulse, by liczył się raz.",
+    "overlap": "{{meal}} jest zapisany w Health i Fitbit pod różnymi nazwami. Jeśli to ten sam produkt, usuń wpis z Health, by liczył się raz.",
     "unlistedTitle": "Więcej z dziennika jedzenia Fitbit",
     "unlistedNote": "Dzienna suma Fitbit zawiera więcej niż wymienione tu produkty, więc reszta liczy się jako jedna linia.",
     "targets": "Cele dzienne",
     "deleteTitle": "Usunąć ten produkt?",
-    "deleteBody": "{{food}}, {{numbers}}. Zostanie usunięty z Pulse.",
+    "deleteBody": "{{food}}, {{numbers}}. Zostanie usunięty z Health.",
     "delete": "Usuń",
     "deleting": "Usuwanie…",
     "deleteFailed": "Nie udało się usunąć. Spróbuj ponownie.",
     "deleted": "Usunięto",
     "changeFailed": "Nie udało się tego zmienić. Spróbuj ponownie.",
     "nowCounts": "{{title}} też się teraz liczy",
-    "rematched": "Pulse znów dopasowuje {{title}} do Fitbit"
+    "rematched": "Health znów dopasowuje {{title}} do Fitbit"
   },
   "food": {
     "titleEdit": "Edytuj jedzenie",
@@ -126,10 +126,10 @@
     "todayKcal": "Dziś: {{kcal}} kcal",
     "todayKcalProtein": "Dziś: {{kcal}} kcal · {{protein}} g białka",
     "noKeyTitle": "Szacunki ze zdjęć używają Twojego własnego klucza AI",
-    "noKeyBody": "Dodaj klucz od Anthropic, OpenAI, Google lub innego dostawcy w ustawieniach Coacha, a Pulse oszacuje posiłek ze zdjęcia lub kilku słów. Do tego czasu wpisz jedzenie ręcznie.",
-    "cameraDenied": "Pulse potrzebuje aparatu, by zrobić zdjęcie. Zezwól, gdy Android zapyta, lub wybierz zdjęcie.",
-    "cameraBlockedTitle": "Aparat jest wyłączony dla Pulse",
-    "cameraBlockedBody": "Zezwól w ustawieniach Androida dla Pulse lub wybierz zdjęcie.",
+    "noKeyBody": "Dodaj klucz od Anthropic, OpenAI, Google lub innego dostawcy w ustawieniach Coacha, a Health oszacuje posiłek ze zdjęcia lub kilku słów. Do tego czasu wpisz jedzenie ręcznie.",
+    "cameraDenied": "Health potrzebuje aparatu, by zrobić zdjęcie. Zezwól, gdy Android zapyta, lub wybierz zdjęcie.",
+    "cameraBlockedTitle": "Aparat jest wyłączony dla Health",
+    "cameraBlockedBody": "Zezwól w ustawieniach Androida dla Health lub wybierz zdjęcie.",
     "openSettings": "Otwórz ustawienia Androida",
     "photoFailed": "Nie udało się odczytać tego zdjęcia. Spróbuj innego lub wpisz jedzenie ręcznie.",
     "photoAlt": "Zdjęcie Twojego posiłku",
@@ -165,7 +165,7 @@
     "describeA11y": "Opisz, co zjedzono",
     "describePlaceholder": "np. 2 jajka i kromka tostu",
     "estimateFromDescription": "Oszacuj z opisu",
-    "privacy": "Twoje zdjęcie lub opis trafia tylko do: {{provider}}, z Twoim własnym kluczem, na potrzeby tego szacunku. Pulse nie zapisuje zdjęcia.",
+    "privacy": "Twoje zdjęcie lub opis trafia tylko do: {{provider}}, z Twoim własnym kluczem, na potrzeby tego szacunku. Health nie zapisuje zdjęcia.",
     "enterTitle": "Albo wpisz ręcznie",
     "typeFood": "Wpisz jedzenie i jego liczby"
   },
@@ -182,7 +182,7 @@
     "busyTitle": "{{provider}} jest zajęty",
     "busyBody": "Twój dostawca ogranicza teraz liczbę żądań. Spróbuj ponownie za minutę lub wpisz jedzenie ręcznie.",
     "networkTitle": "Brak połączenia",
-    "networkBody": "Pulse nie mógł połączyć się z: {{provider}}. Sprawdź połączenie i spróbuj ponownie lub wpisz jedzenie ręcznie.",
+    "networkBody": "Health nie mógł połączyć się z: {{provider}}. Sprawdź połączenie i spróbuj ponownie lub wpisz jedzenie ręcznie.",
     "noFoodTitle": "Nie znaleziono jedzenia",
     "noFoodBodyPhoto": "{{provider}} nie znalazł jedzenia ani napoju na tym zdjęciu. Spróbuj ponownie lub wpisz jedzenie ręcznie.",
     "noFoodBodyText": "{{provider}} nie znalazł jedzenia ani napoju w tym opisie. Spróbuj ponownie lub wpisz jedzenie ręcznie.",
@@ -198,7 +198,7 @@
     "kcalBurn_few": "To, co spalasz dziennie, średnio z {{count}} dni",
     "kcalBurn_many": "To, co spalasz dziennie, średnio z {{count}} dni",
     "kcalBurn_other": "To, co spalasz dziennie, średnio z {{count}} dnia",
-    "kcalDefault": "Zwykła wartość z etykiet żywności, dopóki Pulse nie ma kilku dni Twoich spalonych kalorii",
+    "kcalDefault": "Zwykła wartość z etykiet żywności, dopóki Health nie ma kilku dni Twoich spalonych kalorii",
     "own": "Twój cel",
     "fat": "{{pct}}% Twoich {{kcal}} kcal",
     "carbs": "Kalorie pozostałe po białku i tłuszczu",

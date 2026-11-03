@@ -1,8 +1,11 @@
 {
-  "recovery": { "title": "Recovery готов", "body": "{{percent}}%: {{band}}" },
+  "recovery": {
+    "title": "Recovery готов",
+    "body": "{{percent}}%: {{band}}"
+  },
   "cantSync": {
-    "title": "Pulse не может синхронизироваться",
-    "body": "Health Connect не синхронизировался {{gap}}. Открой Pulse, чтобы синхронизировать."
+    "title": "Health не может синхронизироваться",
+    "body": "Health Connect не синхронизировался {{gap}}. Открой Health, чтобы синхронизировать."
   },
   "since": {
     "hours_one": "{{count}} час",
@@ -14,7 +17,10 @@
     "days_many": "{{count}} дней",
     "days_other": "{{count}} дня"
   },
-  "checkIn": { "title": "Отметка дня", "body": "Как прошёл день? Удели минуту отметке." },
+  "checkIn": {
+    "title": "Отметка дня",
+    "body": "Как прошёл день? Удели минуту отметке."
+  },
   "strainTarget": {
     "title": "Strain Target достигнут",
     "inside": "Day Strain {{strain}} в пределах сегодняшней цели {{range}}.",
@@ -41,5 +47,8 @@
     "withParts": "{{range}}: {{parts}}.",
     "empty": "Твоя неделя {{range}} подведена."
   },
-  "windDown": { "title": "Пора расслабиться", "body": "Ложись до {{time}}, чтобы выспаться по норме." }
+  "windDown": {
+    "title": "Пора расслабиться",
+    "body": "Ложись до {{time}}, чтобы выспаться по норме."
+  }
 }

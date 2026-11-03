@@ -1,7 +1,7 @@
 {
   "screen": {
     "title": "Cet écran n’a pas pu s’afficher",
-    "body": "Pulse a rencontré une erreur en l’affichant. Tes données sont en sécurité."
+    "body": "Health a rencontré une erreur en l’affichant. Tes données sont en sécurité."
   },
   "log": {
     "invalidOption": "Option invalide",
@@ -120,7 +120,7 @@
     "disconnected": "{{device}} déconnecté.",
     "refusedStream": "{{device}} a refusé le flux de fréquence cardiaque. Si Android demande à associer, accepte, puis reconnecte-toi.",
     "notSharing": "{{device}} ne partage pas la fréquence cardiaque. Active Partager la fréquence cardiaque dans Google Health.",
-    "needsNearby": "Pulse a besoin de l’autorisation Appareils à proximité.",
+    "needsNearby": "Health a besoin de l’autorisation Appareils à proximité.",
     "btOff": "Le Bluetooth est désactivé.",
     "scanPaused": "Android a mis la recherche en pause un instant (trop de recherches d’affilée). Réessaie dans 30 secondes.",
     "needsLocation": "Active la Localisation : cette version d’Android en a besoin pour rechercher des appareils Bluetooth.",

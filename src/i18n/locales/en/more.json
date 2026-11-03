@@ -35,7 +35,7 @@
   },
   "about": {
     "title": "About",
-    "body": "Scoring is ported from noop. Pulse is for personal use and is not a medical device.",
+    "body": "Scoring is ported from noop. Health is for personal use and is not a medical device.",
     "version": "Version",
     "scoringVersion": "Scoring version",
     "sourceCode": "Source code",
@@ -56,8 +56,8 @@
     "dailyBody": "One row per day: Recovery, Strain, sleep performance, hours and consistency, heart rate variability, resting heart rate, respiratory rate, stress and steps.",
     "dailyBodySince": "One row per day since {{date}}: Recovery, Strain, sleep performance, hours and consistency, heart rate variability, resting heart rate, respiratory rate, stress and steps.",
     "journalBody": "Every check-in answer, hidden behaviours included. The JSON also lists your behaviours.",
-    "storageNone": "Exports hold only what Pulse stored on this phone.",
-    "storage": "Pulse keeps {{mb}} MB on this phone. Exports hold only what it stored."
+    "storageNone": "Exports hold only what Health stored on this phone.",
+    "storage": "Health keeps {{mb}} MB on this phone. Exports hold only what it stored."
   },
   "behaviours": {
     "title": "Behaviours",
@@ -76,7 +76,7 @@
     "exists": "That behaviour already exists.",
     "limit": "You’ve reached the behaviour limit.",
     "addFailed": "Couldn’t add it. Try again.",
-    "tooMany": "That’s more behaviours than Pulse can track. Choose fewer.",
+    "tooMany": "That’s more behaviours than Health can track. Choose fewer.",
     "saveFailed": "Couldn’t save. Check your connection and try again.",
     "search": "Search for behaviours",
     "tabAll": "All",
@@ -88,7 +88,7 @@
   "breathe": {
     "title": "Breathe",
     "aboutTitle": "About Breathe",
-    "aboutBody": "Paced breathing with a circle and haptic cues: one light pulse as you breathe in, two as you breathe out, none on a hold. With your band live, Pulse shows your heart rate; when the band also sends beat-to-beat intervals, it takes a one-minute HRV reading (RMSSD) before and after. Sessions stay on this phone and scores don’t use them.",
+    "aboutBody": "Paced breathing with a circle and haptic cues: one light pulse as you breathe in, two as you breathe out, none on a hold. With your band live, Health shows your heart rate; when the band also sends beat-to-beat intervals, it takes a one-minute HRV reading (RMSSD) before and after. Sessions stay on this phone and scores don’t use them.",
     "hrvLine": "HRV {{value}} ms · RMSSD, last minute",
     "hrvMeasuring": "HRV: measuring…",
     "length": "Length",

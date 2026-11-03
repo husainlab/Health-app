@@ -67,7 +67,7 @@
   },
   "aboutBody": {
     "recovery1": "Recovery indique à quel point ton corps est prêt à encaisser du Strain aujourd’hui, sur une échelle de 1 à 100%.",
-    "recovery2": "Pulse la calcule chaque matin à partir de ta variabilité de la fréquence cardiaque, de ta fréquence cardiaque au repos, de ta fréquence respiratoire, de ta Sleep Performance et de ta température cutanée, chacune comparée à ta propre référence récente.",
+    "recovery2": "Health la calcule chaque matin à partir de ta variabilité de la fréquence cardiaque, de ta fréquence cardiaque au repos, de ta fréquence respiratoire, de ta Sleep Performance et de ta température cutanée, chacune comparée à ta propre référence récente.",
     "recovery3": "Vert (67% et plus) veut dire que tu es prêt pour une grosse journée, jaune que tu maintiens, et rouge que ton corps demande du repos.",
     "hrv1": "La variabilité de la fréquence cardiaque (HRV) est la variation de temps entre tes battements de cœur, mesurée en millisecondes pendant que tu dors.",
     "hrv2": "Une HRV plus élevée signifie en général que ton système nerveux est détendu et prêt pour le stress ; une plus basse suit souvent un entraînement intense, un mauvais sommeil, l’alcool ou une maladie.",
@@ -104,7 +104,7 @@
     "calories1": "Les calories sont tout ce que tu as brûlé dans la journée : ta dépense au repos plus le mouvement et les entraînements.",
     "vo2max1": "Le VO2 max est le maximum d’oxygène que ton corps peut utiliser pendant un effort intense, en millilitres par kilogramme de poids corporel par minute. Fitbit l’estime à partir de tes courses, ou de ta fréquence cardiaque au repos quand tu ne cours pas.",
     "vo2max2": "C’est l’un des meilleurs signes de santé à long terme : une meilleure forme va avec une vie plus longue. Un entraînement aérobie régulier le fait monter sur des semaines et des mois.",
-    "lean_mass1": "La masse maigre est ton poids moins ta masse grasse : muscle, os, organes et eau. Pulse la calcule à partir du poids et de la masse grasse enregistrés par ta balance ou l’app Fitbit.",
+    "lean_mass1": "La masse maigre est ton poids moins ta masse grasse : muscle, os, organes et eau. Health la calcule à partir du poids et de la masse grasse enregistrés par ta balance ou l’app Fitbit.",
     "lean_mass2": "Plus de masse maigre pour ta taille est lié à une vie plus longue, quelle que soit ta masse grasse. La musculation et assez de protéines la construisent."
   },
   "viewCard": {
@@ -170,7 +170,7 @@
     "steps": "Pas comptés tout au long de la journée.",
     "calories": "Tout ce que tu as brûlé : ta dépense au repos plus le mouvement. Le repos est le total moins les calories actives, car la source n’envoie pas de cumul de repos séparé.",
     "hrv": "Variation de temps entre les battements de cœur pendant le sommeil, mesurée en millisecondes. Compare-la à ta propre plage habituelle.",
-    "rhr": "Ta fréquence cardiaque au repos telle que Fitbit la transmet à Health Connect, ou l’estimation de Pulse à partir de ton sommeil quand Fitbit n’en a pas pour le jour. Recovery et Health Monitor notent ce même chiffre.",
+    "rhr": "Ta fréquence cardiaque au repos telle que Fitbit la transmet à Health Connect, ou l’estimation de Health à partir de ton sommeil quand Fitbit n’en a pas pour le jour. Recovery et Health Monitor notent ce même chiffre.",
     "resp": "Respirations par minute pendant le sommeil, mesurées par ton bracelet.",
     "spo2": "Saturation en oxygène du sang estimée pendant le sommeil, mesurée par ton bracelet.",
     "skin": "Température cutanée nocturne au-dessus ou en dessous de ta référence personnelle. C’est un écart de température, pas ta température corporelle.",
@@ -195,10 +195,10 @@
     "swim_strokes": "Mouvements de nage comptés pendant les séances en piscine."
   },
   "metricSource": {
-    "activity": "Le cumul quotidien de ton app santé, compté par ton bracelet ou ton téléphone. Pulse l’affiche tel quel et ne le note pas.",
+    "activity": "Le cumul quotidien de ton app santé, compté par ton bracelet ou ton téléphone. Health l’affiche tel quel et ne le note pas.",
     "body": "Relevés synchronisés depuis ton app santé. Un jour sans relevé affiche le dernier avant lui.",
-    "nutrition": "Le total quotidien de tes enregistrements dans ton app santé, plus ce que tu enregistres dans le Journal de Pulse. Un repas enregistré dans Pulse et dans Fitbit compte une seule fois.",
-    "vitals": "La valeur quotidienne de ton app santé, d’après ton bracelet ou un appareil connecté. Pulse grise ta plage habituelle sur les 90 derniers jours.",
+    "nutrition": "Le total quotidien de tes enregistrements dans ton app santé, plus ce que tu enregistres dans le Journal de Health. Un repas enregistré dans Health et dans Fitbit compte une seule fois.",
+    "vitals": "La valeur quotidienne de ton app santé, d’après ton bracelet ou un appareil connecté. Health grise ta plage habituelle sur les 90 derniers jours.",
     "monitor": "Depuis Health Connect. La zone ombrée correspond à Health Monitor : votre moyenne ± 1 SD sur les 30 dernières nuits, nuit sélectionnée comprise.",
     "monitorUnavailable": "Depuis Health Connect. Aucune plage Health Monitor n’est disponible pour ce jour."
   },
@@ -393,7 +393,7 @@
     "workoutsBurned": "Les entraînements ont brûlé {{burned}} des {{active}} kcal actives du jour.",
     "noWorkouts": "Aucun entraînement enregistré ce jour-là.",
     "loggedEntries": "Entrées enregistrées",
-    "noEntries": "Rien d’enregistré dans Pulse ce jour-là. Les entrées faites dans d’autres apps comptent dans le total après leur synchro.",
+    "noEntries": "Rien d’enregistré dans Health ce jour-là. Les entrées faites dans d’autres apps comptent dans le total après leur synchro.",
     "eatenVsBurned": "Mangé vs brûlé",
     "macros": "Macronutriments",
     "readings": "Relevés",
@@ -452,7 +452,7 @@
     "restorativeSleep": "Sommeil réparateur",
     "energyBank": "Energy Bank",
     "skinTempDeviation": "Temp. cutanée (vs référence)",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "dayView": {
     "heartRate": "Fréquence cardiaque",

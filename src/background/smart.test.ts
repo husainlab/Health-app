@@ -190,9 +190,9 @@ describe("weekly report ready", () => {
 
   it("goes Monday morning for the week that just ended, opening its report", () => {
     const [a] = decideSmart(on);
-    expect(a).toMatchObject({ kind: "weekly_report", title: "Weekly report ready", url: "pulse://reports/2026-W40", day: MONDAY, mark: { reportPeriod: "2026-W40" } });
+    expect(a).toMatchObject({ kind: "weekly_report", title: "Weekly report ready", url: "health://reports/2026-W40", day: MONDAY, mark: { reportPeriod: "2026-W40" } });
     expect(a.body).toBe("Sep 28 - Oct 4: Recovery averaged 64%, Day Strain 42%.");
-    expect(reportLink("2026-W40")).toBe("pulse://reports/2026-W40");
+    expect(reportLink("2026-W40")).toBe("health://reports/2026-W40");
   });
 
   it("waits for 07:00 on Monday, catches up on Tuesday, and lets the week go after that", () => {
@@ -221,7 +221,7 @@ describe("weekly report ready", () => {
   it("names the ISO week across the new year (2026 has a week 53)", () => {
     const w53 = { ...W40, period: "2026-W53", start: "2026-12-28", end: "2027-01-03" };
     const [a] = decideSmart({ ...on, now: Date.UTC(2027, 0, 4, 8) / 1000, reports: [w53] });
-    expect(a.url).toBe("pulse://reports/2026-W53");
+    expect(a.url).toBe("health://reports/2026-W53");
   });
 
   it("words only what the week has", () => {

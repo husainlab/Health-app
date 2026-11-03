@@ -257,7 +257,7 @@
     "checkedIn": "Eingecheckt",
     "behavioursLogged": "Gewohnheiten erfasst",
     "edit": "Check-in bearbeiten",
-    "prompt": "Halte fest, was du heute getan hast. Pulse vergleicht es mit der Recovery von morgen."
+    "prompt": "Halte fest, was du heute getan hast. Health vergleicht es mit der Recovery von morgen."
   },
   "dismiss": {
     "title": "Journal verwerfen?",

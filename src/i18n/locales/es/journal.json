@@ -258,7 +258,7 @@
     "checkedIn": "Registrado",
     "behavioursLogged": "Hábitos registrados",
     "edit": "Editar registro",
-    "prompt": "Registra lo que hiciste hoy. Pulse lo compara con el Recovery de mañana."
+    "prompt": "Registra lo que hiciste hoy. Health lo compara con el Recovery de mañana."
   },
   "dismiss": {
     "title": "¿Descartar el diario?",

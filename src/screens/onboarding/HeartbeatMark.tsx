@@ -50,7 +50,7 @@ export function HeartbeatMark() {
   const glowStyle = useAnimatedStyle(() => (reduce ? { opacity: 0.35 } : { opacity: 0.32 + 0.23 * glow.value, transform: [{ scale: 1 + 0.06 * glow.value }] }));
 
   return (
-    <View accessibilityRole="image" accessibilityLabel="Pulse" className="items-center gap-7">
+    <View accessibilityRole="image" accessibilityLabel="Health" className="items-center gap-7">
       <View style={{ width: BOX, height: BOX }} className="items-center justify-center">
         {/* radial-gradient(closest-side, optimal, strain-text at 60 % by 55 %, transparent), blurred: the fade to clear is the blur. */}
         <Animated.View style={[{ position: "absolute", width: BOX, height: BOX }, glowStyle]}>

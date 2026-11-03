@@ -1,8 +1,8 @@
 {
   "title": "Ernährung",
   "info": {
-    "title": "Wie Pulse Essen zählt",
-    "body": "Die Summen addieren, was du in Pulse einträgst, zu dem Essen, das in Fitbit eingetragen ist (aus Health Connect gelesen). Ein Essen, das in beiden Apps eingetragen ist, zählt einmal: Wenn Fitbit dasselbe Essen zur selben Mahlzeit hat oder dieselben Kalorien innerhalb von anderthalb Stunden, lässt Pulse seinen eigenen Eintrag weg. Schätzungen aus Foto und Beschreibung kommen von deinem eigenen KI-Anbieter und sind ungefähr. Pulse behält das Foto nie."
+    "title": "Wie Health Essen zählt",
+    "body": "Die Summen addieren, was du in Health einträgst, zu dem Essen, das in Fitbit eingetragen ist (aus Health Connect gelesen). Ein Essen, das in beiden Apps eingetragen ist, zählt einmal: Wenn Fitbit dasselbe Essen zur selben Mahlzeit hat oder dieselben Kalorien innerhalb von anderthalb Stunden, lässt Health seinen eigenen Eintrag weg. Schätzungen aus Foto und Beschreibung kommen von deinem eigenen KI-Anbieter und sind ungefähr. Health behält das Foto nie."
   },
   "target": {
     "kcal": "Kalorien",
@@ -38,7 +38,7 @@
     "macroA11y": "{{label}}: {{value}} von {{target}} g",
     "macroOf": " / {{target}} g",
     "macroBar": "{{label}} im Vergleich zum Ziel",
-    "fiber": "Ballaststoffe {{g}} g, aus in Pulse eingetragenem Essen"
+    "fiber": "Ballaststoffe {{g}} g, aus in Health eingetragenem Essen"
   },
   "row": {
     "fitbit": "In Fitbit eingetragen",
@@ -73,19 +73,19 @@
     "addFood": "Essen hinzufügen",
     "todaysFood": "Essen heute",
     "emptyToday": "Heute nichts eingetragen. Füge eine Mahlzeit mit einem Foto, ein paar Worten oder ihren Zahlen hinzu.",
-    "overlap": "{{meal}} ist in Pulse und Fitbit unter verschiedenen Namen eingetragen. Wenn es dasselbe Essen ist, lösche den Pulse-Eintrag, damit es einmal zählt.",
+    "overlap": "{{meal}} ist in Health und Fitbit unter verschiedenen Namen eingetragen. Wenn es dasselbe Essen ist, lösche den Health-Eintrag, damit es einmal zählt.",
     "unlistedTitle": "Mehr aus Fitbits Essensprotokoll",
     "unlistedNote": "Fitbits Tagessumme enthält mehr als die hier aufgeführten Essen, der Rest zählt deshalb als eine Zeile.",
     "targets": "Tagesziele",
     "deleteTitle": "Dieses Essen löschen?",
-    "deleteBody": "{{food}}, {{numbers}}. Es wird aus Pulse gelöscht.",
+    "deleteBody": "{{food}}, {{numbers}}. Es wird aus Health gelöscht.",
     "delete": "Löschen",
     "deleting": "Wird gelöscht…",
     "deleteFailed": "Konnte nicht gelöscht werden. Versuch es noch einmal.",
     "deleted": "Gelöscht",
     "changeFailed": "Das konnte nicht geändert werden. Versuch es noch einmal.",
     "nowCounts": "{{title}} zählt jetzt auch",
-    "rematched": "Pulse ordnet {{title}} wieder Fitbit zu"
+    "rematched": "Health ordnet {{title}} wieder Fitbit zu"
   },
   "food": {
     "titleEdit": "Essen bearbeiten",
@@ -124,10 +124,10 @@
     "todayKcal": "Heute: {{kcal}} kcal",
     "todayKcalProtein": "Heute: {{kcal}} kcal · {{protein}} g Protein",
     "noKeyTitle": "Fotoschätzungen nutzen deinen eigenen KI-Schlüssel",
-    "noKeyBody": "Füge in den Einstellungen des Coachs einen Schlüssel von Anthropic, OpenAI, Google oder einem anderen Anbieter hinzu, dann kann Pulse eine Mahlzeit aus einem Foto oder ein paar Worten schätzen. Bis dahin gib das Essen selbst ein.",
-    "cameraDenied": "Pulse braucht die Kamera, um das Foto aufzunehmen. Erlaube sie, wenn Android fragt, oder wähle stattdessen ein Foto.",
-    "cameraBlockedTitle": "Die Kamera ist für Pulse aus",
-    "cameraBlockedBody": "Erlaube sie in den Android-Einstellungen für Pulse oder wähle stattdessen ein Foto.",
+    "noKeyBody": "Füge in den Einstellungen des Coachs einen Schlüssel von Anthropic, OpenAI, Google oder einem anderen Anbieter hinzu, dann kann Health eine Mahlzeit aus einem Foto oder ein paar Worten schätzen. Bis dahin gib das Essen selbst ein.",
+    "cameraDenied": "Health braucht die Kamera, um das Foto aufzunehmen. Erlaube sie, wenn Android fragt, oder wähle stattdessen ein Foto.",
+    "cameraBlockedTitle": "Die Kamera ist für Health aus",
+    "cameraBlockedBody": "Erlaube sie in den Android-Einstellungen für Health oder wähle stattdessen ein Foto.",
     "openSettings": "Android-Einstellungen öffnen",
     "photoFailed": "Das Foto konnte nicht gelesen werden. Probiere ein anderes oder gib das Essen selbst ein.",
     "photoAlt": "Dein Mahlzeitenfoto",
@@ -159,7 +159,7 @@
     "describeA11y": "Beschreibe, was du gegessen hast",
     "describePlaceholder": "z. B. 2 Eier und eine Scheibe Toast",
     "estimateFromDescription": "Aus Beschreibung schätzen",
-    "privacy": "Dein Foto oder deine Beschreibung geht für diese Schätzung nur an {{provider}}, mit deinem eigenen Schlüssel. Pulse speichert das Foto nicht.",
+    "privacy": "Dein Foto oder deine Beschreibung geht für diese Schätzung nur an {{provider}}, mit deinem eigenen Schlüssel. Health speichert das Foto nicht.",
     "enterTitle": "Oder gib es selbst ein",
     "typeFood": "Tippe das Essen und seine Zahlen ein"
   },
@@ -176,7 +176,7 @@
     "busyTitle": "{{provider}} ist ausgelastet",
     "busyBody": "Dein Anbieter begrenzt gerade Anfragen. Versuch es in einer Minute noch einmal oder gib das Essen selbst ein.",
     "networkTitle": "Keine Verbindung",
-    "networkBody": "Pulse konnte {{provider}} nicht erreichen. Prüfe deine Verbindung und versuch es noch einmal oder gib das Essen selbst ein.",
+    "networkBody": "Health konnte {{provider}} nicht erreichen. Prüfe deine Verbindung und versuch es noch einmal oder gib das Essen selbst ein.",
     "noFoodTitle": "Kein Essen gefunden",
     "noFoodBodyPhoto": "{{provider}} hat auf diesem Foto kein Essen oder Getränk gefunden. Versuch es noch einmal oder gib das Essen selbst ein.",
     "noFoodBodyText": "{{provider}} hat in dieser Beschreibung kein Essen oder Getränk gefunden. Versuch es noch einmal oder gib das Essen selbst ein.",
@@ -190,7 +190,7 @@
     "proteinDefault": "Ein typisches Ziel für Erwachsene. Trage dein Gewicht ein, um deins zu bekommen: {{perKg}} g pro kg.",
     "kcalBurn_one": "Was du pro Tag im Schnitt verbrannt hast, über {{count}} Tag",
     "kcalBurn_other": "Was du pro Tag im Schnitt verbrannt hast, über {{count}} Tage",
-    "kcalDefault": "Der übliche Referenzwert auf Lebensmitteletiketten, bis Pulse ein paar Tage deines Kalorienverbrauchs hat",
+    "kcalDefault": "Der übliche Referenzwert auf Lebensmitteletiketten, bis Health ein paar Tage deines Kalorienverbrauchs hat",
     "own": "Dein Ziel",
     "fat": "{{pct}}% deiner {{kcal}} kcal",
     "carbs": "Die Kalorien, die nach Protein und Fett übrig bleiben",

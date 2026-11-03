@@ -10,7 +10,7 @@
     "percentile": "Percentile",
     "vo2Trend": "Tendance du VO2 max",
     "fitnessLoad": "Forme, fatigue et fraîcheur",
-    "ageHistory": "Historique de Pulse Age",
+    "ageHistory": "Historique de Health Age",
     "sleep": "Sommeil",
     "totalDay": "Journée entière",
     "trend30": "Tendance sur 30 jours",
@@ -44,7 +44,7 @@
     "onTrack": "Sur la bonne voie",
     "roomToImprove": "Marge de progression",
     "bodyOutperforming": "Ton {{name}} améliore ta santé à long terme. Continue pour en garder le bénéfice.",
-    "bodyUnder": "Ton {{name}} ajoute des années à ton Pulse Age. Le rapprocher de la cible pour ton âge les ferait disparaître.",
+    "bodyUnder": "Ton {{name}} ajoute des années à ton Health Age. Le rapprocher de la cible pour ton âge les ferait disparaître.",
     "bodyOnTrack": "Ton {{name}} est proche de la cible pour ton âge. De petits progrès ici s’additionnent au fil des années."
   },
   "group": {
@@ -53,22 +53,22 @@
     "fitness": "Forme"
   },
   "contributor": {
-    "infoTitle": "{{title}} et Pulse Age",
-    "infoBody": "La barre de chaque facteur marque ta moyenne sur les 28 jours jusqu’au dernier dimanche, de faible à bon pour ton âge. Les années à côté sont ce que ce facteur ajoute à Pulse Age ou en retire.",
+    "infoTitle": "{{title}} et Health Age",
+    "infoBody": "La barre de chaque facteur marque ta moyenne sur les 28 jours jusqu’au dernier dimanche, de faible à bon pour ton âge. Les années à côté sont ce que ce facteur ajoute à Health Age ou en retire.",
     "target": "Cible pour ton âge : {{value}}",
     "source": "Source : {{source}}.",
     "viewTrend": "Voir la tendance"
   },
   "orb": {
-    "ariaDelta": "Pulse Age {{age}}, {{delta}} que ton âge",
-    "ariaDeltaProvisional": "Pulse Age {{age}}, {{delta}} que ton âge, provisoire",
-    "ariaSame": "Pulse Age {{age}}, identique à ton âge",
-    "ariaSameProvisional": "Pulse Age {{age}}, identique à ton âge, provisoire",
-    "ariaUnavailable": "Pulse Age indisponible. {{reason}}"
+    "ariaDelta": "Health Age {{age}}, {{delta}} que ton âge",
+    "ariaDeltaProvisional": "Health Age {{age}}, {{delta}} que ton âge, provisoire",
+    "ariaSame": "Health Age {{age}}, identique à ton âge",
+    "ariaSameProvisional": "Health Age {{age}}, identique à ton âge, provisoire",
+    "ariaUnavailable": "Health Age indisponible. {{reason}}"
   },
   "firstAge": {
-    "title": "Construis ton premier Pulse Age",
-    "intro": "Ton profil et tes jours enregistrés construisent un Pulse Age. Ce qui manque encore reste manquant tant qu’il n’est pas enregistré.",
+    "title": "Construis ton premier Health Age",
+    "intro": "Ton profil et tes jours enregistrés construisent un Health Age. Ce qui manque encore reste manquant tant qu’il n’est pas enregistré.",
     "recordedDays": "Jours enregistrés",
     "daysOf": "{{done}} jours sur {{total}}",
     "measuresReady": "{{ready}} mesures prêtes sur {{total}}",
@@ -118,7 +118,7 @@
     "note": "Ta plage est ta moyenne ± 1 écart type sur les 30 dernières nuits ; la température cutanée est l’écart par rapport à ta référence."
   },
   "hub": {
-    "noHealthspan": "Pulse Age a besoin d’au moins 5 de ses 9 entrées sur les 4 semaines avant un lundi.",
+    "noHealthspan": "Health Age a besoin d’au moins 5 de ses 9 entrées sur les 4 semaines avant un lundi.",
     "noReading": "aucun relevé",
     "inRange": "dans la plage",
     "outRange": "hors plage",
@@ -166,9 +166,9 @@
     "tsb": "Fraîcheur"
   },
   "healthspan": {
-    "needsInputs": "Pulse Age a besoin d’au moins 5 de ses 9 entrées sur les 4 semaines avant un lundi.",
+    "needsInputs": "Health Age a besoin d’au moins 5 de ses 9 entrées sur les 4 semaines avant un lundi.",
     "yourAge": "Ton âge : {{age}}",
-    "firmsUp": "Pulse Age se précise à mesure que ses entrées arrivent.",
+    "firmsUp": "Health Age se précise à mesure que ses entrées arrivent.",
     "yearsOlder": "Années en plus",
     "yearsYounger": "Années en moins",
     "paceStat": "Pace of Aging",
@@ -176,13 +176,13 @@
     "nextUpdate_many": "Prochaine mise à jour dans {{count}} de jours",
     "nextUpdate_other": "Prochaine mise à jour dans {{count}} jours",
     "paceProvisional": "Pace of Aging utilise une fenêtre de 6 mois. Il se précise à mesure que l’historique s’étoffe.",
-    "paceNormal": "Compare tes 30 derniers jours à ton Pulse Age sur 6 mois.",
+    "paceNormal": "Compare tes 30 derniers jours à ton Health Age sur 6 mois.",
     "yourAgeRef": "Ton âge",
     "historyEmpty": "L’historique se construit une semaine à la fois."
   },
   "info": {
     "monitorTitle": "À propos de Health Monitor",
-    "monitorBody": "Health Monitor compare les constantes de cette nuit à ta plage normale personnelle : la moyenne de tes 30 dernières nuits plus ou moins un écart type. L’oxygène sanguin signale aussi tout ce qui passe sous 95%. Un changement sur plusieurs constantes à la fois peut être un signe précoce de maladie. Pulse n’est pas un dispositif médical ; si tu te sens mal, parles-en à un médecin.",
+    "monitorBody": "Health Monitor compare les constantes de cette nuit à ta plage normale personnelle : la moyenne de tes 30 dernières nuits plus ou moins un écart type. L’oxygène sanguin signale aussi tout ce qui passe sous 95%. Un changement sur plusieurs constantes à la fois peut être un signe précoce de maladie. Health n’est pas un dispositif médical ; si tu te sens mal, parles-en à un médecin.",
     "stressTitle": "À propos de Stress Monitor",
     "stressIntro": "Stress Monitor évalue à quel point ton corps est activé, de 0 à 100, toutes les 6 minutes : ta fréquence cardiaque par rapport à ta fréquence cardiaque éveillé sur les 30 derniers jours, et la nuit ta HRV par rapport à sa référence sur 30 jours.",
     "stressLow": "Faible, 0 - 29 : tu te sens peut-être calme, détendu ou somnolent.",
@@ -190,19 +190,19 @@
     "stressHigh": "Élevé, 60 - 100 : excité, stressé ou très activé.",
     "stressNote": "Les entraînements et l’exercice sont exclus, donc une course ne compte jamais comme du stress. Le stress reste provisoire tant que tes données ne couvrent pas 30 jours.",
     "fitnessTitle": "À propos de la forme",
-    "fitnessBody": "Le VO2 max est le maximum d’oxygène que ton corps peut utiliser pendant un effort intense. Pulse le classe par rapport aux personnes de ton âge et de ton sexe selon le registre FRIEND. Le Training Load divise ta fatigue (environ une semaine de charge d’entraînement) par ta forme (environ trois semaines) ; au-dessus de 1,4, c’est un pic.",
+    "fitnessBody": "Le VO2 max est le maximum d’oxygène que ton corps peut utiliser pendant un effort intense. Health le classe par rapport aux personnes de ton âge et de ton sexe selon le registre FRIEND. Le Training Load divise ta fatigue (environ une semaine de charge d’entraînement) par ta forme (environ trois semaines) ; au-dessus de 1,4, c’est un pic.",
     "healthspanTitle": "À propos de Healthspan",
-    "healthspanBody": "Pulse Age estime l’âge auquel ton corps se comporte, à partir de neuf habitudes et constantes sur les 28 jours se terminant chaque dimanche. Pace of Aging est ton Pulse Age divisé par ton âge : 1,0x signifie que ton corps se comporte selon son âge, en dessous de 1,0x plus jeune, au-dessus de 1,0x plus vieux. Ce sont deux estimations pour mieux te connaître, pas une évaluation médicale.",
+    "healthspanBody": "Health Age estime l’âge auquel ton corps se comporte, à partir de neuf habitudes et constantes sur les 28 jours se terminant chaque dimanche. Pace of Aging est ton Health Age divisé par ton âge : 1,0x signifie que ton corps se comporte selon son âge, en dessous de 1,0x plus jeune, au-dessus de 1,0x plus vieux. Ce sont deux estimations pour mieux te connaître, pas une évaluation médicale.",
     "hrTitle": "À propos de la fréquence cardiaque",
-    "hrBody1": "Ton bracelet enregistre la fréquence cardiaque toute la journée. L’app Google Health la partage avec Health Connect, et Pulse la lit à partir de là.",
-    "hrBody2": "Tant que cet écran est ouvert sur aujourd’hui, Pulse cherche de nouveaux relevés chaque minute. Un relevé arrive en général une à trois minutes après la mesure du bracelet, donc le plus récent n’est jamais tout à fait l’instant présent.",
+    "hrBody1": "Ton bracelet enregistre la fréquence cardiaque toute la journée. L’app Google Health la partage avec Health Connect, et Health la lit à partir de là.",
+    "hrBody2": "Tant que cet écran est ouvert sur aujourd’hui, Health cherche de nouveaux relevés chaque minute. Un relevé arrive en général une à trois minutes après la mesure du bracelet, donc le plus récent n’est jamais tout à fait l’instant présent.",
     "hrBody3": "Le graphique montre la moyenne de chaque minute. Les minutes sans relevé, quand le bracelet était retiré ou ne synchronisait pas, restent vides."
   },
   "hrv": {
     "infoTitle": "HRV Status",
     "info1": "Ta HRV nocturne moyenne sur les 7 dernières nuits, par rapport à ta plage habituelle, à la manière du HRV Status de Garmin. Ta plage habituelle vient des 60 nuits précédentes, sur une échelle logarithmique, et demande 21 nuits pour se former.",
     "info2": "Équilibré : la moyenne sur 7 jours est dans ta plage habituelle. Déséquilibré : au-dessus, ou un peu en dessous. Faible : bien en dessous, souvent signe d’effort, de maladie ou de mauvais sommeil. Une seule nuit change peu les choses ; une tendance sur plusieurs jours, si.",
-    "info3": "Garmin affiche aussi Faible quand ta plage habituelle est basse pour ton âge ; Pulse l’omet tant qu’il n’a pas de norme d’âge publiée pour comparer.",
+    "info3": "Garmin affiche aussi Faible quand ta plage habituelle est basse pour ton âge ; Health l’omet tant qu’il n’a pas de norme d’âge publiée pour comparer.",
     "calibrating": "Le HRV Status a besoin de 21 nuits de HRV pour apprendre ta plage habituelle.",
     "avg7": "Moyenne sur 7 jours",
     "spoken": "HRV Status {{status}}, moyenne sur 7 jours {{avg}} millisecondes",
@@ -275,13 +275,13 @@
   "hsText": {
     "sleepHours": "Un sommeil court comme long est lié à une mortalité plus élevée. Environ 7,5 à 9 heures par nuit portent le risque le plus bas ; 7 heures coûtent environ six mois, 6 heures ou moins environ 2 ans.",
     "sri": "Dormir aux mêmes heures chaque jour est lié à une vie plus longue, en plus de la durée de sommeil. La référence est une régularité de 70 : en dessous, tu perds vite des années, au-dessus, tu en gagnes un peu. C’est la même Sleep Consistency que sur l’écran Sommeil, en moyenne sur la fenêtre.",
-    "zone13": "L’activité modérée est liée à une mortalité nettement plus basse, avec une référence de 150 minutes par semaine et un bénéfice qui plafonne bien au-delà. Comptée par Pulse à partir de ta fréquence cardiaque en Zone 2 et Zone 3 (60 à 80% de la fréquence cardiaque max), en moyenne hebdomadaire sur 28 jours.",
+    "zone13": "L’activité modérée est liée à une mortalité nettement plus basse, avec une référence de 150 minutes par semaine et un bénéfice qui plafonne bien au-delà. Comptée par Health à partir de ta fréquence cardiaque en Zone 2 et Zone 3 (60 à 80% de la fréquence cardiaque max), en moyenne hebdomadaire sur 28 jours.",
     "zone45": "L’activité intense apporte un bénéfice en plus de l’activité modérée. La référence est de 10 minutes par semaine ; un peu plus aide, et le bénéfice plafonne vite. Comptée à partir de ta fréquence cardiaque en Zone 4 et Zone 5.",
     "strength": "Le travail de renforcement musculaire (musculation, haltères, callisthénie ou HIIT) est lié à une mortalité plus basse. La référence est de 10 minutes par semaine, et le bénéfice plafonne au-delà d’environ 40.",
     "steps": "Plus de pas par jour va de pair avec une mortalité plus basse. La référence est de 8 000 par jour (6 000 à partir de 60 ans), et le crédit s’arrête à 10 000 (8 000 à partir de 60 ans). Les jours sans fréquence cardiaque ni pas sont exclus, donc un bracelet resté sur son chargeur n’est pas lu comme une journée paresseuse.",
     "vo2max": "Une meilleure condition cardiorespiratoire est l’un des meilleurs prédicteurs d’une vie plus longue. La référence vient d’un tableau pour ton âge et ton sexe ; chaque ml/kg/min au-dessus retire environ 0,4 an, chacun en dessous en ajoute autant. D’après les relevés de VO2 max de Fitbit.",
     "restingHr": "Une fréquence cardiaque au repos plus élevée est liée à une mortalité plus élevée. La référence vient d’un tableau pour ton âge et ton sexe ; chaque tranche de 10 bpm au-dessus ajoute environ 1,2 an.",
-    "leanMass": "La part de ton poids sans graisse, calculée à partir de tes relevés de masse grasse. La cible dépend de ton âge et de ton sexe. Être en dessous ajoute des années à Pulse Age. À 35 ans ou moins, atteindre ou dépasser la cible contribue à hauteur de 0,0 an ; cela ne réduit pas Pulse Age. Après 35 ans, la dépasser peut réduire Pulse Age, avec un effet plus marqué avec l’âge."
+    "leanMass": "La part de ton poids sans graisse, calculée à partir de tes relevés de masse grasse. La cible dépend de ton âge et de ton sexe. Être en dessous ajoute des années à Health Age. À 35 ans ou moins, atteindre ou dépasser la cible contribue à hauteur de 0,0 an ; cela ne réduit pas Health Age. Après 35 ans, la dépasser peut réduire Health Age, avec un effet plus marqué avec l’âge."
   },
   "hs": {
     "source": "Études de mortalité en population",
@@ -289,7 +289,7 @@
     "vo2Run": "Mesuré",
     "vo2Daily": "Estimation Fitbit",
     "vo2Estimate": "Estimé à partir de la fréquence cardiaque au repos et de l’activité",
-    "leanNeeds": "Demande la masse grasse (balance connectée, ou Journal › Enregistrer › Masse grasse), ou ton poids avec ta taille dans Profil. Exclu de Pulse Age.",
+    "leanNeeds": "Demande la masse grasse (balance connectée, ou Journal › Enregistrer › Masse grasse), ou ton poids avec ta taille dans Profil. Exclu de Health Age.",
     "leanBodyFat": "{{pct}}% de masse grasse",
     "leanMass": "{{lean}} {{unit}} de masse maigre, {{fat}} {{unit}} de graisse",
     "leanIndex": "FFMI {{ffmi}}, FMI {{fmi}} kg/m²",
@@ -304,7 +304,7 @@
     "faster": "Vieillissement plus rapide",
     "steady": "Stable et en bonne santé",
     "paceNone": "Pace of Aging s’affiche quand {{days}} des 30 derniers jours ont des données.",
-    "paceIs": "Ton Pace of Aging est de {{pace}}x : ton Pulse Age sur ton âge.",
+    "paceIs": "Ton Pace of Aging est de {{pace}}x : ton Health Age sur ton âge.",
     "boost": "Ton plus gros atout est {{label}}, qui vaut {{years}} ans.",
     "adds": "{{label}} ajoute le plus, {{years}} ans.",
     "termsSome": "Basé sur {{used}} entrées sur {{total}} ; celles présentes sont pondérées pour représenter les {{total}}.",

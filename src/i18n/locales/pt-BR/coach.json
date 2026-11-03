@@ -49,9 +49,9 @@
     "shareAnswer": "Compartilhar resposta",
     "regenerate": "Gerar resposta de novo",
     "emptyTitle": "O que você quer saber?",
-    "emptyBody": "O Coach consulta os seus próprios números do Pulse antes de responder, usando {{provider}}. Não é orientação médica.",
+    "emptyBody": "O Coach consulta os seus próprios números do Health antes de responder, usando {{provider}}. Não é orientação médica.",
     "checkIn": "Check-in de hoje",
-    "chatLabel": "Conversar com o Coach do Pulse",
+    "chatLabel": "Conversar com o Coach do Health",
     "retry": "Tentar de novo",
     "placeholder": "Mensagem para o Coach",
     "askLabel": "Perguntar ao Coach",
@@ -119,8 +119,8 @@
   },
   "setup": {
     "consentTitle": "Antes de começar",
-    "consentSend": "Para responder, o Coach envia suas perguntas e os números do Pulse que consulta (scores, sinais vitais, treinos, hábitos do diário) ao provedor de IA que você escolher a seguir, direto deste celular, com a sua própria chave. Nada identifica você.",
-    "consentTerms": "Valem os termos e os preços do seu provedor. O Pulse não acrescenta custo.",
+    "consentSend": "Para responder, o Coach envia suas perguntas e os números do Health que consulta (scores, sinais vitais, treinos, hábitos do diário) ao provedor de IA que você escolher a seguir, direto deste celular, com a sua própria chave. Nada identifica você.",
+    "consentTerms": "Valem os termos e os preços do seu provedor. O Health não acrescenta custo.",
     "consentLocal": "As conversas ficam salvas neste celular, visíveis só para você. Apague quando quiser.",
     "consentAccuracy": "As respostas podem estar erradas e não são orientação médica.",
     "consentFailed": "Não foi possível salvar isso. Tente de novo.",
@@ -140,8 +140,8 @@
     "modelHint": "Qualquer modelo que o seu provedor ofereça.",
     "testing": "Testando…",
     "testAndSave": "Testar e salvar",
-    "checkServer": "O Pulse verifica o servidor com uma solicitação mínima antes de salvá-lo.",
-    "checkKey": "O Pulse verifica a chave com uma solicitação mínima antes de salvá-la."
+    "checkServer": "O Health verifica o servidor com uma solicitação mínima antes de salvá-lo.",
+    "checkKey": "O Health verifica a chave com uma solicitação mínima antes de salvá-la."
   },
   "validate": {
     "pickProvider": "Escolha um provedor.",

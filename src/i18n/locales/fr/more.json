@@ -27,7 +27,7 @@
     "trendsAside": "Jusqu’à 1 an",
     "behaviours": "Comportements",
     "behavioursAside": "{{shown}} sur {{total}} affichés",
-    "howPulseWorks": "Comment fonctionne Pulse",
+    "howPulseWorks": "Comment fonctionne Health",
     "scoresAside_one": "{{count}} score",
     "scoresAside_many": "{{count}} de scores",
     "scoresAside_other": "{{count}} scores",
@@ -36,7 +36,7 @@
   },
   "about": {
     "title": "À propos",
-    "body": "Le calcul des scores est repris de noop. Pulse est destiné à un usage personnel et n’est pas un dispositif médical.",
+    "body": "Le calcul des scores est repris de noop. Health est destiné à un usage personnel et n’est pas un dispositif médical.",
     "version": "Version",
     "scoringVersion": "Version du calcul",
     "sourceCode": "Code source",
@@ -59,8 +59,8 @@
     "dailyBody": "Une ligne par jour : Recovery, Strain, Sleep Performance, heures et Sleep Consistency, variabilité de la fréquence cardiaque, fréquence cardiaque au repos, fréquence respiratoire, stress et pas.",
     "dailyBodySince": "Une ligne par jour depuis le {{date}} : Recovery, Strain, Sleep Performance, heures et Sleep Consistency, variabilité de la fréquence cardiaque, fréquence cardiaque au repos, fréquence respiratoire, stress et pas.",
     "journalBody": "Chaque réponse de check-in, comportements masqués inclus. Le JSON liste aussi tes comportements.",
-    "storageNone": "Les exports contiennent uniquement ce que Pulse a stocké sur ce téléphone.",
-    "storage": "Pulse occupe {{mb}} Mo sur ce téléphone. Les exports contiennent uniquement ce qu’il a stocké."
+    "storageNone": "Les exports contiennent uniquement ce que Health a stocké sur ce téléphone.",
+    "storage": "Health occupe {{mb}} Mo sur ce téléphone. Les exports contiennent uniquement ce qu’il a stocké."
   },
   "behaviours": {
     "title": "Comportements",
@@ -79,7 +79,7 @@
     "exists": "Ce comportement existe déjà.",
     "limit": "Tu as atteint la limite de comportements.",
     "addFailed": "Impossible de l’ajouter. Réessaie.",
-    "tooMany": "C’est plus de comportements que Pulse ne peut en suivre. Choisis-en moins.",
+    "tooMany": "C’est plus de comportements que Health ne peut en suivre. Choisis-en moins.",
     "saveFailed": "Impossible d’enregistrer. Vérifie ta connexion et réessaie.",
     "search": "Rechercher des comportements",
     "tabAll": "Tous",
@@ -91,7 +91,7 @@
   "breathe": {
     "title": "Respiration",
     "aboutTitle": "À propos de Respiration",
-    "aboutBody": "Une respiration guidée avec un cercle et des signaux haptiques : une pulsation légère à l’inspiration, deux à l’expiration, aucune pendant une pause. Avec ton bracelet en direct, Pulse affiche ta fréquence cardiaque ; quand le bracelet envoie aussi les intervalles battement par battement, il prend une mesure de HRV (RMSSD) d’une minute avant et après. Les sessions restent sur ce téléphone et les scores ne les utilisent pas.",
+    "aboutBody": "Une respiration guidée avec un cercle et des signaux haptiques : une pulsation légère à l’inspiration, deux à l’expiration, aucune pendant une pause. Avec ton bracelet en direct, Health affiche ta fréquence cardiaque ; quand le bracelet envoie aussi les intervalles battement par battement, il prend une mesure de HRV (RMSSD) d’une minute avant et après. Les sessions restent sur ce téléphone et les scores ne les utilisent pas.",
     "hrvLine": "HRV {{value}} ms · RMSSD, dernière minute",
     "hrvMeasuring": "HRV : mesure…",
     "length": "Durée",

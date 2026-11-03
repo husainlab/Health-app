@@ -24,7 +24,7 @@
     "hours_one": "{{count}} hora",
     "hours_many": "{{count}} de horas",
     "hours_other": "{{count}} horas",
-    "hoursMinutes": "{{hours}}\u00a0{{minutes}}"
+    "hoursMinutes": "{{hours}} {{minutes}}"
   },
   "ago": {
     "justNow": "agora mesmo",

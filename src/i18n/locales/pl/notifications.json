@@ -1,8 +1,11 @@
 {
-  "recovery": { "title": "Recovery gotowe", "body": "{{percent}}%: {{band}}" },
+  "recovery": {
+    "title": "Recovery gotowe",
+    "body": "{{percent}}%: {{band}}"
+  },
   "cantSync": {
-    "title": "Pulse nie może się zsynchronizować",
-    "body": "Health Connect nie synchronizował się od {{gap}}. Otwórz Pulse, aby zsynchronizować."
+    "title": "Health nie może się zsynchronizować",
+    "body": "Health Connect nie synchronizował się od {{gap}}. Otwórz Health, aby zsynchronizować."
   },
   "since": {
     "hours_one": "{{count}} godziny",
@@ -14,7 +17,10 @@
     "days_many": "{{count}} dni",
     "days_other": "{{count}} dnia"
   },
-  "checkIn": { "title": "Check-in", "body": "Jak minął dzień? Poświęć minutę na check-in." },
+  "checkIn": {
+    "title": "Check-in",
+    "body": "Jak minął dzień? Poświęć minutę na check-in."
+  },
   "strainTarget": {
     "title": "Strain Target osiągnięty",
     "inside": "Day Strain {{strain}} mieści się w dzisiejszym celu {{range}}.",
@@ -41,5 +47,8 @@
     "withParts": "{{range}}: {{parts}}.",
     "empty": "Twój tydzień {{range}} jest już dostępny."
   },
-  "windDown": { "title": "Czas się wyciszyć", "body": "Połóż się do {{time}}, aby zrealizować dzisiejsze Sleep Need." }
+  "windDown": {
+    "title": "Czas się wyciszyć",
+    "body": "Połóż się do {{time}}, aby zrealizować dzisiejsze Sleep Need."
+  }
 }

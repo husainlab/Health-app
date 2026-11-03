@@ -257,7 +257,7 @@
     "checkedIn": "Checked in",
     "behavioursLogged": "Behaviours logged",
     "edit": "Edit check-in",
-    "prompt": "Log what you did today. Pulse compares it with tomorrow’s Recovery."
+    "prompt": "Log what you did today. Health compares it with tomorrow’s Recovery."
   },
   "dismiss": {
     "title": "Dismiss journal?",

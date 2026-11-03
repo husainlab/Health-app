@@ -1,7 +1,7 @@
 {
   "screen": {
     "title": "No se pudo mostrar esta pantalla",
-    "body": "Pulse tuvo un error al dibujarla. Tus datos están a salvo."
+    "body": "Health tuvo un error al dibujarla. Tus datos están a salvo."
   },
   "log": {
     "invalidOption": "Opción no válida",
@@ -120,7 +120,7 @@
     "disconnected": "{{device}} se desconectó.",
     "refusedStream": "{{device}} rechazó el flujo de frecuencia cardíaca. Si Android pide vincular, acéptalo y vuelve a conectar.",
     "notSharing": "{{device}} no está compartiendo frecuencia cardíaca. Activa Compartir frecuencia cardíaca en Google Health.",
-    "needsNearby": "Pulse necesita el permiso de Dispositivos cercanos.",
+    "needsNearby": "Health necesita el permiso de Dispositivos cercanos.",
     "btOff": "Bluetooth está apagado.",
     "scanPaused": "Android pausó la búsqueda un momento (demasiadas búsquedas seguidas). Inténtalo de nuevo en 30 segundos.",
     "needsLocation": "Activa la Ubicación: esta versión de Android la necesita para buscar dispositivos Bluetooth.",

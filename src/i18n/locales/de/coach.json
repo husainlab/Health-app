@@ -3,7 +3,9 @@
   "settingsTitle": "Coach-Einstellungen",
   "chatsTitle": "Chats",
   "providerFallback": "deinem Anbieter",
-  "provider": { "custom": "Dein eigener Server" },
+  "provider": {
+    "custom": "Dein eigener Server"
+  },
   "suggestions": {
     "brief": "Das Briefing für heute",
     "sync": "Was kann ich tun, während der Schlaf der letzten Nacht synchronisiert?",
@@ -47,9 +49,9 @@
     "shareAnswer": "Antwort teilen",
     "regenerate": "Antwort neu erzeugen",
     "emptyTitle": "Was möchtest du wissen?",
-    "emptyBody": "Der Coach schlägt deine eigenen Pulse-Zahlen nach, bevor er antwortet, mit {{provider}}. Das ist keine medizinische Beratung.",
+    "emptyBody": "Der Coach schlägt deine eigenen Health-Zahlen nach, bevor er antwortet, mit {{provider}}. Das ist keine medizinische Beratung.",
     "checkIn": "Für heute einchecken",
-    "chatLabel": "Chat mit dem Coach von Pulse",
+    "chatLabel": "Chat mit dem Coach von Health",
     "retry": "Erneut versuchen",
     "placeholder": "Nachricht an Coach",
     "askLabel": "Coach fragen",
@@ -117,8 +119,8 @@
   },
   "setup": {
     "consentTitle": "Bevor du loslegst",
-    "consentSend": "Um zu antworten, sendet der Coach deine Fragen und die Pulse-Zahlen, die er nachschlägt (Werte, Vitalwerte, Workouts, Journal-Gewohnheiten), direkt von diesem Handy aus mit deinem eigenen Schlüssel an den KI-Anbieter, den du als Nächstes wählst. Nichts identifiziert dich.",
-    "consentTerms": "Es gelten die Bedingungen und Preise deines Anbieters. Pulse verursacht keine Kosten.",
+    "consentSend": "Um zu antworten, sendet der Coach deine Fragen und die Health-Zahlen, die er nachschlägt (Werte, Vitalwerte, Workouts, Journal-Gewohnheiten), direkt von diesem Handy aus mit deinem eigenen Schlüssel an den KI-Anbieter, den du als Nächstes wählst. Nichts identifiziert dich.",
+    "consentTerms": "Es gelten die Bedingungen und Preise deines Anbieters. Health verursacht keine Kosten.",
     "consentLocal": "Chats sind auf diesem Handy gespeichert und nur für dich sichtbar. Lösche sie jederzeit.",
     "consentAccuracy": "Antworten können falsch sein und sind keine medizinische Beratung.",
     "consentFailed": "Konnte nicht gespeichert werden. Versuch es noch einmal.",
@@ -138,8 +140,8 @@
     "modelHint": "Jedes Modell, das dein Anbieter anbietet.",
     "testing": "Wird getestet…",
     "testAndSave": "Testen und speichern",
-    "checkServer": "Pulse prüft den Server mit einer winzigen Anfrage, bevor er gespeichert wird.",
-    "checkKey": "Pulse prüft den Schlüssel mit einer winzigen Anfrage, bevor er gespeichert wird."
+    "checkServer": "Health prüft den Server mit einer winzigen Anfrage, bevor er gespeichert wird.",
+    "checkKey": "Health prüft den Schlüssel mit einer winzigen Anfrage, bevor er gespeichert wird."
   },
   "validate": {
     "pickProvider": "Wähle einen Anbieter.",

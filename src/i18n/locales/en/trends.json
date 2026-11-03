@@ -443,7 +443,7 @@
     "restorativeSleep": "Restorative sleep",
     "energyBank": "Energy Bank",
     "skinTempDeviation": "Skin temp (from baseline)",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "dayView": {
     "heartRate": "Heart rate",

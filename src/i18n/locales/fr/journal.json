@@ -258,7 +258,7 @@
     "checkedIn": "Check-in fait",
     "behavioursLogged": "Comportements enregistrés",
     "edit": "Modifier le check-in",
-    "prompt": "Note ce que tu as fait aujourd’hui. Pulse le compare à la Recovery de demain."
+    "prompt": "Note ce que tu as fait aujourd’hui. Health le compare à la Recovery de demain."
   },
   "dismiss": {
     "title": "Fermer le journal ?",

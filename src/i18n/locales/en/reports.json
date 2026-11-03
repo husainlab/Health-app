@@ -109,8 +109,8 @@
     "perWeek": "{{value}} a week"
   },
   "share": {
-    "headerWeek": "Pulse · Weekly performance assessment",
-    "headerMonth": "Pulse · Monthly performance assessment",
+    "headerWeek": "Health · Weekly performance assessment",
+    "headerMonth": "Health · Monthly performance assessment",
     "periodSoFar": "{{period}} (so far)",
     "averagesVs": "Averages vs {{period}}",
     "sleep": "Sleep",

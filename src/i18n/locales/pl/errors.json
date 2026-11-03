@@ -1,7 +1,7 @@
 {
   "screen": {
     "title": "Nie udało się wyświetlić tego ekranu",
-    "body": "Pulse napotkał błąd przy jego rysowaniu. Twoje dane są bezpieczne."
+    "body": "Health napotkał błąd przy jego rysowaniu. Twoje dane są bezpieczne."
   },
   "log": {
     "invalidOption": "Nieprawidłowa opcja",
@@ -121,7 +121,7 @@
     "disconnected": "{{device}} rozłączono.",
     "refusedStream": "{{device}} odrzuciło strumień tętna. Jeśli Android poprosi o sparowanie, zaakceptuj je i połącz się ponownie.",
     "notSharing": "{{device}} nie udostępnia tętna. Włącz Share heart rate w Google Health.",
-    "needsNearby": "Pulse potrzebuje uprawnienia Urządzenia w pobliżu.",
+    "needsNearby": "Health potrzebuje uprawnienia Urządzenia w pobliżu.",
     "btOff": "Bluetooth jest wyłączony.",
     "scanPaused": "Android na chwilę wstrzymał skanowanie (zbyt wiele skanów z rzędu). Spróbuj ponownie za 30 sekund.",
     "needsLocation": "Włącz Lokalizację: ta wersja Androida wymaga jej do skanowania urządzeń Bluetooth.",

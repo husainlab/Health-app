@@ -27,7 +27,7 @@
     "trendsAside": "Fino a 1 anno",
     "behaviours": "Abitudini",
     "behavioursAside": "{{shown}} su {{total}} mostrate",
-    "howPulseWorks": "Come funziona Pulse",
+    "howPulseWorks": "Come funziona Health",
     "scoresAside_one": "{{count}} punteggio",
     "scoresAside_many": "{{count}} di punteggi",
     "scoresAside_other": "{{count}} punteggi",
@@ -36,7 +36,7 @@
   },
   "about": {
     "title": "Info",
-    "body": "Il calcolo dei punteggi deriva da noop. Pulse è per uso personale e non è un dispositivo medico.",
+    "body": "Il calcolo dei punteggi deriva da noop. Health è per uso personale e non è un dispositivo medico.",
     "version": "Versione",
     "scoringVersion": "Versione del calcolo",
     "sourceCode": "Codice sorgente",
@@ -59,8 +59,8 @@
     "dailyBody": "Una riga per giorno: Recovery, Strain, performance del sonno, ore e regolarità, variabilità della frequenza cardiaca, frequenza cardiaca a riposo, frequenza respiratoria, stress e passi.",
     "dailyBodySince": "Una riga per giorno dal {{date}}: Recovery, Strain, performance del sonno, ore e regolarità, variabilità della frequenza cardiaca, frequenza cardiaca a riposo, frequenza respiratoria, stress e passi.",
     "journalBody": "Ogni risposta dei check-in, comprese le abitudini nascoste. Il JSON elenca anche le tue abitudini.",
-    "storageNone": "Le esportazioni contengono solo ciò che Pulse ha salvato su questo telefono.",
-    "storage": "Pulse occupa {{mb}} MB su questo telefono. Le esportazioni contengono solo ciò che ha salvato."
+    "storageNone": "Le esportazioni contengono solo ciò che Health ha salvato su questo telefono.",
+    "storage": "Health occupa {{mb}} MB su questo telefono. Le esportazioni contengono solo ciò che ha salvato."
   },
   "behaviours": {
     "title": "Abitudini",
@@ -79,7 +79,7 @@
     "exists": "Questa abitudine esiste già.",
     "limit": "Hai raggiunto il limite di abitudini.",
     "addFailed": "Impossibile aggiungerla. Riprova.",
-    "tooMany": "Sono più abitudini di quante Pulse possa seguirne. Sceglierne meno.",
+    "tooMany": "Sono più abitudini di quante Health possa seguirne. Sceglierne meno.",
     "saveFailed": "Impossibile salvare. Controlla la connessione e riprova.",
     "search": "Cerca abitudini",
     "tabAll": "Tutte",
@@ -91,7 +91,7 @@
   "breathe": {
     "title": "Respira",
     "aboutTitle": "Info su Respira",
-    "aboutBody": "Respirazione guidata con un cerchio e segnali tattili: un impulso leggero quando inspiri, due quando espiri, nessuno durante una pausa. Con il braccialetto live, Pulse mostra la tua frequenza cardiaca; quando il braccialetto invia anche gli intervalli battito per battito, rileva l’HRV (RMSSD) per un minuto prima e dopo. Le sessioni restano su questo telefono e i punteggi non le usano.",
+    "aboutBody": "Respirazione guidata con un cerchio e segnali tattili: un impulso leggero quando inspiri, due quando espiri, nessuno durante una pausa. Con il braccialetto live, Health mostra la tua frequenza cardiaca; quando il braccialetto invia anche gli intervalli battito per battito, rileva l’HRV (RMSSD) per un minuto prima e dopo. Le sessioni restano su questo telefono e i punteggi non le usano.",
     "hrvLine": "HRV {{value}} ms · RMSSD, ultimo minuto",
     "hrvMeasuring": "HRV: misurazione…",
     "length": "Durata",

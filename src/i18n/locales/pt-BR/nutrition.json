@@ -1,8 +1,8 @@
 {
   "title": "Nutrição",
   "info": {
-    "title": "Como o Pulse conta a comida",
-    "body": "Os totais somam o que você registra no Pulse à comida registrada no Fitbit (lida do Health Connect). Uma comida registrada nos dois apps conta uma vez: quando o Fitbit tem a mesma comida na mesma refeição, ou as mesmas calorias em até uma hora e meia, o Pulse deixa o próprio registro de fora. As estimativas por foto e descrição vêm do seu próprio provedor de IA e são aproximadas. O Pulse nunca guarda a foto."
+    "title": "Como o Health conta a comida",
+    "body": "Os totais somam o que você registra no Health à comida registrada no Fitbit (lida do Health Connect). Uma comida registrada nos dois apps conta uma vez: quando o Fitbit tem a mesma comida na mesma refeição, ou as mesmas calorias em até uma hora e meia, o Health deixa o próprio registro de fora. As estimativas por foto e descrição vêm do seu próprio provedor de IA e são aproximadas. O Health nunca guarda a foto."
   },
   "target": {
     "kcal": "Calorias",
@@ -38,7 +38,7 @@
     "macroA11y": "{{label}}: {{value}} de {{target}} g",
     "macroOf": " / {{target}} g",
     "macroBar": "{{label}} em relação à meta",
-    "fiber": "Fibras {{g}} g, da comida registrada no Pulse"
+    "fiber": "Fibras {{g}} g, da comida registrada no Health"
   },
   "row": {
     "fitbit": "Registrado no Fitbit",
@@ -73,19 +73,19 @@
     "addFood": "Adicionar comida",
     "todaysFood": "Comida de hoje",
     "emptyToday": "Nada registrado hoje. Adicione uma refeição com uma foto, algumas palavras ou os números.",
-    "overlap": "{{meal}} está registrado no Pulse e no Fitbit com nomes diferentes. Se for a mesma comida, apague o registro do Pulse para contar uma vez.",
+    "overlap": "{{meal}} está registrado no Health e no Fitbit com nomes diferentes. Se for a mesma comida, apague o registro do Health para contar uma vez.",
     "unlistedTitle": "Mais do registro de comida do Fitbit",
     "unlistedNote": "O total diário do Fitbit tem mais do que as comidas listadas aqui, então o resto conta como uma linha.",
     "targets": "Metas diárias",
     "deleteTitle": "Apagar esta comida?",
-    "deleteBody": "{{food}}, {{numbers}}. Ela é apagada do Pulse.",
+    "deleteBody": "{{food}}, {{numbers}}. Ela é apagada do Health.",
     "delete": "Apagar",
     "deleting": "Apagando…",
     "deleteFailed": "Não foi possível apagar. Tente de novo.",
     "deleted": "Apagado",
     "changeFailed": "Não foi possível alterar isso. Tente de novo.",
     "nowCounts": "{{title}} agora conta também",
-    "rematched": "O Pulse associa {{title}} ao Fitbit de novo"
+    "rematched": "O Health associa {{title}} ao Fitbit de novo"
   },
   "food": {
     "titleEdit": "Editar comida",
@@ -125,10 +125,10 @@
     "todayKcal": "Hoje: {{kcal}} kcal",
     "todayKcalProtein": "Hoje: {{kcal}} kcal · {{protein}} g de proteína",
     "noKeyTitle": "As estimativas por foto usam a sua própria chave de IA",
-    "noKeyBody": "Adicione uma chave da Anthropic, OpenAI, Google ou de outro provedor nas configurações do Coach, e o Pulse poderá estimar uma refeição por foto ou por algumas palavras. Até lá, insira a comida manualmente.",
-    "cameraDenied": "O Pulse precisa da câmera para tirar a foto. Permita quando o Android perguntar, ou escolha uma foto.",
-    "cameraBlockedTitle": "A câmera está desativada para o Pulse",
-    "cameraBlockedBody": "Permita nas configurações do Android para o Pulse, ou escolha uma foto.",
+    "noKeyBody": "Adicione uma chave da Anthropic, OpenAI, Google ou de outro provedor nas configurações do Coach, e o Health poderá estimar uma refeição por foto ou por algumas palavras. Até lá, insira a comida manualmente.",
+    "cameraDenied": "O Health precisa da câmera para tirar a foto. Permita quando o Android perguntar, ou escolha uma foto.",
+    "cameraBlockedTitle": "A câmera está desativada para o Health",
+    "cameraBlockedBody": "Permita nas configurações do Android para o Health, ou escolha uma foto.",
     "openSettings": "Abrir configurações do Android",
     "photoFailed": "Não foi possível ler essa foto. Tente outra ou insira a comida manualmente.",
     "photoAlt": "A foto da sua refeição",
@@ -162,7 +162,7 @@
     "describeA11y": "Descreva o que você comeu",
     "describePlaceholder": "ex.: 2 ovos e uma fatia de pão",
     "estimateFromDescription": "Estimar pela descrição",
-    "privacy": "Sua foto ou descrição vai só para {{provider}}, com a sua própria chave, para esta estimativa. O Pulse não guarda a foto.",
+    "privacy": "Sua foto ou descrição vai só para {{provider}}, com a sua própria chave, para esta estimativa. O Health não guarda a foto.",
     "enterTitle": "Ou insira manualmente",
     "typeFood": "Digite a comida e os números dela"
   },
@@ -179,7 +179,7 @@
     "busyTitle": "{{provider}} está ocupado",
     "busyBody": "Seu provedor está limitando solicitações agora. Tente de novo em um minuto ou insira a comida manualmente.",
     "networkTitle": "Sem conexão",
-    "networkBody": "O Pulse não conseguiu alcançar {{provider}}. Verifique sua conexão e tente de novo, ou insira a comida manualmente.",
+    "networkBody": "O Health não conseguiu alcançar {{provider}}. Verifique sua conexão e tente de novo, ou insira a comida manualmente.",
     "noFoodTitle": "Nenhuma comida encontrada",
     "noFoodBodyPhoto": "{{provider}} não encontrou comida ou bebida nesta foto. Tente de novo ou insira a comida manualmente.",
     "noFoodBodyText": "{{provider}} não encontrou comida ou bebida nessa descrição. Tente de novo ou insira a comida manualmente.",
@@ -194,7 +194,7 @@
     "kcalBurn_one": "O que você queimou por dia, em média, em {{count}} dia",
     "kcalBurn_many": "O que você queimou por dia, em média, em {{count}} dias",
     "kcalBurn_other": "O que você queimou por dia, em média, em {{count}} dias",
-    "kcalDefault": "A referência usual dos rótulos de alimentos, até o Pulse ter alguns dias das suas calorias queimadas",
+    "kcalDefault": "A referência usual dos rótulos de alimentos, até o Health ter alguns dias das suas calorias queimadas",
     "own": "Sua meta",
     "fat": "{{pct}}% das suas {{kcal}} kcal",
     "carbs": "As calorias que sobram depois da proteína e da gordura",

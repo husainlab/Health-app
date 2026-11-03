@@ -67,7 +67,7 @@
     "strength": "Workouts mit Kraft, Gewichten, HIIT oder Calisthenics. WHO: 2 oder mehr Tage pro Woche.",
     "steps": "Dein Tagesdurchschnitt über die Woche. Der Nutzen flacht bei etwa 8.000 bis 10.000 Schritten pro Tag ab (Paluch 2022).",
     "consistency": "Deine Sleep Consistency der letzten 7 Nächte. 80% und mehr ist optimal.",
-    "sleepNeed": "Nächte, in denen du den Bedarf schläfst, den Pulse für diese Nacht festlegt."
+    "sleepNeed": "Nächte, in denen du den Bedarf schläfst, den Health für diese Nacht festlegt."
   },
   "planStatus": {
     "done": "Geschafft",
@@ -126,9 +126,9 @@
     "spoken": "{{label}}: {{value}} {{target}}, {{status}}",
     "spokenLine": "{{label}}: {{value}} {{target}}. {{caption}}",
     "whyTitle": "Warum diese",
-    "whyBody": "Das sind die Gewohnheiten, die Pulse Age bewertet. Die Standardwerte folgen den 150 moderaten oder 75 intensiven Minuten der WHO und zwei Krafttagen pro Woche, etwa 8.000 Schritten pro Tag und einem gleichmäßigen Schlafrhythmus. Ein Strich auf einem Balken zeigt, wo ein gleichmäßiges Tempo inzwischen wäre.",
+    "whyBody": "Das sind die Gewohnheiten, die Health Age bewertet. Die Standardwerte folgen den 150 moderaten oder 75 intensiven Minuten der WHO und zwei Krafttagen pro Woche, etwa 8.000 Schritten pro Tag und einem gleichmäßigen Schlafrhythmus. Ein Strich auf einem Balken zeigt, wo ein gleichmäßiges Tempo inzwischen wäre.",
     "editTargets": "Ziele bearbeiten",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "card": {
     "titleToday": "Ziele für heute",
@@ -190,7 +190,7 @@
     "resetGoals": "Auf Fitbit-Standard zurücksetzen",
     "goalsReset": "Ziele auf Fitbits Standardwerte zurückgesetzt",
     "planTitle": "Wochenplan",
-    "planBody": "Wochenziele für die Gewohnheiten, die Pulse Age bewertet, von Montag bis Sonntag, mit einer Serie für jede Woche, in der du sie erreichst. Lösche eine Zahl, um sie auszuschalten.",
+    "planBody": "Wochenziele für die Gewohnheiten, die Health Age bewertet, von Montag bis Sonntag, mit einer Serie für jede Woche, in der du sie erreichst. Lösche eine Zahl, um sie auszuschalten.",
     "resetPlan": "Wochenplan zurücksetzen",
     "planReset": "Wochenplan auf Standard zurückgesetzt"
   },

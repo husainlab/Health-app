@@ -1,11 +1,11 @@
 {
   "screen": {
-    "title": "How Pulse works",
-    "intro": "What goes into each score, how it is weighted, what its bands mean and what it cannot know. Every number comes from Pulse’s own code.",
+    "title": "How Health works",
+    "intro": "What goes into each score, how it is weighted, what its bands mean and what it cannot know. Every number comes from Health’s own code.",
     "scores": "Scores",
     "subtitle": "How it works",
     "open": "Open {{name}}",
-    "disclaimer": "Not a medical device. Pulse’s scores are estimates from a wrist sensor, for personal use, not a diagnosis.",
+    "disclaimer": "Not a medical device. Health’s scores are estimates from a wrist sensor, for personal use, not a diagnosis.",
     "otherScores": "Other scores",
     "previous": "Previous",
     "next": "Next"
@@ -14,7 +14,7 @@
     "name": "Recovery",
     "summary": "How ready your body is to take on strain today, from 1 to 100%.",
     "s0Title": "What goes in",
-    "s0P0": "Pulse scores Recovery each morning from last night’s main sleep, comparing each vital with your own baseline: its average and spread over the last 60 days.",
+    "s0P0": "Health scores Recovery each morning from last night’s main sleep, comparing each vital with your own baseline: its average and spread over the last 60 days.",
     "s0R0Term": "Heart rate variability",
     "s0R0Detail": "The mean of Fitbit’s HRV readings while you slept, in ms. Higher is better.",
     "s0R1Term": "Resting heart rate",
@@ -93,7 +93,7 @@
     "summary": "A Strain range for today, set by your Recovery and your recent Strain.",
     "s0Title": "What goes in",
     "s0R0Term": "Today’s Recovery",
-    "s0R0Detail": "Moves and widens the range. Without a Recovery score Pulse reads it as 50%.",
+    "s0R0Detail": "Moves and widens the range. Without a Recovery score Health reads it as 50%.",
     "s0R1Term": "Your last 14 days of Strain",
     "s0R1Detail": "Folded into a base, the newest days counting most; a day without Strain counts as 0.",
     "s1Title": "How it is weighted",
@@ -180,7 +180,7 @@
     "s3P0": "The planner needs a few main sleeps before it gives bedtimes. It assumes tomorrow looks like your recent mornings and cannot see alarms or plans. Strain later today changes tonight’s need. It is a guide, not a prescription."
   },
   "pulseAge": {
-    "name": "Pulse Age",
+    "name": "Health Age",
     "summary": "How old your body behaves, and how fast that is changing.",
     "s0Title": "What goes in",
     "s0P0": "Nine habits and vitals over the 28 days ending each Sunday, each against a reference for a healthy person of your age and sex.",
@@ -204,7 +204,7 @@
     "s0R8Detail": "100 less your body fat %. Reference: 100 less the typical body fat for your age and sex.",
     "s1Title": "How it is weighted",
     "s1P0": "Each factor maps to a change in mortality risk against its reference, and that change becomes years: 10 × the natural log of the risk ratio. At the reference a factor adds nothing; better takes years off, worse adds them. The factors present are scaled up to stand for all nine.",
-    "s1P1": "Pace of Aging is your Pulse Age divided by your age, from 0.6x to 1.6x.",
+    "s1P1": "Pace of Aging is your Health Age divided by your age, from 0.6x to 1.6x.",
     "s2Title": "What the bands mean",
     "s2R0Term": "Younger than your age",
     "s2R0Detail": "Your factors beat the reference on balance.",
@@ -215,7 +215,7 @@
     "s2R3Term": "Pace above 1.0x",
     "s2R3Detail": "It behaves older.",
     "s3Title": "Limits",
-    "s3P0": "Time in zones is counted by Pulse from your heart rate, on the same five zones as Strain, and weekly minutes are your 28-day total divided by four. Pulse Age needs 5 of the 9 factors and updates each Sunday. It rests on population studies, not a clinical test of your body."
+    "s3P0": "Time in zones is counted by Health from your heart rate, on the same five zones as Strain, and weekly minutes are your 28-day total divided by four. Health Age needs 5 of the 9 factors and updates each Sunday. It rests on population studies, not a clinical test of your body."
   },
   "stress": {
     "name": "Stress Monitor",
@@ -230,7 +230,7 @@
     "s0R3Term": "Your baselines",
     "s0R3Detail": "Your awake heart rate over the last 30 days, and your 30-day HRV.",
     "s1Title": "How it is weighted",
-    "s1P0": "Each 6-minute stretch’s heart rate is placed among your awake heart rates of the last 30 days: the higher it ranks, the higher the stress. Where an HRV reading counts, 40% of the score comes from it instead, against your 30-day HRV: lower than usual reads as more stress. Today Pulse shows the latest reading; past days show the day’s average.",
+    "s1P0": "Each 6-minute stretch’s heart rate is placed among your awake heart rates of the last 30 days: the higher it ranks, the higher the stress. Where an HRV reading counts, 40% of the score comes from it instead, against your 30-day HRV: lower than usual reads as more stress. Today Health shows the latest reading; past days show the day’s average.",
     "s2Title": "What the bands mean",
     "s2R0Term": "0-29",
     "s2R0Detail": "Low: calm.",
@@ -288,7 +288,7 @@
     "s0R3Detail": "Last night against your skin-temperature baseline, in degrees.",
     "s1Title": "How it is weighted",
     "s1P0": "For every vital, your normal range is the average of your last 30 nights, last night included, ± one standard deviation. A value inside it is within range; below or above it is low or elevated.",
-    "s1P1": "The illness signal compares resting heart rate, HRV, skin temperature and respiratory rate with your 30 nights before. A vital fires at 2 standard deviations in the unwell direction and adds 22 points per extra deviation, up to 40. With at least 2 vitals firing, 25 points is mild and 50 is raised. If you logged alcohol, sauna or travel the day before, Pulse takes that as the likely cause instead.",
+    "s1P1": "The illness signal compares resting heart rate, HRV, skin temperature and respiratory rate with your 30 nights before. A vital fires at 2 standard deviations in the unwell direction and adds 22 points per extra deviation, up to 40. With at least 2 vitals firing, 25 points is mild and 50 is raised. If you logged alcohol, sauna or travel the day before, Health takes that as the likely cause instead.",
     "s2Title": "What the bands mean",
     "s2R0Term": "Within range",
     "s2R0Detail": "Inside your normal range.",
@@ -308,7 +308,7 @@
     "s0R1Term": "Age and reference ranges",
     "s0R1Detail": "From your profile.",
     "s1Title": "How it is weighted",
-    "s1P0": "Pulse places your VO2 max in the FRIEND reference table (Kaminsky 2015): lab treadmill tests from 7,783 adults without heart disease, by sex and age decade. It reads between the published percentiles and keeps the result between the 5th and the 95th. Under 20 uses the 20-29 row; 80 and over uses 70-79. A man of 35 at 45.0 ml/kg/min sits just under the 60th percentile: Good.",
+    "s1P0": "Health places your VO2 max in the FRIEND reference table (Kaminsky 2015): lab treadmill tests from 7,783 adults without heart disease, by sex and age decade. It reads between the published percentiles and keeps the result between the 5th and the 95th. Under 20 uses the 20-29 row; 80 and over uses 70-79. A man of 35 at 45.0 ml/kg/min sits just under the 60th percentile: Good.",
     "s2Title": "What the bands mean",
     "s2R0Term": "80th percentile and up",
     "s2R0Detail": "Superior",
@@ -321,12 +321,12 @@
     "s2R4Term": "Below the 20th",
     "s2R4Detail": "Poor",
     "s3Title": "A worked example",
-    "s3P0": "Take a woman of 52 whose Fitbit reports a VO2 max of 30 ml/kg/min from a recent run. Pulse picks the FRIEND treadmill row for women aged 50 to 59. That row reads 27.6 at the 75th percentile and 32.0 at the 90th.",
-    "s3P1": "Her 30 sits between those two columns. Pulse reads linearly between them: it is 2.4 above the 75th-percentile value, out of a 4.4 gap, and the gap spans 15 percentile points. So the percentile is 75 plus 15 times 2.4 divided by 4.4, which is 83.2. Pulse shows it as the 83rd percentile.",
-    "s3P2": "The bands are cut at the 20th, 40th, 60th and 80th percentiles, so 83.2 lands in Superior. Running Pulse's fitness level function on 30, age 52 and female returns exactly that.",
+    "s3P0": "Take a woman of 52 whose Fitbit reports a VO2 max of 30 ml/kg/min from a recent run. Health picks the FRIEND treadmill row for women aged 50 to 59. That row reads 27.6 at the 75th percentile and 32.0 at the 90th.",
+    "s3P1": "Her 30 sits between those two columns. Health reads linearly between them: it is 2.4 above the 75th-percentile value, out of a 4.4 gap, and the gap spans 15 percentile points. So the percentile is 75 plus 15 times 2.4 divided by 4.4, which is 83.2. Health shows it as the 83rd percentile.",
+    "s3P2": "The bands are cut at the 20th, 40th, 60th and 80th percentiles, so 83.2 lands in Superior. Running Health's fitness level function on 30, age 52 and female returns exactly that.",
     "s3P3": "For comparison, a man of 35 with a VO2 max of 45 sits between the 50th and 75th columns of his row (42.4 and 49.2). That gives 59.6, just under the 60 cut-off, so he is Good rather than Excellent. The same VO2 max is a different percentile at a different age or sex, which is the point of the table. A value below the 5th-percentile column is shown as 5 and one above the 95th as 95, because the table does not resolve the tails.",
     "s4Title": "Limits",
-    "s4P0": "Fitbit’s VO2 max is an estimate, while the table is lab-measured, so treat the percentile as approximate. The 2015 table runs 1.5-4.6 ml/kg/min higher than its 2022 update, so you may place a little low. The same table’s 75th percentile is the VO2 max reference in Pulse Age."
+    "s4P0": "Fitbit’s VO2 max is an estimate, while the table is lab-measured, so treat the percentile as approximate. The 2015 table runs 1.5-4.6 ml/kg/min higher than its 2022 update, so you may place a little low. The same table’s 75th percentile is the VO2 max reference in Health Age."
   },
   "trainingBalance": {
     "name": "Training balance",
@@ -337,7 +337,7 @@
     "s0R1Term": "Today’s Recovery",
     "s0R1Detail": "Tells Pushing from a productive block.",
     "s1Title": "How it is weighted",
-    "s1P0": "Training load is Fatigue divided by Fitness: about a week of load against about three weeks. 1.00 means this week matches your usual. Pulse also checks whether Fitness is rising or falling: its average over the last 5 days against the 5 days before.",
+    "s1P0": "Training load is Fatigue divided by Fitness: about a week of load against about three weeks. 1.00 means this week matches your usual. Health also checks whether Fitness is rising or falling: its average over the last 5 days against the 5 days before.",
     "s2Title": "What the bands mean",
     "s2R0Term": "Detraining",
     "s2R0Detail": "1.00 or below, with Fitness down more than 5%: load dropped below your usual.",
@@ -359,7 +359,7 @@
     "s0R1Term": "Next-day scores",
     "s0R1Detail": "The next morning’s Recovery and HRV, and that night’s Sleep Performance.",
     "s1Title": "How it is weighted",
-    "s1P0": "For each behaviour, Pulse compares the days you answered yes with the days you answered no: the difference in average next-day score. HRV shows as the change in standard deviations from your baseline. To see how sure that difference is, Pulse runs a t-test on the two groups of days and keeps a 70% interval around the difference.",
+    "s1P0": "For each behaviour, Health compares the days you answered yes with the days you answered no: the difference in average next-day score. HRV shows as the change in standard deviations from your baseline. To see how sure that difference is, Health runs a t-test on the two groups of days and keeps a 70% interval around the difference.",
     "s2Title": "What the bands mean",
     "s2R0Term": "Positive or negative",
     "s2R0Detail": "That whole 70% interval sits above or below zero: a clear effect.",
@@ -368,10 +368,10 @@
     "s2R2Term": "Needs more data",
     "s2R2Detail": "Fewer than 5 yes days or 5 no days.",
     "s3Title": "A worked example",
-    "s3P0": "Say someone logs alcohol for a month. Over 29 days they answer yes on 8 and no on 21. Pulse pairs each answer with the next morning's Recovery, because the question is what the day after looks like.",
+    "s3P0": "Say someone logs alcohol for a month. Over 29 days they answer yes on 8 and no on 21. Health pairs each answer with the next morning's Recovery, because the question is what the day after looks like.",
     "s3P1": "On the 21 no days, next-morning Recovery averages higher than after the 8 yes days. The difference of the two averages, yes minus no, comes out at minus 11.6 points: on the day after alcohol, Recovery was about 12 points lower.",
-    "s3P2": "That difference alone could be luck, so Pulse tests it. From how much Recovery varies within the yes days and within the no days, a t-test puts a 70% interval around the difference. For this data the whole interval sits well below zero.",
-    "s3P3": "So the label is Negative, a clear effect. Had the interval run from, say, minus 4 to plus 6, the label would be No clear effect. Had there been only 4 yes days, Pulse would say Needs more data, because it needs at least 5 yes and 5 no days. The difference comes from running Pulse's behaviour insights function on 29 check-ins and 30 daily Recovery scores. It shows an association, not proof of cause.",
+    "s3P2": "That difference alone could be luck, so Health tests it. From how much Recovery varies within the yes days and within the no days, a t-test puts a 70% interval around the difference. For this data the whole interval sits well below zero.",
+    "s3P3": "So the label is Negative, a clear effect. Had the interval run from, say, minus 4 to plus 6, the label would be No clear effect. Had there been only 4 yes days, Health would say Needs more data, because it needs at least 5 yes and 5 no days. The difference comes from running Health's behaviour insights function on 29 check-ins and 30 daily Recovery scores. It shows an association, not proof of cause.",
     "s4Title": "Limits",
     "s4P0": "This is an association, not proof of cause. It does not adjust for other behaviours or training, so a tag you tend to log on hard days can look harmful. A 70% interval is loose on purpose: about 3 in 10 behaviours with no real effect will still show a clear one by chance. Days without an answer are left out."
   },
@@ -382,8 +382,8 @@
     "s0R0Term": "Sleep sessions",
     "s0R0Detail": "Main sleeps and naps, minute by minute, for up to the last 7 days.",
     "s1Title": "How it is weighted",
-    "s1P0": "Pulse lays each day’s asleep minutes on the 1,440 minutes of the clock and checks, minute by minute, how many pairs of days agree: both asleep or both awake. The share that agree is the score, from 0 to 100: 100 means the same sleep times every day.",
-    "s1P1": "It is one of the inputs to Pulse Age.",
+    "s1P0": "Health lays each day’s asleep minutes on the 1,440 minutes of the clock and checks, minute by minute, how many pairs of days agree: both asleep or both awake. The share that agree is the score, from 0 to 100: 100 means the same sleep times every day.",
+    "s1P1": "It is one of the inputs to Health Age.",
     "s2Title": "What the bands mean",
     "s2R0Term": "80-100%",
     "s2R0Detail": "Optimal",
@@ -437,9 +437,9 @@
     "s2R2Term": "Below 12 bpm",
     "s2R2Detail": "Low",
     "s3Title": "A worked example",
-    "s3P0": "Take a 36-year-old finishing a steady run. Pulse's default max heart rate for that age is 220 − 36 = 184 bpm, so zone 4 starts at 148 bpm. The run reaches 174 bpm, so the workout counts.",
-    "s3P1": "Pulse looks at every pair of readings at most 2 minutes apart whose first reading falls before the end. The highest early reading is 174 bpm in the final sprint; the lowest within 2 minutes of it is 149 bpm.",
-    "s3P2": "Heart rate recovery is 174 minus 149, so 25 bpm. That is 20 or more, which Pulse calls Good. If the runner had kept jogging and the lowest reading had been 160, the drop would be 14 bpm, which is Typical. A workout that never reaches zone 4 shows Not enough heart-rate data instead of a guess.",
+    "s3P0": "Take a 36-year-old finishing a steady run. Health's default max heart rate for that age is 220 − 36 = 184 bpm, so zone 4 starts at 148 bpm. The run reaches 174 bpm, so the workout counts.",
+    "s3P1": "Health looks at every pair of readings at most 2 minutes apart whose first reading falls before the end. The highest early reading is 174 bpm in the final sprint; the lowest within 2 minutes of it is 149 bpm.",
+    "s3P2": "Heart rate recovery is 174 minus 149, so 25 bpm. That is 20 or more, which Health calls Good. If the runner had kept jogging and the lowest reading had been 160, the drop would be 14 bpm, which is Typical. A workout that never reaches zone 4 shows Not enough heart-rate data instead of a guess.",
     "s4Title": "Limits",
     "s4P0": "It needs dense heart rate around the end of the activity, which Fitbit does not always record; otherwise it shows Not enough heart-rate data. Moving about in those 2 minutes, or stopping the activity late, lowers the drop. Compare it across similar workouts, not between different sports."
   },
@@ -449,7 +449,7 @@
     "s0Title": "What goes in",
     "s0P0": "Fitbit’s nightly HRV (RMSSD, in ms), one value a night.",
     "s1Title": "How it is weighted",
-    "s1P0": "Pulse averages the natural log of your HRV over the last 7 nights (it needs 4 of them) and compares it with the mean and spread of the 60 nights before. Your usual range is the mean ± 0.75 of a spread; the Low line is 1.5 spreads under the mean. The log scale is the one HRV research uses, so a night twice your usual counts as much above as half your usual counts below.",
+    "s1P0": "Health averages the natural log of your HRV over the last 7 nights (it needs 4 of them) and compares it with the mean and spread of the 60 nights before. Your usual range is the mean ± 0.75 of a spread; the Low line is 1.5 spreads under the mean. The log scale is the one HRV research uses, so a night twice your usual counts as much above as half your usual counts below.",
     "s2Title": "What the bands mean",
     "s2R0Term": "Balanced",
     "s2R0Detail": "Your 7-day average is in your usual range.",
@@ -458,7 +458,7 @@
     "s2R2Term": "Low",
     "s2R2Detail": "Well below your usual range: often strain, illness or poor sleep.",
     "s3Title": "Limits",
-    "s3P0": "It needs 21 nights of HRV first. Garmin reads HRV across the whole night from its own sensor and adds a Poor status when your range is low for your age; Pulse uses Fitbit’s nightly value and leaves Poor out until it has a published age norm. The spread and the 0.75 and 1.5 lines are Pulse’s choices: Garmin doesn’t publish its own. This is Pulse’s implementation of Garmin’s published idea, not Garmin’s number."
+    "s3P0": "It needs 21 nights of HRV first. Garmin reads HRV across the whole night from its own sensor and adds a Poor status when your range is low for your age; Health uses Fitbit’s nightly value and leaves Poor out until it has a published age norm. The spread and the 0.75 and 1.5 lines are Health’s choices: Garmin doesn’t publish its own. This is Health’s implementation of Garmin’s published idea, not Garmin’s number."
   },
   "trainingReadiness": {
     "name": "Training Readiness",
@@ -492,7 +492,7 @@
     "s2R4Term": "1-24",
     "s2R4Detail": "Poor",
     "s3Title": "Limits",
-    "s3P0": "Garmin publishes the factors, that sleep and recovery time count most, and the bands; it doesn’t publish weights or recovery-time constants, so these are Pulse’s, fitted to Garmin’s published recovery-time table. It is set at wake and drops after training. It needs a scored night and three of its factors. It is a guide for today’s training, not a medical reading."
+    "s3P0": "Garmin publishes the factors, that sleep and recovery time count most, and the bands; it doesn’t publish weights or recovery-time constants, so these are Health’s, fitted to Garmin’s published recovery-time table. It is set at wake and drops after training. It needs a scored night and three of its factors. It is a guide for today’s training, not a medical reading."
   },
   "trainingEffect": {
     "name": "Training Effect",
@@ -505,7 +505,7 @@
     "s0R2Term": "Your training background",
     "s0R2Detail": "An activity class from 0 to 10: from your VO2 max, age, BMI and sex (Jackson 1990), or from your weekly workout hours over the last 4 weeks, whichever is higher.",
     "s1Title": "How it is weighted",
-    "s1P0": "Pulse estimates the workout’s EPOC, the extra oxygen your body uses afterwards to recover, second by second: it rises with intensity and fades when you ease off, on curves fitted to Firstbeat’s published figures (an hour at 70% of VO2 max is about 137 ml/kg). The peak is compared with the EPOC that makes each Training Effect level for your activity class (Firstbeat’s published lines), linearly between them.",
+    "s1P0": "Health estimates the workout’s EPOC, the extra oxygen your body uses afterwards to recover, second by second: it rises with intensity and fades when you ease off, on curves fitted to Firstbeat’s published figures (an hour at 70% of VO2 max is about 137 ml/kg). The peak is compared with the EPOC that makes each Training Effect level for your activity class (Firstbeat’s published lines), linearly between them.",
     "s1P1": "The main benefit comes from the effect and your time by share of max heart rate: Recovery under 2; VO2 max at 4 or more with over 10 minutes above 90%; Threshold when most of it was at 80% or more; Tempo when a quarter or more was; else Base.",
     "s2Title": "What the bands mean",
     "s2R0Term": "0-0.9",
@@ -521,7 +521,7 @@
     "s2R5Term": "5.0",
     "s2R5Detail": "Overreaching",
     "s3Title": "Limits",
-    "s3P0": "Garmin estimates EPOC with beat-to-beat data and unpublished constants; Pulse’s comes from heart rate alone, so read it as an estimate. There is no anaerobic Training Effect, which needs pace or power. A workout without enough heart rate has none. This is Pulse’s implementation of Garmin’s published method, not Garmin’s number."
+    "s3P0": "Garmin estimates EPOC with beat-to-beat data and unpublished constants; Health’s comes from heart rate alone, so read it as an estimate. There is no anaerobic Training Effect, which needs pace or power. A workout without enough heart rate has none. This is Health’s implementation of Garmin’s published method, not Garmin’s number."
   },
   "trainingStatus": {
     "name": "Training Status",
@@ -545,6 +545,6 @@
     "s2R3Term": "Overreaching",
     "s2R3Detail": "Load is high enough to cost you. Ease off.",
     "s3Title": "Limits",
-    "s3P0": "It needs about 3 weeks of training data and a VO2 max or an HRV Status. Fitbit’s VO2 max is an estimate that moves slowly, so Pulse reads its trend over 28 days rather than Garmin’s 14. Garmin’s Paused status (time off for illness or injury) isn’t detected. This is Pulse’s implementation of the rules in Firstbeat’s published patent, not Garmin’s number."
+    "s3P0": "It needs about 3 weeks of training data and a VO2 max or an HRV Status. Fitbit’s VO2 max is an estimate that moves slowly, so Health reads its trend over 28 days rather than Garmin’s 14. Garmin’s Paused status (time off for illness or injury) isn’t detected. This is Health’s implementation of the rules in Firstbeat’s published patent, not Garmin’s number."
   }
 }

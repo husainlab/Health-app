@@ -1,7 +1,7 @@
 {
   "screen": {
     "title": "Dieser Bildschirm konnte nicht angezeigt werden",
-    "body": "Beim Zeichnen ist in Pulse ein Fehler aufgetreten. Deine Daten sind sicher."
+    "body": "Beim Zeichnen ist in Health ein Fehler aufgetreten. Deine Daten sind sicher."
   },
   "log": {
     "invalidOption": "Ungültige Option",
@@ -119,7 +119,7 @@
     "disconnected": "{{device}} getrennt.",
     "refusedStream": "{{device}} hat den Herzfrequenz-Stream abgelehnt. Wenn Android um Kopplung bittet, bestätige sie und verbinde dich dann erneut.",
     "notSharing": "{{device}} teilt keine Herzfrequenz. Schalte in Google Health „Herzfrequenz teilen“ ein.",
-    "needsNearby": "Pulse braucht die Berechtigung „Geräte in der Nähe“.",
+    "needsNearby": "Health braucht die Berechtigung „Geräte in der Nähe“.",
     "btOff": "Bluetooth ist aus.",
     "scanPaused": "Android hat die Suche kurz pausiert (zu viele Suchen hintereinander). Versuch es in 30 Sekunden noch einmal.",
     "needsLocation": "Schalte den Standort ein: Diese Android-Version braucht ihn für die Suche nach Bluetooth-Geräten.",

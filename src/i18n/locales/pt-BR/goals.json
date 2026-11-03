@@ -67,7 +67,7 @@
     "strength": "Treinos de força, pesos, HIIT ou calistenia. OMS: 2 ou mais dias por semana.",
     "steps": "Sua média diária na semana. O benefício se estabiliza em torno de 8.000 a 10.000 passos por dia (Paluch 2022).",
     "consistency": "Sua Sleep Consistency nas últimas 7 noites. 80% ou mais é o ideal.",
-    "sleepNeed": "Noites em que você dorme o Sleep Need que o Pulse define para aquela noite."
+    "sleepNeed": "Noites em que você dorme o Sleep Need que o Health define para aquela noite."
   },
   "planStatus": {
     "done": "Concluído",
@@ -136,9 +136,9 @@
     "spoken": "{{label}}: {{value}} {{target}}, {{status}}",
     "spokenLine": "{{label}}: {{value}} {{target}}. {{caption}}",
     "whyTitle": "Por que estas",
-    "whyBody": "Estes são os hábitos que o Pulse Age pontua. Os padrões seguem os 150 minutos moderados ou 75 intensos da OMS e dois dias de força por semana, cerca de 8.000 passos por dia e um horário de sono regular. Um traço na barra marca onde um ritmo constante estaria até agora.",
+    "whyBody": "Estes são os hábitos que o Health Age pontua. Os padrões seguem os 150 minutos moderados ou 75 intensos da OMS e dois dias de força por semana, cerca de 8.000 passos por dia e um horário de sono regular. Um traço na barra marca onde um ritmo constante estaria até agora.",
     "editTargets": "Editar metas",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "card": {
     "titleToday": "Metas de hoje",
@@ -202,7 +202,7 @@
     "resetGoals": "Restaurar padrões do Fitbit",
     "goalsReset": "Metas restauradas para os padrões do Fitbit",
     "planTitle": "Plano semanal",
-    "planBody": "Metas semanais para os hábitos que o Pulse Age pontua, de segunda a domingo, com uma sequência para cada semana em que você as cumpre. Apague um número para desativar essa meta.",
+    "planBody": "Metas semanais para os hábitos que o Health Age pontua, de segunda a domingo, com uma sequência para cada semana em que você as cumpre. Apague um número para desativar essa meta.",
     "resetPlan": "Restaurar plano semanal",
     "planReset": "Plano semanal restaurado para os padrões"
   },

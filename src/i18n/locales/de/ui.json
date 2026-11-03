@@ -124,9 +124,9 @@
   "update": {
     "failed": "Das Update konnte nicht heruntergeladen werden. Versuche es erneut oder hole es dir von GitHub.",
     "available": "Update verfügbar",
-    "body": "Pulse {{version}} ist da. Beim Aktualisieren bleiben deine Daten erhalten.",
+    "body": "Health {{version}} ist da. Beim Aktualisieren bleiben deine Daten erhalten.",
     "downloading": "Lädt herunter… {{percent}}%",
-    "toVersion": "Auf Pulse {{version}} aktualisieren",
+    "toVersion": "Auf Health {{version}} aktualisieren",
     "update": "Aktualisieren",
     "whatsNew": "Was ist neu",
     "later": "Später"
@@ -271,9 +271,9 @@
     "summary_other": "Strain und Recovery in den letzten {{count}} Tagen: Strain {{strain}}, Recovery {{recovery}}."
   },
   "infoCards": {
-    "sourceNote": "Pulse-Scores, berechnet aus deinen Fitbit-Daten.",
+    "sourceNote": "Health-Scores, berechnet aus deinen Fitbit-Daten.",
     "recoveryTitle": "So funktioniert Recovery",
-    "recoveryIntro": "Recovery zeigt, wie bereit dein Körper für Strain ist, von 1 bis 100%. Pulse berechnet sie jeden Morgen aus der Herzfrequenzvariabilität der letzten Nacht (40%), der Ruheherzfrequenz (30%) und der Sleep Performance (30%), die ersten beiden im Vergleich zu deinen letzten 60 Tagen. Schnellere Atmung als üblich oder erhöhte Temperatur senken sie.",
+    "recoveryIntro": "Recovery zeigt, wie bereit dein Körper für Strain ist, von 1 bis 100%. Health berechnet sie jeden Morgen aus der Herzfrequenzvariabilität der letzten Nacht (40%), der Ruheherzfrequenz (30%) und der Sleep Performance (30%), die ersten beiden im Vergleich zu deinen letzten 60 Tagen. Schnellere Atmung als üblich oder erhöhte Temperatur senken sie.",
     "recoveryGreen": "Grün, 67-100%: Dein Körper ist bereit für Strain.",
     "recoveryYellow": "Gelb, 34-66%: Du hältst dein Niveau; moderater Strain passt.",
     "recoveryRed": "Rot, 1-33%: Dein Körper braucht Ruhe.",
@@ -301,7 +301,7 @@
     "strainRecovery1": "Deine letzten 7 Tage nebeneinander: Day Strain in Blau auf der linken Skala, von 0 bis 100%, und Recovery auf der rechten Skala, von 0 bis 100%.",
     "strainRecovery2": "Hoher Strain an einem Tag zeigt sich oft als niedrigere Recovery am nächsten Morgen. Tage ohne Score bleiben als Lücken.",
     "addActivityTitle": "Aktivität hinzufügen",
-    "addActivity1": "Pulse liest deine Workouts über Health Connect aus Fitbit, daher kann hier keines hinzugefügt werden.",
+    "addActivity1": "Health liest deine Workouts über Health Connect aus Fitbit, daher kann hier keines hinzugefügt werden.",
     "addActivity2": "Starte oder erfasse das Workout in der Fitbit-App. Es erscheint nach der nächsten Synchronisierung mit seinem Strain in deinen Aktivitäten."
   },
   "legend": {

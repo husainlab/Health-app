@@ -128,9 +128,9 @@
   "update": {
     "failed": "Nie udało się pobrać aktualizacji. Spróbuj ponownie lub pobierz ją z GitHuba.",
     "available": "Dostępna aktualizacja",
-    "body": "Pulse {{version}} już jest. Aktualizacja zachowuje Twoje dane.",
+    "body": "Health {{version}} już jest. Aktualizacja zachowuje Twoje dane.",
     "downloading": "Pobieranie… {{percent}}%",
-    "toVersion": "Aktualizuj do Pulse {{version}}",
+    "toVersion": "Aktualizuj do Health {{version}}",
     "update": "Aktualizuj",
     "whatsNew": "Co nowego",
     "later": "Później"
@@ -285,9 +285,9 @@
     "summary_other": "Strain i Recovery z ostatnich {{count}} dnia: Strain {{strain}}, Recovery {{recovery}}."
   },
   "infoCards": {
-    "sourceNote": "Wyniki Pulse, obliczane z Twoich danych Fitbit.",
+    "sourceNote": "Wyniki Health, obliczane z Twoich danych Fitbit.",
     "recoveryTitle": "Jak działa Recovery",
-    "recoveryIntro": "Recovery pokazuje, jak gotowe jest Twoje ciało na wysiłek, od 1 do 100%. Pulse oblicza je co rano z zeszłonocnej zmienności rytmu serca (40%), tętna spoczynkowego (30%) i Sleep Performance (30%), przy czym dwa pierwsze względem ostatnich 60 dni. Szybszy niż zwykle oddech lub podwyższona temperatura je obniżają.",
+    "recoveryIntro": "Recovery pokazuje, jak gotowe jest Twoje ciało na wysiłek, od 1 do 100%. Health oblicza je co rano z zeszłonocnej zmienności rytmu serca (40%), tętna spoczynkowego (30%) i Sleep Performance (30%), przy czym dwa pierwsze względem ostatnich 60 dni. Szybszy niż zwykle oddech lub podwyższona temperatura je obniżają.",
     "recoveryGreen": "Zielony, 67-100%: Twoje ciało jest gotowe na wysiłek.",
     "recoveryYellow": "Żółty, 34-66%: utrzymujesz formę; pasuje umiarkowany wysiłek.",
     "recoveryRed": "Czerwony, 1-33%: Twoje ciało potrzebuje odpoczynku.",
@@ -315,7 +315,7 @@
     "strainRecovery1": "Twoje ostatnie 7 dni obok siebie: Day Strain na niebiesko na lewej skali, od 0 do 100%, i Recovery na prawej skali, od 0 do 100%.",
     "strainRecovery2": "Wysoki Strain jednego dnia często oznacza niższe Recovery następnego ranka. Dni bez wyniku zostają jako przerwy.",
     "addActivityTitle": "Dodaj aktywność",
-    "addActivity1": "Pulse czyta Twoje treningi z Fitbit przez Health Connect, więc nie może ich tu dodać.",
+    "addActivity1": "Health czyta Twoje treningi z Fitbit przez Health Connect, więc nie może ich tu dodać.",
     "addActivity2": "Rozpocznij lub zapisz trening w aplikacji Fitbit. Pojawi się w Twoich aktywnościach po następnej synchronizacji, razem ze Strain."
   },
   "legend": {

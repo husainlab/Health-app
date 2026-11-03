@@ -27,7 +27,7 @@
     "trendsAside": "Do 1 roku",
     "behaviours": "Zachowania",
     "behavioursAside": "Widocznych: {{shown}} z {{total}}",
-    "howPulseWorks": "Jak działa Pulse",
+    "howPulseWorks": "Jak działa Health",
     "scoresAside_one": "{{count}} wynik",
     "scoresAside_few": "{{count}} wyniki",
     "scoresAside_many": "{{count}} wyników",
@@ -37,7 +37,7 @@
   },
   "about": {
     "title": "O aplikacji",
-    "body": "Punktacja jest przeniesiona z noop. Pulse jest do użytku osobistego i nie jest wyrobem medycznym.",
+    "body": "Punktacja jest przeniesiona z noop. Health jest do użytku osobistego i nie jest wyrobem medycznym.",
     "version": "Wersja",
     "scoringVersion": "Wersja punktacji",
     "sourceCode": "Kod źródłowy",
@@ -62,8 +62,8 @@
     "dailyBody": "Jeden wiersz na dzień: Recovery, Strain, Sleep Performance, godziny i regularność snu, zmienność rytmu serca, tętno spoczynkowe, częstość oddechów, stres i kroki.",
     "dailyBodySince": "Jeden wiersz na dzień od {{date}}: Recovery, Strain, Sleep Performance, godziny i regularność snu, zmienność rytmu serca, tętno spoczynkowe, częstość oddechów, stres i kroki.",
     "journalBody": "Każda odpowiedź z check-inu, także ukrytych zachowań. JSON zawiera też listę Twoich zachowań.",
-    "storageNone": "Eksporty zawierają tylko to, co Pulse zapisał na tym telefonie.",
-    "storage": "Pulse zajmuje na tym telefonie {{mb}} MB. Eksporty zawierają tylko to, co zapisał."
+    "storageNone": "Eksporty zawierają tylko to, co Health zapisał na tym telefonie.",
+    "storage": "Health zajmuje na tym telefonie {{mb}} MB. Eksporty zawierają tylko to, co zapisał."
   },
   "behaviours": {
     "title": "Zachowania",
@@ -82,7 +82,7 @@
     "exists": "To zachowanie już istnieje.",
     "limit": "Osiągnięto limit zachowań.",
     "addFailed": "Nie udało się dodać. Spróbuj ponownie.",
-    "tooMany": "To więcej zachowań, niż Pulse potrafi śledzić. Wybierz mniej.",
+    "tooMany": "To więcej zachowań, niż Health potrafi śledzić. Wybierz mniej.",
     "saveFailed": "Nie udało się zapisać. Sprawdź połączenie i spróbuj ponownie.",
     "search": "Szukaj zachowań",
     "tabAll": "Wszystkie",
@@ -94,7 +94,7 @@
   "breathe": {
     "title": "Oddychaj",
     "aboutTitle": "O funkcji Oddychaj",
-    "aboutBody": "Oddychanie w rytmie z kołem i sygnałami haptycznymi: jedno lekkie drgnięcie przy wdechu, dwa przy wydechu, żadne przy zatrzymaniu. Gdy opaska działa na żywo, Pulse pokazuje Twoje tętno; jeśli opaska wysyła też odstępy między uderzeniami, mierzy HRV (RMSSD) przez minutę przed i po. Sesje zostają na tym telefonie i nie wpływają na wyniki.",
+    "aboutBody": "Oddychanie w rytmie z kołem i sygnałami haptycznymi: jedno lekkie drgnięcie przy wdechu, dwa przy wydechu, żadne przy zatrzymaniu. Gdy opaska działa na żywo, Health pokazuje Twoje tętno; jeśli opaska wysyła też odstępy między uderzeniami, mierzy HRV (RMSSD) przez minutę przed i po. Sesje zostają na tym telefonie i nie wpływają na wyniki.",
     "hrvLine": "HRV {{value}} ms · RMSSD, ostatnia minuta",
     "hrvMeasuring": "HRV: pomiar…",
     "length": "Długość",

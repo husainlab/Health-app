@@ -67,7 +67,7 @@
     "strength": "Allenamenti di forza, pesi, HIIT o calistenica. OMS: 2 o più giorni a settimana.",
     "steps": "La tua media giornaliera nella settimana. Il beneficio si stabilizza intorno agli 8.000–10.000 passi al giorno (Paluch 2022).",
     "consistency": "La regolarità del tuo sonno nelle ultime 7 notti. Da 80% in su è ottimale.",
-    "sleepNeed": "Notti in cui dormi quanto Pulse stabilisce per quella notte."
+    "sleepNeed": "Notti in cui dormi quanto Health stabilisce per quella notte."
   },
   "planStatus": {
     "done": "Fatto",
@@ -136,9 +136,9 @@
     "spoken": "{{label}}: {{value}} {{target}}, {{status}}",
     "spokenLine": "{{label}}: {{value}} {{target}}. {{caption}}",
     "whyTitle": "Perché questi",
-    "whyBody": "Sono le abitudini che Pulse Age valuta. Le impostazioni predefinite seguono i 150 minuti moderati o 75 intensi dell’OMS e due giorni di forza a settimana, circa 8.000 passi al giorno e un orario di sonno regolare. Un segno sulla barra indica dove sarebbe ormai un ritmo uniforme.",
+    "whyBody": "Sono le abitudini che Health Age valuta. Le impostazioni predefinite seguono i 150 minuti moderati o 75 intensi dell’OMS e due giorni di forza a settimana, circa 8.000 passi al giorno e un orario di sonno regolare. Un segno sulla barra indica dove sarebbe ormai un ritmo uniforme.",
     "editTargets": "Modifica gli obiettivi",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "card": {
     "titleToday": "Gli obiettivi di oggi",
@@ -202,7 +202,7 @@
     "resetGoals": "Ripristina i valori predefiniti di Fitbit",
     "goalsReset": "Obiettivi ripristinati ai valori predefiniti di Fitbit",
     "planTitle": "Piano settimanale",
-    "planBody": "Obiettivi settimanali per le abitudini che Pulse Age valuta, da lunedì a domenica, con una serie per ogni settimana in cui li raggiungi. Cancella un numero per disattivarlo.",
+    "planBody": "Obiettivi settimanali per le abitudini che Health Age valuta, da lunedì a domenica, con una serie per ogni settimana in cui li raggiungi. Cancella un numero per disattivarlo.",
     "resetPlan": "Ripristina il piano settimanale",
     "planReset": "Piano settimanale ripristinato ai valori predefiniti"
   },

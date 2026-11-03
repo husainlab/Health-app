@@ -1,8 +1,11 @@
 {
-  "recovery": { "title": "Recovery ready", "body": "{{percent}}%: {{band}}" },
+  "recovery": {
+    "title": "Recovery ready",
+    "body": "{{percent}}%: {{band}}"
+  },
   "cantSync": {
-    "title": "Pulse can’t sync",
-    "body": "Health Connect hasn’t synced for {{gap}}. Open Pulse to sync."
+    "title": "Health can’t sync",
+    "body": "Health Connect hasn’t synced for {{gap}}. Open Health to sync."
   },
   "since": {
     "hours_one": "{{count}} hour",
@@ -10,7 +13,10 @@
     "days_one": "{{count}} day",
     "days_other": "{{count}} days"
   },
-  "checkIn": { "title": "Check in", "body": "How was today? Take a minute for your check-in." },
+  "checkIn": {
+    "title": "Check in",
+    "body": "How was today? Take a minute for your check-in."
+  },
   "strainTarget": {
     "title": "Strain target reached",
     "inside": "Day Strain {{strain}} is inside today’s target of {{range}}.",
@@ -33,5 +39,8 @@
     "withParts": "{{range}}: {{parts}}.",
     "empty": "Your week of {{range}} is in."
   },
-  "windDown": { "title": "Wind down", "body": "Bed by {{time}} to meet tonight’s sleep need." }
+  "windDown": {
+    "title": "Wind down",
+    "body": "Bed by {{time}} to meet tonight’s sleep need."
+  }
 }

@@ -67,7 +67,7 @@
   },
   "aboutBody": {
     "recovery1": "Recovery to gotowość Twojego ciała na dzisiejszy wysiłek w skali od 1 do 100%.",
-    "recovery2": "Pulse oblicza je co rano ze zmienności rytmu serca, tętna spoczynkowego, częstości oddechów, Sleep Performance i temperatury skóry, każdego względem Twojej niedawnej bazy.",
+    "recovery2": "Health oblicza je co rano ze zmienności rytmu serca, tętna spoczynkowego, częstości oddechów, Sleep Performance i temperatury skóry, każdego względem Twojej niedawnej bazy.",
     "recovery3": "Zielony (67% i więcej) oznacza gotowość na ciężki dzień, żółty utrzymanie formy, a czerwony, że ciało prosi o odpoczynek.",
     "hrv1": "Zmienność rytmu serca (HRV) to różnice w czasie między uderzeniami serca, mierzone w milisekundach podczas snu.",
     "hrv2": "Wyższe HRV zwykle oznacza, że układ nerwowy jest zrelaksowany i gotowy na stres; niższe często następuje po ciężkim treningu, słabym śnie, alkoholu lub chorobie.",
@@ -104,7 +104,7 @@
     "calories1": "Kalorie to wszystko, co spaliłeś w ciągu dnia: spoczynkowe spalanie plus ruch i treningi.",
     "vo2max1": "VO2 max to największa ilość tlenu, jaką Twoje ciało może wykorzystać podczas intensywnego wysiłku, w mililitrach na kilogram masy ciała na minutę. Fitbit szacuje go z Twoich biegów albo z tętna spoczynkowego, gdy nie biegasz.",
     "vo2max2": "To jeden z najsilniejszych znaków długoterminowego zdrowia: wyższa kondycja idzie w parze z dłuższym życiem. Stały trening tlenowy podnosi go przez tygodnie i miesiące.",
-    "lean_mass1": "Beztłuszczowa masa ciała to Twoja waga minus tkanka tłuszczowa: mięśnie, kości, narządy i woda. Pulse liczy ją z wagi i tkanki tłuszczowej zapisanych przez Twoją wagę lub aplikację Fitbit.",
+    "lean_mass1": "Beztłuszczowa masa ciała to Twoja waga minus tkanka tłuszczowa: mięśnie, kości, narządy i woda. Health liczy ją z wagi i tkanki tłuszczowej zapisanych przez Twoją wagę lub aplikację Fitbit.",
     "lean_mass2": "Więcej beztłuszczowej masy przy Twoim wzroście wiąże się z dłuższym życiem, niezależnie od tkanki tłuszczowej. Budują ją trening siłowy i odpowiednia ilość białka."
   },
   "viewCard": {
@@ -170,7 +170,7 @@
     "steps": "Kroki liczone w ciągu dnia.",
     "calories": "Wszystko, co spaliłeś: spoczynkowe spalanie plus ruch. Spoczynek to suma minus kalorie aktywne, bo źródło nie wysyła osobnego podsumowania spoczynku.",
     "hrv": "Różnice w czasie między uderzeniami serca podczas snu, mierzone w milisekundach. Porównuj je z własnym zwykłym zakresem.",
-    "rhr": "Twoje tętno spoczynkowe tak, jak Fitbit zgłasza je do Health Connect, albo szacunek Pulse z nocnego snu, gdy Fitbit nie ma go dla tego dnia. Recovery i Health Monitor oceniają tę samą liczbę.",
+    "rhr": "Twoje tętno spoczynkowe tak, jak Fitbit zgłasza je do Health Connect, albo szacunek Health z nocnego snu, gdy Fitbit nie ma go dla tego dnia. Recovery i Health Monitor oceniają tę samą liczbę.",
     "resp": "Oddechy na minutę podczas snu, mierzone przez Twoją opaskę.",
     "spo2": "Szacowana saturacja krwi tlenem podczas snu, mierzona przez Twoją opaskę.",
     "skin": "Nocna temperatura skóry powyżej lub poniżej Twojej osobistej bazy. To różnica temperatur, nie temperatura ciała.",
@@ -195,10 +195,10 @@
     "swim_strokes": "Ruchy pływackie liczone podczas pływania na basenie."
   },
   "metricSource": {
-    "activity": "Dzienne podsumowanie Twojej aplikacji zdrowotnej, liczone przez opaskę lub telefon. Pulse pokazuje je tak, jak przychodzi, i go nie ocenia.",
+    "activity": "Dzienne podsumowanie Twojej aplikacji zdrowotnej, liczone przez opaskę lub telefon. Health pokazuje je tak, jak przychodzi, i go nie ocenia.",
     "body": "Odczyty zsynchronizowane z Twojej aplikacji zdrowotnej. Dzień bez odczytu pokazuje ostatni wcześniejszy.",
-    "nutrition": "Dzienna suma Twoich zapisów z aplikacji zdrowotnej plus to, co zapisujesz w Dzienniku Pulse. Posiłek zapisany i w Pulse, i we Fitbit liczy się raz.",
-    "vitals": "Dzienna wartość z Twojej aplikacji zdrowotnej, z opaski lub podłączonego urządzenia. Pulse zaznacza Twój zwykły zakres z ostatnich 90 dni.",
+    "nutrition": "Dzienna suma Twoich zapisów z aplikacji zdrowotnej plus to, co zapisujesz w Dzienniku Health. Posiłek zapisany i w Health, i we Fitbit liczy się raz.",
+    "vitals": "Dzienna wartość z Twojej aplikacji zdrowotnej, z opaski lub podłączonego urządzenia. Health zaznacza Twój zwykły zakres z ostatnich 90 dni.",
     "monitor": "Z Health Connect. Zacieniowany zakres odpowiada Health Monitor: średnia ± 1 SD z ostatnich 30 nocy, włącznie z wybraną nocą.",
     "monitorUnavailable": "Z Health Connect. Dla tego dnia zakres Health Monitor jest niedostępny."
   },
@@ -400,7 +400,7 @@
     "workoutsBurned": "Treningi spaliły {{burned}} z {{active}} aktywnych kcal tego dnia.",
     "noWorkouts": "Brak treningów zapisanych tego dnia.",
     "loggedEntries": "Zapisane wpisy",
-    "noEntries": "Nic nie zapisano w Pulse tego dnia. Wpisy z innych aplikacji liczą się w sumie po synchronizacji.",
+    "noEntries": "Nic nie zapisano w Health tego dnia. Wpisy z innych aplikacji liczą się w sumie po synchronizacji.",
     "eatenVsBurned": "Zjedzone vs. spalone",
     "macros": "Makroskładniki",
     "readings": "Odczyty",
@@ -461,7 +461,7 @@
     "restorativeSleep": "Sen regeneracyjny",
     "energyBank": "Energy Bank",
     "skinTempDeviation": "Temp. skóry (od bazy)",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "dayView": {
     "heartRate": "Tętno",

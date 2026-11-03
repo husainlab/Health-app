@@ -1,5 +1,5 @@
 {
-  "sourceNote": "Wyniki Pulse, obliczone na podstawie Twoich danych z Fitbit.",
+  "sourceNote": "Wyniki Health, obliczone na podstawie Twoich danych z Fitbit.",
   "training": {
     "readiness": "Training Readiness",
     "status": "Training Status",
@@ -11,13 +11,13 @@
     "readinessP1": "Jak bardzo Twoje ciało jest gotowe na ciężki trening dziś, od 1 do 100, na wzór Training Readiness od Garmin. Najwięcej ważą sen z ostatniej nocy i czas regeneracji (po ćwierć), potem status HRV i wskaźnik obciążenia, a następnie sen z ostatnich 3 nocy i stres z ostatnich 3 dni. Jeden bardzo słaby czynnik ogranicza wynik, a bardzo długi dzień na nogach przed ostatnią nocą odejmuje 10.",
     "readinessP2": "95-100 Szczyt, 75-94 Wysoka, 50-74 Umiarkowana, 25-49 Niska, 1-24 Słaba. Ustalana jest po przebudzeniu i spada po treningu, gdy rośnie czas regeneracji.",
     "readinessP3": "Czas Recovery to czas do gotowości na kolejny ciężki trening: każdy trening dodaje godziny zależnie od swojego Efektu treningowego (około doby przy 3,5, trzech przy 5), do 96. Odlicza się szybciej podczas dobrego snu, a wolniej w stresujących godzinach lub po słabej nocy.",
-    "readinessP4": "Garmin nie publikuje swoich wag; to są wagi Pulse.",
+    "readinessP4": "Garmin nie publikuje swoich wag; to są wagi Health.",
     "statusP1": "Co robi z Tobą Twój ostatni trening, na wzór Training Status od Garmin: na podstawie wskaźnika obciążenia (ostre do przewlekłego obciążenia u Garmin), trendu VO2 max z Fitbit z 28 dni i Twojego statusu HRV.",
     "statusP2": "Produktywny: obciążenie na zwykłym poziomie lub wyższe, a VO2 max rośnie lub HRV jest stabilne. Utrzymanie: dość, by utrzymać formę. Recovery: lżejszy okres. Szczyt formy: forma rośnie, a obciążenie maleje. Nieproduktywny: stałe obciążenie, ale VO2 max spada. Przeciążenie: bardzo duże obciążenie, które zaczyna Cię kosztować. Pod Strain: niskie HRV przy obciążeniu. Odtrenowanie: obciążenie znacznie poniżej zwykłego przez tydzień.",
     "statusP3": "VO2 max z Fitbit zmienia się powoli, więc trend odczytujemy z 28 dni, a nie z 14 jak u Garmin. Potrzeba około 3 tygodni danych oraz VO2 max lub statusu HRV.",
-    "effectP1": "O ile ten trening poprawia Twoją wydolność tlenową, od 0 do 5, na wzór Aerobic Training Effect od Garmin. Pulse szacuje EPOC sesji (dodatkowy tlen, którego Twoje ciało używa potem do regeneracji) na podstawie tętna i VO2 max i porównuje go z tym, co dla Twojej formy i ostatnich treningów jest rutyną: ten sam bieg liczy się mniej, im jesteś sprawniejszy i bardziej zajęty.",
+    "effectP1": "O ile ten trening poprawia Twoją wydolność tlenową, od 0 do 5, na wzór Aerobic Training Effect od Garmin. Health szacuje EPOC sesji (dodatkowy tlen, którego Twoje ciało używa potem do regeneracji) na podstawie tętna i VO2 max i porównuje go z tym, co dla Twojej formy i ostatnich treningów jest rutyną: ten sam bieg liczy się mniej, im jesteś sprawniejszy i bardziej zajęty.",
     "effectP2": "0-0,9 Brak korzyści, 1-1,9 Niewielki, 2-2,9 Utrzymanie, 3-3,9 Poprawa, 4-4,9 Duża poprawa, 5 Przeciążenie.",
-    "effectP3": "Garmin szacuje EPOC na podstawie odstępów między uderzeniami i stałych, których nie publikuje; EPOC w Pulse powstaje wyłącznie z tętna, dopasowanego do opublikowanych liczb Firstbeat. Nie ma beztlenowego efektu treningowego: wymaga tempa lub mocy."
+    "effectP3": "Garmin szacuje EPOC na podstawie odstępów między uderzeniami i stałych, których nie publikuje; EPOC w Health powstaje wyłącznie z tętna, dopasowanego do opublikowanych liczb Firstbeat. Nie ma beztlenowego efektu treningowego: wymaga tempa lub mocy."
   },
   "hours": {
     "whole": "{{h}} h",
@@ -188,7 +188,7 @@
     "early": "{{bounce}} · {{sessions}}, wstępne oszacowanie"
   },
   "costSentence": {
-    "needs": "Pulse potrzebuje {{needed}} z Recovery następnego ranka, aby zmierzyć, ile Cię kosztują; na razie ma {{have}}.",
+    "needs": "Health potrzebuje {{needed}} z Recovery następnego ranka, aby zmierzyć, ile Cię kosztują; na razie ma {{have}}.",
     "same": "Po {{activity}} Twoje Recovery następnego ranka jest mniej więcej takie samo jak w przypadku: {{against}}.",
     "above": "Po {{activity}} Twoje Recovery następnego ranka jest średnio o {{pts}}% wyższe niż w przypadku: {{against}}.",
     "belowOpen": "Po {{activity}} Twoje Recovery następnego ranka jest średnio o {{pts}}% niższe niż w przypadku: {{against}} i tydzień później wciąż jest niższe.",
@@ -354,7 +354,7 @@
   "live": {
     "title": "Trening na żywo",
     "infoTitle": "O treningu na żywo",
-    "infoBody": "Strain Coach na tętnie z Twojej opaski na żywo. Day Strain rośnie w trakcie treningu, według tej samej matematyki Strain co reszta Pulse, zaczynając od tego, co dziś już się zebrało. Coach porównuje go z dzisiejszym Strain Target, a Twoje tętno z pasmem ustalonym przez dzisiejsze Recovery: mówi, by dać z siebie więcej, gdy jesteś jeszcze lekko jak na ten dzień, i by zwolnić, gdy jesteś w zakresie lub przekraczasz to, co Recovery może pokryć. Nic stąd nie trafia do Twoich wyników: trening liczy się, gdy Fitbit go zsynchronizuje.",
+    "infoBody": "Strain Coach na tętnie z Twojej opaski na żywo. Day Strain rośnie w trakcie treningu, według tej samej matematyki Strain co reszta Health, zaczynając od tego, co dziś już się zebrało. Coach porównuje go z dzisiejszym Strain Target, a Twoje tętno z pasmem ustalonym przez dzisiejsze Recovery: mówi, by dać z siebie więcej, gdy jesteś jeszcze lekko jak na ten dzień, i by zwolnić, gdy jesteś w zakresie lub przekraczasz to, co Recovery może pokryć. Nic stąd nie trafia do Twoich wyników: trening liczy się, gdy Fitbit go zsynchronizuje.",
     "dayStrain": "Strain dnia",
     "end": "Zakończ trening",
     "start": "Rozpocznij trening",

@@ -3,7 +3,9 @@
   "settingsTitle": "Ajustes del Coach",
   "chatsTitle": "Chats",
   "providerFallback": "tu proveedor",
-  "provider": { "custom": "Tu propio servidor" },
+  "provider": {
+    "custom": "Tu propio servidor"
+  },
   "suggestions": {
     "brief": "Resumen de hoy",
     "sync": "¿Qué puedo hacer mientras se sincroniza el sueño de anoche?",
@@ -47,9 +49,9 @@
     "shareAnswer": "Compartir respuesta",
     "regenerate": "Regenerar respuesta",
     "emptyTitle": "¿Qué te gustaría saber?",
-    "emptyBody": "El Coach consulta tus propios números de Pulse antes de responder, usando {{provider}}. No es consejo médico.",
+    "emptyBody": "El Coach consulta tus propios números de Health antes de responder, usando {{provider}}. No es consejo médico.",
     "checkIn": "Registro de hoy",
-    "chatLabel": "Chatear con el Coach de Pulse",
+    "chatLabel": "Chatear con el Coach de Health",
     "retry": "Reintentar",
     "placeholder": "Escribe al Coach",
     "askLabel": "Preguntar al Coach",
@@ -117,8 +119,8 @@
   },
   "setup": {
     "consentTitle": "Antes de empezar",
-    "consentSend": "Para responder, el Coach envía tus preguntas y los números de Pulse que consulta (puntuaciones, signos vitales, entrenamientos, hábitos del diario) al proveedor de IA que elijas a continuación, directo desde este teléfono, con tu propia clave. Nada te identifica.",
-    "consentTerms": "Se aplican los términos y precios de tu proveedor. Pulse no añade ningún costo.",
+    "consentSend": "Para responder, el Coach envía tus preguntas y los números de Health que consulta (puntuaciones, signos vitales, entrenamientos, hábitos del diario) al proveedor de IA que elijas a continuación, directo desde este teléfono, con tu propia clave. Nada te identifica.",
+    "consentTerms": "Se aplican los términos y precios de tu proveedor. Health no añade ningún costo.",
     "consentLocal": "Los chats se guardan en este teléfono y solo tú los ves. Bórralos cuando quieras.",
     "consentAccuracy": "Las respuestas pueden ser incorrectas y no son consejo médico.",
     "consentFailed": "No se pudo guardar. Inténtalo de nuevo.",
@@ -138,8 +140,8 @@
     "modelHint": "Cualquier modelo que ofrezca tu proveedor.",
     "testing": "Probando…",
     "testAndSave": "Probar y guardar",
-    "checkServer": "Pulse comprueba el servidor con una solicitud mínima antes de guardarlo.",
-    "checkKey": "Pulse comprueba la clave con una solicitud mínima antes de guardarla."
+    "checkServer": "Health comprueba el servidor con una solicitud mínima antes de guardarlo.",
+    "checkKey": "Health comprueba la clave con una solicitud mínima antes de guardarla."
   },
   "validate": {
     "pickProvider": "Elige un proveedor.",

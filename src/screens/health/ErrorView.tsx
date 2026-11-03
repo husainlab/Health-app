@@ -17,5 +17,5 @@ function Body({ retry }: { retry: () => void }) {
 
 /** `detail`: a pushed screen keeps its Back button. */
 export function ErrorView({ retry, detail }: { retry: () => void; detail?: boolean }) {
-  return detail ? <DetailShell title="Pulse" primary={<Body retry={retry} />} /> : <PageShell title="Pulse"><Body retry={retry} /></PageShell>;
+  return detail ? <DetailShell title="Health" primary={<Body retry={retry} />} /> : <PageShell title="Health"><Body retry={retry} /></PageShell>;
 }

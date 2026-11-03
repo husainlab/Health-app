@@ -6,14 +6,14 @@ import * as Notifications from "expo-notifications";
 import { i18n } from "@/i18n/config";
 import { DEEP_LINK } from "./decide";
 
-export const CHANNEL_ID = "pulse";
+export const CHANNEL_ID = "health";
 /** The daily reminder's fixed identifier: scheduling again replaces it. */
-export const CHECK_IN_ID = "pulse.checkin";
+export const CHECK_IN_ID = "health.checkin";
 /** The bedtime reminder's, re-planned after every run (smart.ts's planBedtime). */
-export const BEDTIME_ID = "pulse.bedtime";
+export const BEDTIME_ID = "health.bedtime";
 
 let handlerInstalled = false;
-/** Shows notifications that arrive while Pulse is in the foreground too (expo-notifications drops them otherwise). */
+/** Shows notifications that arrive while Health is in the foreground too (expo-notifications drops them otherwise). */
 export function installNotificationHandler(): void {
   if (handlerInstalled) return;
   handlerInstalled = true;
@@ -23,11 +23,11 @@ export function installNotificationHandler(): void {
 }
 
 let channel: Promise<void> | null = null;
-/** Creates the "Pulse" channel once per process. Android 13 shows its permission prompt only once a channel exists. */
+/** Creates the "Health" channel once per process. Android 13 shows its permission prompt only once a channel exists. */
 export function ensureChannel(): Promise<void> {
   channel ??=
     Platform.OS === "android"
-      ? Notifications.setNotificationChannelAsync(CHANNEL_ID, { name: "Pulse", importance: Notifications.AndroidImportance.DEFAULT }).then(() => undefined)
+      ? Notifications.setNotificationChannelAsync(CHANNEL_ID, { name: "Health", importance: Notifications.AndroidImportance.DEFAULT }).then(() => undefined)
       : Promise.resolve();
   return channel;
 }

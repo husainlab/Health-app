@@ -1,11 +1,11 @@
 {
   "screen": {
-    "title": "Como o Pulse funciona",
-    "intro": "O que entra em cada pontuação, como ela é ponderada, o que as faixas significam e o que ela não consegue saber. Todo número vem do código do próprio Pulse.",
+    "title": "Como o Health funciona",
+    "intro": "O que entra em cada pontuação, como ela é ponderada, o que as faixas significam e o que ela não consegue saber. Todo número vem do código do próprio Health.",
     "scores": "Pontuações",
     "subtitle": "Como funciona",
     "open": "Abrir {{name}}",
-    "disclaimer": "Não é um dispositivo médico. As pontuações do Pulse são estimativas de um sensor de pulso, para uso pessoal, não um diagnóstico.",
+    "disclaimer": "Não é um dispositivo médico. As pontuações do Health são estimativas de um sensor de pulso, para uso pessoal, não um diagnóstico.",
     "otherScores": "Outras pontuações",
     "previous": "Anterior",
     "next": "Próximo"
@@ -14,7 +14,7 @@
     "name": "Recovery",
     "summary": "O quanto seu corpo está pronto para encarar esforço hoje, de 1 a 100%.",
     "s0Title": "O que entra",
-    "s0P0": "O Pulse calcula a Recovery toda manhã a partir do sono principal da noite passada, comparando cada sinal vital com a sua própria referência: a média e a variação dos últimos 60 dias.",
+    "s0P0": "O Health calcula a Recovery toda manhã a partir do sono principal da noite passada, comparando cada sinal vital com a sua própria referência: a média e a variação dos últimos 60 dias.",
     "s0R0Term": "Variabilidade da frequência cardíaca",
     "s0R0Detail": "A média das leituras de HRV do Fitbit enquanto você dormia, em ms. Quanto maior, melhor.",
     "s0R1Term": "Frequência cardíaca em repouso",
@@ -93,7 +93,7 @@
     "summary": "Uma faixa de Strain para hoje, definida pela sua Recovery e pelo seu Strain recente.",
     "s0Title": "O que entra",
     "s0R0Term": "A Recovery de hoje",
-    "s0R0Detail": "Desloca e alarga a faixa. Sem uma pontuação de Recovery, o Pulse a considera 50%.",
+    "s0R0Detail": "Desloca e alarga a faixa. Sem uma pontuação de Recovery, o Health a considera 50%.",
     "s0R1Term": "Seus últimos 14 dias de Strain",
     "s0R1Detail": "Combinados em uma base, com os dias mais recentes pesando mais; um dia sem Strain conta como 0.",
     "s1Title": "Como é ponderado",
@@ -180,7 +180,7 @@
     "s3P0": "O Sleep Planner precisa de algumas noites de sono principal antes de sugerir horários de deitar. Ele supõe que amanhã será como suas manhãs recentes e não vê alarmes nem planos. O Strain que você acumular mais tarde hoje muda a necessidade de hoje à noite. É um guia, não uma prescrição."
   },
   "pulseAge": {
-    "name": "Pulse Age",
+    "name": "Health Age",
     "summary": "Que idade seu corpo aparenta ter e com que rapidez isso está mudando.",
     "s0Title": "O que entra",
     "s0P0": "Nove hábitos e sinais vitais nos 28 dias que terminam a cada domingo, cada um comparado a uma referência para uma pessoa saudável da sua idade e sexo.",
@@ -204,7 +204,7 @@
     "s0R8Detail": "100 menos o seu % de gordura corporal. Referência: 100 menos a gordura corporal típica para a sua idade e sexo.",
     "s1Title": "Como é ponderado",
     "s1P0": "Cada fator corresponde a uma mudança no risco de mortalidade em relação à sua referência, e essa mudança vira anos: 10 × o logaritmo natural da razão de risco. Na referência, um fator não soma nada; melhor tira anos, pior soma. Os fatores disponíveis são escalados para representar os nove.",
-    "s1P1": "O Pace of Aging é o seu Pulse Age dividido pela sua idade, de 0,6x a 1,6x.",
+    "s1P1": "O Pace of Aging é o seu Health Age dividido pela sua idade, de 0,6x a 1,6x.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "Mais jovem do que a sua idade",
     "s2R0Detail": "Seus fatores superam a referência no balanço.",
@@ -215,7 +215,7 @@
     "s2R3Term": "Pace acima de 1,0x",
     "s2R3Detail": "Ele age como se fosse mais velho.",
     "s3Title": "Limites",
-    "s3P0": "O tempo nas zonas é calculado pelo Pulse a partir da sua frequência cardíaca, nas mesmas cinco zonas do Strain, e os minutos semanais são o seu total de 28 dias dividido por quatro. O Pulse Age precisa de 5 dos 9 fatores e é atualizado a cada domingo. Ele se baseia em estudos populacionais, não em um teste clínico do seu corpo."
+    "s3P0": "O tempo nas zonas é calculado pelo Health a partir da sua frequência cardíaca, nas mesmas cinco zonas do Strain, e os minutos semanais são o seu total de 28 dias dividido por quatro. O Health Age precisa de 5 dos 9 fatores e é atualizado a cada domingo. Ele se baseia em estudos populacionais, não em um teste clínico do seu corpo."
   },
   "stress": {
     "name": "Stress Monitor",
@@ -230,7 +230,7 @@
     "s0R3Term": "Suas referências",
     "s0R3Detail": "Sua frequência cardíaca acordado nos últimos 30 dias e a seu HRV de 30 dias.",
     "s1Title": "Como é ponderado",
-    "s1P0": "A frequência cardíaca de cada trecho de 6 minutos é comparada com as suas frequências cardíacas de quando você está acordado nos últimos 30 dias: quanto mais alta a posição, maior o estresse. Onde uma leitura de HRV conta, 40% da pontuação vem dela, em comparação com a seu HRV de 30 dias: menor do que o normal indica mais estresse. Hoje o Pulse mostra a leitura mais recente; os dias passados mostram a média do dia.",
+    "s1P0": "A frequência cardíaca de cada trecho de 6 minutos é comparada com as suas frequências cardíacas de quando você está acordado nos últimos 30 dias: quanto mais alta a posição, maior o estresse. Onde uma leitura de HRV conta, 40% da pontuação vem dela, em comparação com a seu HRV de 30 dias: menor do que o normal indica mais estresse. Hoje o Health mostra a leitura mais recente; os dias passados mostram a média do dia.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "0-29",
     "s2R0Detail": "Baixo: calmo.",
@@ -288,7 +288,7 @@
     "s0R3Detail": "A noite passada em relação à sua referência de temperatura da pele, em graus.",
     "s1Title": "Como é ponderado",
     "s1P0": "Para cada sinal vital, sua faixa normal é a média das suas últimas 30 noites, a noite passada incluída, ± um desvio-padrão. Um valor dentro dela está na faixa; abaixo ou acima dela é baixo ou elevado.",
-    "s1P1": "O sinal de doença compara frequência cardíaca em repouso, HRV, temperatura da pele e frequência respiratória com as 30 noites anteriores. Um sinal vital dispara com 2 desvios-padrão na direção de mal-estar e soma 22 pontos por desvio extra, até 40. Com pelo menos 2 sinais vitais disparando, 25 pontos é leve e 50 é alto. Se você registrou álcool, sauna ou viagem no dia anterior, o Pulse assume isso como a causa provável.",
+    "s1P1": "O sinal de doença compara frequência cardíaca em repouso, HRV, temperatura da pele e frequência respiratória com as 30 noites anteriores. Um sinal vital dispara com 2 desvios-padrão na direção de mal-estar e soma 22 pontos por desvio extra, até 40. Com pelo menos 2 sinais vitais disparando, 25 pontos é leve e 50 é alto. Se você registrou álcool, sauna ou viagem no dia anterior, o Health assume isso como a causa provável.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "Dentro da faixa",
     "s2R0Detail": "Dentro da sua faixa normal.",
@@ -308,7 +308,7 @@
     "s0R1Term": "Idade e faixas de referência",
     "s0R1Detail": "Do seu perfil.",
     "s1Title": "Como é ponderado",
-    "s1P0": "O Pulse posiciona seu VO2 max na tabela de referência FRIEND (Kaminsky 2015): testes de esteira em laboratório com 7.783 adultos sem doença cardíaca, por sexo e década de idade. Ele interpola entre os percentis publicados e mantém o resultado entre o 5º e o 95º. Abaixo de 20 anos usa a linha de 20-29; 80 anos ou mais usa 70-79. Um homem de 35 anos com 45,0 ml/kg/min fica logo abaixo do 60º percentil: Bom.",
+    "s1P0": "O Health posiciona seu VO2 max na tabela de referência FRIEND (Kaminsky 2015): testes de esteira em laboratório com 7.783 adultos sem doença cardíaca, por sexo e década de idade. Ele interpola entre os percentis publicados e mantém o resultado entre o 5º e o 95º. Abaixo de 20 anos usa a linha de 20-29; 80 anos ou mais usa 70-79. Um homem de 35 anos com 45,0 ml/kg/min fica logo abaixo do 60º percentil: Bom.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "80º percentil ou mais",
     "s2R0Detail": "Excepcional",
@@ -321,12 +321,12 @@
     "s2R4Term": "Abaixo do 20º",
     "s2R4Detail": "Ruim",
     "s3Title": "Um exemplo prático",
-    "s3P0": "Considere uma mulher de 52 anos cujo Fitbit informa um VO2 max de 30 ml/kg/min de uma corrida recente. O Pulse escolhe a linha de esteira FRIEND para mulheres de 50 a 59 anos. Essa linha marca 27,6 no 75º percentil e 32,0 no 90º.",
-    "s3P1": "Os 30 dela ficam entre essas duas colunas. O Pulse interpola linearmente entre elas: está 2,4 acima do valor do 75º percentil, de uma diferença de 4,4, e essa diferença cobre 15 pontos percentuais. Então o percentil é 75 mais 15 vezes 2,4 dividido por 4,4, que dá 83,2. O Pulse mostra como o 83º percentil.",
-    "s3P2": "As faixas são cortadas nos percentis 20, 40, 60 e 80, então 83,2 cai em Excepcional. Ao executar a função de nível de condicionamento do Pulse com 30, 52 anos e sexo feminino, o resultado é exatamente esse.",
+    "s3P0": "Considere uma mulher de 52 anos cujo Fitbit informa um VO2 max de 30 ml/kg/min de uma corrida recente. O Health escolhe a linha de esteira FRIEND para mulheres de 50 a 59 anos. Essa linha marca 27,6 no 75º percentil e 32,0 no 90º.",
+    "s3P1": "Os 30 dela ficam entre essas duas colunas. O Health interpola linearmente entre elas: está 2,4 acima do valor do 75º percentil, de uma diferença de 4,4, e essa diferença cobre 15 pontos percentuais. Então o percentil é 75 mais 15 vezes 2,4 dividido por 4,4, que dá 83,2. O Health mostra como o 83º percentil.",
+    "s3P2": "As faixas são cortadas nos percentis 20, 40, 60 e 80, então 83,2 cai em Excepcional. Ao executar a função de nível de condicionamento do Health com 30, 52 anos e sexo feminino, o resultado é exatamente esse.",
     "s3P3": "Para comparar, um homem de 35 anos com VO2 max de 45 fica entre as colunas 50 e 75 da sua linha (42,4 e 49,2). Isso dá 59,6, logo abaixo do corte de 60, então ele é Bom, e não Excelente. O mesmo VO2 max é um percentil diferente em outra idade ou sexo, que é justamente o objetivo da tabela. Um valor abaixo da coluna do 5º percentil aparece como 5 e um acima do 95º como 95, porque a tabela não detalha os extremos.",
     "s4Title": "Limites",
-    "s4P0": "O VO2 max do Fitbit é uma estimativa, enquanto a tabela foi medida em laboratório, então trate o percentil como aproximado. A tabela de 2015 fica 1,5-4,6 ml/kg/min acima da atualização de 2022, então você pode aparecer um pouco abaixo. O 75º percentil da mesma tabela é a referência de VO2 max no Pulse Age."
+    "s4P0": "O VO2 max do Fitbit é uma estimativa, enquanto a tabela foi medida em laboratório, então trate o percentil como aproximado. A tabela de 2015 fica 1,5-4,6 ml/kg/min acima da atualização de 2022, então você pode aparecer um pouco abaixo. O 75º percentil da mesma tabela é a referência de VO2 max no Health Age."
   },
   "trainingBalance": {
     "name": "Equilíbrio de treino",
@@ -337,7 +337,7 @@
     "s0R1Term": "A Recovery de hoje",
     "s0R1Detail": "Diferencia o status Forçando de um bloco produtivo.",
     "s1Title": "Como é ponderado",
-    "s1P0": "A Training Load é a Fadiga dividida pelo Condicionamento: cerca de uma semana de carga em relação a cerca de três semanas. 1,00 significa que esta semana é igual à sua habitual. O Pulse também verifica se o Condicionamento está subindo ou caindo: sua média dos últimos 5 dias em comparação com os 5 anteriores.",
+    "s1P0": "A Training Load é a Fadiga dividida pelo Condicionamento: cerca de uma semana de carga em relação a cerca de três semanas. 1,00 significa que esta semana é igual à sua habitual. O Health também verifica se o Condicionamento está subindo ou caindo: sua média dos últimos 5 dias em comparação com os 5 anteriores.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "Destreino",
     "s2R0Detail": "1,00 ou menos, com o Condicionamento caindo mais de 5%: a carga ficou abaixo da habitual.",
@@ -359,7 +359,7 @@
     "s0R1Term": "Pontuações do dia seguinte",
     "s0R1Detail": "A Recovery e o HRV da manhã seguinte e a Sleep Performance daquela noite.",
     "s1Title": "Como é ponderado",
-    "s1P0": "Para cada comportamento, o Pulse compara os dias em que você respondeu sim com os dias em que respondeu não: a diferença na pontuação média do dia seguinte. O HRV aparece como a mudança em desvios-padrão a partir da sua referência. Para medir o grau de certeza dessa diferença, o Pulse aplica um teste t nos dois grupos de dias e mantém um intervalo de 70% em torno da diferença.",
+    "s1P0": "Para cada comportamento, o Health compara os dias em que você respondeu sim com os dias em que respondeu não: a diferença na pontuação média do dia seguinte. O HRV aparece como a mudança em desvios-padrão a partir da sua referência. Para medir o grau de certeza dessa diferença, o Health aplica um teste t nos dois grupos de dias e mantém um intervalo de 70% em torno da diferença.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "Positivo ou negativo",
     "s2R0Detail": "Todo esse intervalo de 70% fica acima ou abaixo de zero: um efeito claro.",
@@ -368,10 +368,10 @@
     "s2R2Term": "Precisa de mais dados",
     "s2R2Detail": "Menos de 5 dias com resposta sim ou menos de 5 com resposta não.",
     "s3Title": "Um exemplo prático",
-    "s3P0": "Digamos que alguém registre álcool por um mês. Em 29 dias, responde sim em 8 e não em 21. O Pulse associa cada resposta à Recovery da manhã seguinte, porque a pergunta é como fica o dia depois.",
+    "s3P0": "Digamos que alguém registre álcool por um mês. Em 29 dias, responde sim em 8 e não em 21. O Health associa cada resposta à Recovery da manhã seguinte, porque a pergunta é como fica o dia depois.",
     "s3P1": "Nos 21 dias de resposta não, a Recovery da manhã seguinte tem média mais alta do que depois dos 8 dias de resposta sim. A diferença das duas médias, sim menos não, dá menos 11,6 pontos: no dia depois do álcool, a Recovery ficou cerca de 12 pontos mais baixa.",
-    "s3P2": "Essa diferença sozinha poderia ser sorte, então o Pulse a testa. A partir de quanto a Recovery varia dentro dos dias com sim e dentro dos dias com não, um teste t coloca um intervalo de 70% em torno da diferença. Para esses dados, todo o intervalo fica bem abaixo de zero.",
-    "s3P3": "Então o rótulo é Negativo, um efeito claro. Se o intervalo fosse de, digamos, menos 4 a mais 6, o rótulo seria Sem efeito claro. Se houvesse só 4 dias de resposta sim, o Pulse diria Precisa de mais dados, porque precisa de pelo menos 5 dias de resposta sim e 5 de resposta não. A diferença vem de executar a função de insights de comportamento do Pulse em 29 check-ins e 30 pontuações diárias de Recovery. Mostra uma associação, não prova de causa.",
+    "s3P2": "Essa diferença sozinha poderia ser sorte, então o Health a testa. A partir de quanto a Recovery varia dentro dos dias com sim e dentro dos dias com não, um teste t coloca um intervalo de 70% em torno da diferença. Para esses dados, todo o intervalo fica bem abaixo de zero.",
+    "s3P3": "Então o rótulo é Negativo, um efeito claro. Se o intervalo fosse de, digamos, menos 4 a mais 6, o rótulo seria Sem efeito claro. Se houvesse só 4 dias de resposta sim, o Health diria Precisa de mais dados, porque precisa de pelo menos 5 dias de resposta sim e 5 de resposta não. A diferença vem de executar a função de insights de comportamento do Health em 29 check-ins e 30 pontuações diárias de Recovery. Mostra uma associação, não prova de causa.",
     "s4Title": "Limites",
     "s4P0": "Isto é uma associação, não prova de causa. Não ajusta por outros comportamentos nem por treino, então uma tag que você costuma registrar em dias puxados pode parecer prejudicial. Um intervalo de 70% é folgado de propósito: cerca de 3 em cada 10 comportamentos sem efeito real ainda vão mostrar um efeito claro por acaso. Dias sem resposta ficam de fora."
   },
@@ -382,8 +382,8 @@
     "s0R0Term": "Sessões de sono",
     "s0R0Detail": "Sonos principais e cochilos, minuto a minuto, dos últimos 7 dias no máximo.",
     "s1Title": "Como é ponderado",
-    "s1P0": "O Pulse coloca os minutos dormindo de cada dia sobre os 1.440 minutos do relógio e verifica, minuto a minuto, quantos pares de dias coincidem: ambos dormindo ou ambos acordados. A parte que coincide é a pontuação, de 0 a 100: 100 significa os mesmos horários de sono todo dia.",
-    "s1P1": "É um dos indicadores do Pulse Age.",
+    "s1P0": "O Health coloca os minutos dormindo de cada dia sobre os 1.440 minutos do relógio e verifica, minuto a minuto, quantos pares de dias coincidem: ambos dormindo ou ambos acordados. A parte que coincide é a pontuação, de 0 a 100: 100 significa os mesmos horários de sono todo dia.",
+    "s1P1": "É um dos indicadores do Health Age.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "80-100%",
     "s2R0Detail": "Ideal",
@@ -437,9 +437,9 @@
     "s2R2Term": "Abaixo de 12 bpm",
     "s2R2Detail": "Baixa",
     "s3Title": "Um exemplo prático",
-    "s3P0": "Considere uma pessoa de 36 anos terminando uma corrida em ritmo constante. A frequência cardíaca máxima padrão do Pulse para essa idade é 220 − 36 = 184 bpm, então a Zone 4 começa em 148 bpm. A corrida chega a 174 bpm, então o treino conta.",
-    "s3P1": "O Pulse olha cada par de leituras com no máximo 2 minutos de distância cuja primeira leitura cai antes do fim. A leitura inicial mais alta é 174 bpm no sprint final; a mais baixa dentro de 2 minutos dela é 149 bpm.",
-    "s3P2": "A recuperação da frequência cardíaca é 174 menos 149, ou seja, 25 bpm. Isso é 20 ou mais, que o Pulse chama de Boa. Se a pessoa tivesse continuado trotando e a leitura mais baixa fosse 160, a queda seria de 14 bpm, que é Típica. Um treino que nunca chega à Zone 4 mostra Dados de frequência cardíaca insuficientes em vez de um palpite.",
+    "s3P0": "Considere uma pessoa de 36 anos terminando uma corrida em ritmo constante. A frequência cardíaca máxima padrão do Health para essa idade é 220 − 36 = 184 bpm, então a Zone 4 começa em 148 bpm. A corrida chega a 174 bpm, então o treino conta.",
+    "s3P1": "O Health olha cada par de leituras com no máximo 2 minutos de distância cuja primeira leitura cai antes do fim. A leitura inicial mais alta é 174 bpm no sprint final; a mais baixa dentro de 2 minutos dela é 149 bpm.",
+    "s3P2": "A recuperação da frequência cardíaca é 174 menos 149, ou seja, 25 bpm. Isso é 20 ou mais, que o Health chama de Boa. Se a pessoa tivesse continuado trotando e a leitura mais baixa fosse 160, a queda seria de 14 bpm, que é Típica. Um treino que nunca chega à Zone 4 mostra Dados de frequência cardíaca insuficientes em vez de um palpite.",
     "s4Title": "Limites",
     "s4P0": "Ela precisa de frequência cardíaca densa perto do fim da atividade, que o Fitbit nem sempre registra; senão mostra Dados de frequência cardíaca insuficientes. Se você se movimentar nesses 2 minutos ou parar a atividade tarde, a queda diminui. Compare entre treinos parecidos, não entre esportes diferentes."
   },
@@ -449,7 +449,7 @@
     "s0Title": "O que entra",
     "s0P0": "O HRV noturno do Fitbit (RMSSD, em ms), um valor por noite.",
     "s1Title": "Como é ponderado",
-    "s1P0": "O Pulse faz a média do logaritmo natural do seu HRV nas últimas 7 noites (precisa de 4 delas) e compara com a média e a variação das 60 noites anteriores. Sua faixa habitual é a média ± 0,75 de uma variação; a linha de Baixo fica 1,5 variação abaixo da média. A escala logarítmica é a que a pesquisa de HRV usa, então uma noite com o dobro do seu normal pesa tanto acima quanto uma com metade do seu normal pesa abaixo.",
+    "s1P0": "O Health faz a média do logaritmo natural do seu HRV nas últimas 7 noites (precisa de 4 delas) e compara com a média e a variação das 60 noites anteriores. Sua faixa habitual é a média ± 0,75 de uma variação; a linha de Baixo fica 1,5 variação abaixo da média. A escala logarítmica é a que a pesquisa de HRV usa, então uma noite com o dobro do seu normal pesa tanto acima quanto uma com metade do seu normal pesa abaixo.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "Equilibrado",
     "s2R0Detail": "Sua média de 7 dias está na sua faixa habitual.",
@@ -458,7 +458,7 @@
     "s2R2Term": "Baixo",
     "s2R2Detail": "Bem abaixo da sua faixa habitual: muitas vezes esforço, doença ou sono ruim.",
     "s3Title": "Limites",
-    "s3P0": "Antes, são necessárias 21 noites de HRV. A Garmin lê o HRV a noite toda com o próprio sensor e adiciona um status Ruim quando sua faixa é baixa para a sua idade; o Pulse usa o valor noturno do Fitbit e deixa o Ruim de fora até ter uma norma etária publicada. A variação e as linhas de 0,75 e 1,5 são escolhas do Pulse: a Garmin não publica as dela. Esta é a implementação do Pulse para a ideia publicada pela Garmin, não o número da Garmin."
+    "s3P0": "Antes, são necessárias 21 noites de HRV. A Garmin lê o HRV a noite toda com o próprio sensor e adiciona um status Ruim quando sua faixa é baixa para a sua idade; o Health usa o valor noturno do Fitbit e deixa o Ruim de fora até ter uma norma etária publicada. A variação e as linhas de 0,75 e 1,5 são escolhas do Health: a Garmin não publica as dela. Esta é a implementação do Health para a ideia publicada pela Garmin, não o número da Garmin."
   },
   "trainingReadiness": {
     "name": "Training Readiness",
@@ -492,7 +492,7 @@
     "s2R4Term": "1-24",
     "s2R4Detail": "Ruim",
     "s3Title": "Limites",
-    "s3P0": "A Garmin publica os fatores (sono e tempo de Recovery pesam mais) e as faixas; não publica pesos nem constantes do tempo de Recovery, então estes são do Pulse, ajustados à tabela de tempo de Recovery publicada pela Garmin. A pontuação é definida ao acordar e cai após o treino. Precisa de uma noite pontuada e de três dos seus fatores. É um guia para o treino de hoje, não uma leitura médica."
+    "s3P0": "A Garmin publica os fatores (sono e tempo de Recovery pesam mais) e as faixas; não publica pesos nem constantes do tempo de Recovery, então estes são do Health, ajustados à tabela de tempo de Recovery publicada pela Garmin. A pontuação é definida ao acordar e cai após o treino. Precisa de uma noite pontuada e de três dos seus fatores. É um guia para o treino de hoje, não uma leitura médica."
   },
   "trainingEffect": {
     "name": "Training Effect",
@@ -505,7 +505,7 @@
     "s0R2Term": "Seu histórico de treino",
     "s0R2Detail": "Uma classe de atividade de 0 a 10: a partir do seu VO2 max, idade, IMC e sexo (Jackson 1990), ou das suas horas semanais de treino nas últimas 4 semanas, a que for maior.",
     "s1Title": "Como é ponderado",
-    "s1P0": "O Pulse estima o EPOC do treino, o oxigênio extra que seu corpo usa depois para se recuperar, segundo a segundo: sobe com a intensidade e diminui quando você alivia, em curvas ajustadas aos números publicados pela Firstbeat (uma hora a 70% do VO2 max é cerca de 137 ml/kg). O pico é comparado com o EPOC que corresponde a cada nível do Training Effect para a sua classe de atividade (linhas publicadas pela Firstbeat), de forma linear entre eles.",
+    "s1P0": "O Health estima o EPOC do treino, o oxigênio extra que seu corpo usa depois para se recuperar, segundo a segundo: sobe com a intensidade e diminui quando você alivia, em curvas ajustadas aos números publicados pela Firstbeat (uma hora a 70% do VO2 max é cerca de 137 ml/kg). O pico é comparado com o EPOC que corresponde a cada nível do Training Effect para a sua classe de atividade (linhas publicadas pela Firstbeat), de forma linear entre eles.",
     "s1P1": "O benefício principal vem do efeito e do tempo que você passa em cada faixa da frequência cardíaca máxima: Recovery abaixo de 2; VO2 max com 4 ou mais e mais de 10 minutos acima de 90%; Limiar quando a maior parte ficou em 80% ou mais; Ritmo quando um quarto ou mais ficou; senão Base.",
     "s2Title": "O que significam as faixas",
     "s2R0Term": "0-0,9",
@@ -521,7 +521,7 @@
     "s2R5Term": "5,0",
     "s2R5Detail": "Sobrecarga",
     "s3Title": "Limites",
-    "s3P0": "A Garmin estima o EPOC com dados batimento a batimento e constantes não publicadas; o do Pulse vem só da frequência cardíaca, então leia como estimativa. Não há Training Effect anaeróbico, que precisa de ritmo ou potência. Um treino sem frequência cardíaca suficiente não tem nenhum. Esta é a implementação do Pulse para o método publicado pela Garmin, não o número da Garmin."
+    "s3P0": "A Garmin estima o EPOC com dados batimento a batimento e constantes não publicadas; o do Health vem só da frequência cardíaca, então leia como estimativa. Não há Training Effect anaeróbico, que precisa de ritmo ou potência. Um treino sem frequência cardíaca suficiente não tem nenhum. Esta é a implementação do Health para o método publicado pela Garmin, não o número da Garmin."
   },
   "trainingStatus": {
     "name": "Training Status",
@@ -545,6 +545,6 @@
     "s2R3Term": "Sobrecarga",
     "s2R3Detail": "A carga é alta o bastante para cobrar seu preço. Diminua o ritmo.",
     "s3Title": "Limites",
-    "s3P0": "Precisa de cerca de 3 semanas de dados de treino e de um VO2 max ou de um HRV Status. O VO2 max do Fitbit é uma estimativa que se move devagar, então o Pulse lê sua tendência em 28 dias em vez dos 14 da Garmin. O status Pausado da Garmin (tempo parado por doença ou lesão) não é detectado. Esta é a implementação do Pulse para as regras da patente publicada da Firstbeat, não o número da Garmin."
+    "s3P0": "Precisa de cerca de 3 semanas de dados de treino e de um VO2 max ou de um HRV Status. O VO2 max do Fitbit é uma estimativa que se move devagar, então o Health lê sua tendência em 28 dias em vez dos 14 da Garmin. O status Pausado da Garmin (tempo parado por doença ou lesão) não é detectado. Esta é a implementação do Health para as regras da patente publicada da Firstbeat, não o número da Garmin."
   }
 }

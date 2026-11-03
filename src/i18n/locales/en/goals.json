@@ -67,7 +67,7 @@
     "strength": "Strength, weights, HIIT or calisthenics workouts. WHO: 2 or more days a week.",
     "steps": "Your daily average over the week. The benefit levels off around 8,000 to 10,000 steps a day (Paluch 2022).",
     "consistency": "Your sleep consistency over the last 7 nights. 80% and up is optimal.",
-    "sleepNeed": "Nights you sleep the need Pulse sets for that night."
+    "sleepNeed": "Nights you sleep the need Health sets for that night."
   },
   "planStatus": {
     "done": "Done",
@@ -126,9 +126,9 @@
     "spoken": "{{label}}: {{value}} {{target}}, {{status}}",
     "spokenLine": "{{label}}: {{value}} {{target}}. {{caption}}",
     "whyTitle": "Why these",
-    "whyBody": "These are the habits Pulse Age scores. The defaults follow the WHO’s 150 moderate or 75 vigorous minutes and two strength days a week, about 8,000 steps a day, and a steady sleep schedule. A tick on a bar marks where an even pace would be by now.",
+    "whyBody": "These are the habits Health Age scores. The defaults follow the WHO’s 150 moderate or 75 vigorous minutes and two strength days a week, about 8,000 steps a day, and a steady sleep schedule. A tick on a bar marks where an even pace would be by now.",
     "editTargets": "Edit targets",
-    "pulseAge": "Pulse Age"
+    "pulseAge": "Health Age"
   },
   "card": {
     "titleToday": "Today’s goals",
@@ -190,7 +190,7 @@
     "resetGoals": "Reset to Fitbit defaults",
     "goalsReset": "Goals reset to Fitbit’s defaults",
     "planTitle": "Weekly plan",
-    "planBody": "Weekly targets for the habits Pulse Age scores, Monday to Sunday, with a streak for every week you meet them. Clear a number to turn it off.",
+    "planBody": "Weekly targets for the habits Health Age scores, Monday to Sunday, with a streak for every week you meet them. Clear a number to turn it off.",
     "resetPlan": "Reset weekly plan",
     "planReset": "Weekly plan reset to its defaults"
   },

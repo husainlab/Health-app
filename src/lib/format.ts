@@ -6,8 +6,8 @@ import { displayPrefs, feetInches, quantity } from "./units";
 // Number, date and spoken-label formatting (spec §3.3, §6). Formatters are referenced by key so a
 // server component can hand them to a client component (functions do not cross that boundary).
 
-/** The product name for the Healthspan age. Swap to "Pulse Age" here if preferred (spec §11). */
-export const AGE_LABEL = "Pulse Age";
+/** The product name for the Healthspan age. */
+export const AGE_LABEL = "Health Age";
 export const MISSING = "--";
 const MINUS = "−";
 

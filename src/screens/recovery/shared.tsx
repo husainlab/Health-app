@@ -18,7 +18,7 @@ export { Divided }
 /** pulse's (app)/error.tsx: every screen's error view, with a retry that runs the query again. */
 export function ScreenError({ retry }: { retry: () => void }) {
   const { t } = useTranslation("recovery")
-  return <DetailShell title="Pulse" primary={<View accessibilityRole="alert" className="pt-16"><EmptyState icon={CircleAlert} body={t("loadError")} action={{ label: t("actions.tryAgain", { ns: "common" }), onClick: retry }} /></View>} />
+  return <DetailShell title="Health" primary={<View accessibilityRole="alert" className="pt-16"><EmptyState icon={CircleAlert} body={t("loadError")} action={{ label: t("actions.tryAgain", { ns: "common" }), onClick: retry }} /></View>} />
 }
 
 /** Recovery and Strain's loading shape (pulse's skeletons.tsx `DialDetail`): the dial, the notched summary card, the insight card, then the page's own cards. */

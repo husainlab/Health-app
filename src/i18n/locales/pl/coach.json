@@ -49,9 +49,9 @@
     "shareAnswer": "Udostępnij odpowiedź",
     "regenerate": "Wygeneruj odpowiedź ponownie",
     "emptyTitle": "Co chcesz wiedzieć?",
-    "emptyBody": "Coach sprawdza Twoje własne liczby z Pulse, zanim odpowie, korzystając z: {{provider}}. To nie jest porada medyczna.",
+    "emptyBody": "Coach sprawdza Twoje własne liczby z Health, zanim odpowie, korzystając z: {{provider}}. To nie jest porada medyczna.",
     "checkIn": "Check-in na dziś",
-    "chatLabel": "Czat z Coach w Pulse",
+    "chatLabel": "Czat z Coach w Health",
     "retry": "Ponów",
     "placeholder": "Napisz do Coacha",
     "askLabel": "Zapytaj Coacha",
@@ -119,8 +119,8 @@
   },
   "setup": {
     "consentTitle": "Zanim zaczniesz",
-    "consentSend": "Aby odpowiedzieć, Coach wysyła Twoje pytania i liczby z Pulse, które sprawdza (wyniki, parametry życiowe, treningi, zachowania z dziennika), do wybranego za chwilę dostawcy AI, prosto z tego telefonu, z Twoim własnym kluczem. Nic Cię nie identyfikuje.",
-    "consentTerms": "Obowiązują warunki i cennik Twojego dostawcy. Pulse nie dolicza kosztów.",
+    "consentSend": "Aby odpowiedzieć, Coach wysyła Twoje pytania i liczby z Health, które sprawdza (wyniki, parametry życiowe, treningi, zachowania z dziennika), do wybranego za chwilę dostawcy AI, prosto z tego telefonu, z Twoim własnym kluczem. Nic Cię nie identyfikuje.",
+    "consentTerms": "Obowiązują warunki i cennik Twojego dostawcy. Health nie dolicza kosztów.",
     "consentLocal": "Czaty są zapisane na tym telefonie i widoczne tylko dla Ciebie. Możesz je usunąć w dowolnej chwili.",
     "consentAccuracy": "Odpowiedzi mogą być błędne i nie są poradą medyczną.",
     "consentFailed": "Nie udało się tego zapisać. Spróbuj ponownie.",
@@ -140,8 +140,8 @@
     "modelHint": "Dowolny model oferowany przez Twojego dostawcę.",
     "testing": "Testowanie…",
     "testAndSave": "Przetestuj i zapisz",
-    "checkServer": "Przed zapisaniem Pulse sprawdza serwer jednym malutkim żądaniem.",
-    "checkKey": "Przed zapisaniem Pulse sprawdza klucz jednym malutkim żądaniem."
+    "checkServer": "Przed zapisaniem Health sprawdza serwer jednym malutkim żądaniem.",
+    "checkKey": "Przed zapisaniem Health sprawdza klucz jednym malutkim żądaniem."
   },
   "validate": {
     "pickProvider": "Wybierz dostawcę.",

@@ -113,8 +113,8 @@
     "perWeek": "{{value}} por semana"
   },
   "share": {
-    "headerWeek": "Pulse · Avaliação de desempenho semanal",
-    "headerMonth": "Pulse · Avaliação de desempenho mensal",
+    "headerWeek": "Health · Avaliação de desempenho semanal",
+    "headerMonth": "Health · Avaliação de desempenho mensal",
     "periodSoFar": "{{period}} (até agora)",
     "averagesVs": "Médias vs {{period}}",
     "sleep": "Sono",
