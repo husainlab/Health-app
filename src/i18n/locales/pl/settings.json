@@ -120,6 +120,8 @@
     "rowLabel": "{{label}}, {{state}}",
     "allowed": "Dozwolone",
     "notAllowed": "Niedozwolone",
+    "write": "Zapis",
+    "writePermissionWarning": "Zapisano lokalnie. Zezwól na zapis w Ustawienia › Źródło danych, aby zsynchronizować z Health Connect.",
     "syncFailed": "Synchronizacja nie powiodła się: {{error}}",
     "synced": "Zsynchronizowano",
     "syncing": "Synchronizacja…",

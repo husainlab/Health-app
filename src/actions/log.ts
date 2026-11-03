@@ -163,13 +163,15 @@ export async function logFoods(c: ActionCtx, input: { meal: Meal; via: FoodVia; 
   if (!when.ok) return when;
   const entries: NewEntry[] = input.items.map((item) => ({ type: "nutrition-log", ts: when.ts, data: foodData(item, input.meal, input.via) }));
   await saveEntries(c.store, entries, { tz: c.timeZone, now: nowOf(c) });
+  let warning: string | undefined;
   try {
     const hcRecords = input.items.map((item) => toHealthConnectNutritionRecord(item, input.meal, when.ts));
-    if (hcRecords.length > 0) writeHealthRecords(hcRecords).catch(() => {});
-  } catch {
-    // Health Connect writes are best-effort; local storage is the source of truth
+    if (hcRecords.length > 0) await writeHealthRecords(hcRecords);
+  } catch (e) {
+    console.warn("Health Connect write failed:", e);
+    warning = i18n.t("settings:source.writePermissionWarning");
   }
-  return { ok: true, data: { count: entries.length } };
+  return { ok: true, data: { count: entries.length }, ...(warning && { warning }) };
 }
 
 /**
@@ -190,13 +192,15 @@ export async function updateFoodEntry(c: ActionCtx, input: { id: string; ts: num
   const data = foodData(input.item, input.meal, via);
   if (before?.separate === true) data.separate = true;
   await c.store.addLoggedEntries([{ ...row, ts: when.ts, day: localDay(when.ts, c.timeZone), data }]);
+  let warning: string | undefined;
   try {
     const hcRecord = toHealthConnectNutritionRecord(input.item, input.meal, when.ts);
-    writeHealthRecords([hcRecord]).catch(() => {});
-  } catch {
-    // Health Connect writes are best-effort
+    await writeHealthRecords([hcRecord]);
+  } catch (e) {
+    console.warn("Health Connect write failed:", e);
+    warning = i18n.t("settings:source.writePermissionWarning");
   }
-  return { ok: true, data: undefined };
+  return { ok: true, data: undefined, ...(warning && { warning }) };
 }
 
 /**
@@ -265,6 +269,7 @@ export async function logEntry(c: ActionCtx, input: LogInput): Promise<ActionRes
       break;
   }
   await saveEntries(c.store, entries, { tz, now });
+  let warning: string | undefined;
   try {
     const hcRecords: HealthConnectRecord[] = [];
     if (v.kind === "water") {
@@ -277,11 +282,14 @@ export async function logEntry(c: ActionCtx, input: LogInput): Promise<ActionRes
         hcRecords.push(toHealthConnectBodyFatRecord(v.fatPct, ts));
       }
     }
-    if (hcRecords.length > 0) writeHealthRecords(hcRecords).catch(() => {});
-  } catch {
-    // Health Connect writes are best-effort
+    if (hcRecords.length > 0) {
+      await writeHealthRecords(hcRecords);
+    }
+  } catch (e) {
+    console.warn("Health Connect write failed:", e);
+    warning = i18n.t("settings:source.writePermissionWarning");
   }
-  return { ok: true, data: undefined };
+  return { ok: true, data: undefined, ...(warning && { warning }) };
 }
 
 /** Deletes a logged entry. */

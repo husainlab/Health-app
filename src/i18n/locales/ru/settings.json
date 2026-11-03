@@ -120,6 +120,8 @@
     "rowLabel": "{{label}}, {{state}}",
     "allowed": "Разрешено",
     "notAllowed": "Не разрешено",
+    "write": "Запись",
+    "writePermissionWarning": "Сохранено локально. Разрешите запись в Настройки › Источник данных для синхронизации с Health Connect.",
     "syncFailed": "Синхронизация не удалась: {{error}}",
     "synced": "Синхронизировано",
     "syncing": "Синхронизирую…",

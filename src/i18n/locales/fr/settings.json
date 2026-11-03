@@ -119,6 +119,8 @@
     "rowLabel": "{{label}}, {{state}}",
     "allowed": "Autorisé",
     "notAllowed": "Non autorisé",
+    "write": "Écriture",
+    "writePermissionWarning": "Enregistré localement. Autorisez l’écriture dans Paramètres › Source de données pour synchroniser avec Health Connect.",
     "syncFailed": "Échec de la synchronisation : {{error}}",
     "synced": "Synchronisé",
     "syncing": "Synchronisation…",

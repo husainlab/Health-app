@@ -10,7 +10,7 @@ import type { JournalVM } from "@/queries/types";
 import type { ActionCtx } from "@/state/app";
 
 export type { ActionCtx };
-export type ActionResult<T = undefined> = { ok: true; data: T } | { ok: false; error: string };
+export type ActionResult<T = undefined> = { ok: true; data: T; warning?: string } | { ok: false; error: string };
 
 const nowOf = (c: ActionCtx) => (c.nowS ? c.nowS() : Math.floor(Date.now() / 1000));
 const todayOf = (c: ActionCtx) => localDay(nowOf(c), c.timeZone);

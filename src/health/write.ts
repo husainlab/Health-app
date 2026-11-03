@@ -18,6 +18,10 @@ export function toHealthConnectWaterRecord(ml: number, tsSec: number): HealthCon
     startTime,
     endTime,
     volume: { value: ml, unit: "milliliters" },
+    metadata: {
+      recordingMethod: 3, // RECORDING_METHOD_MANUAL_ENTRY
+      clientRecordId: `health-hydration-${tsSec}`,
+    },
   } as HealthConnectRecord;
 }
 
@@ -27,6 +31,10 @@ export function toHealthConnectWeightRecord(kg: number, tsSec: number): HealthCo
     recordType: "Weight",
     time,
     weight: { value: kg, unit: "kilograms" },
+    metadata: {
+      recordingMethod: 3, // RECORDING_METHOD_MANUAL_ENTRY
+      clientRecordId: `health-weight-${tsSec}`,
+    },
   } as HealthConnectRecord;
 }
 
@@ -36,6 +44,10 @@ export function toHealthConnectBodyFatRecord(fatPct: number, tsSec: number): Hea
     recordType: "BodyFat",
     time,
     percentage: fatPct,
+    metadata: {
+      recordingMethod: 3, // RECORDING_METHOD_MANUAL_ENTRY
+      clientRecordId: `health-bodyfat-${tsSec}`,
+    },
   } as HealthConnectRecord;
 }
 
@@ -54,6 +66,10 @@ export function toHealthConnectNutritionRecord(
     name: food.name?.trim() || undefined,
     mealType,
     energy: { value: food.kcal, unit: "kilocalories" },
+    metadata: {
+      recordingMethod: 3, // RECORDING_METHOD_MANUAL_ENTRY
+      clientRecordId: `health-nutrition-${tsSec}-${Math.abs(Math.round(food.kcal))}`,
+    },
   };
   if (food.protein != null && food.protein > 0) record.protein = { value: food.protein, unit: "grams" };
   if (food.carbs != null && food.carbs > 0) record.totalCarbohydrate = { value: food.carbs, unit: "grams" };

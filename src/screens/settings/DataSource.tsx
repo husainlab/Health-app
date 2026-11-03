@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { AppState, Pressable, Share, View } from "react-native";
 import Animated, { cancelAnimation, Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { Check, ChevronDown, Minus, RefreshCw, TriangleAlert } from "lucide-react-native";
-import { askPermissions, openHealthConnectSettings, permissionState, READ_TYPES, skippedTypes, type PermissionState, type ReadType } from "@/health/connect";
+import { askPermissions, openHealthConnectSettings, permissionState, READ_TYPES, WRITE_TYPES, skippedTypes, type PermissionState, type ReadType } from "@/health/connect";
 import { runDataCheck } from "@/health/dataCheck";
 import { i18n } from "@/i18n/config";
 import { ago } from "@/lib/format";
@@ -74,8 +74,14 @@ function usePermissions(enabled: boolean) {
 /** Per record type, folded under one summary line; it opens itself when something is not allowed. */
 function DataTypes({ perms }: { perms: PermissionState }) {
   const { t } = useTranslation("settings");
-  const missing = perms.missing.length + (perms.history ? 0 : 1);
-  const rows = [...READ_TYPES.map((ty) => ({ key: ty, label: typeLabel(ty), ok: perms.granted.includes(ty) })), { key: "history", label: t("source.pastData"), ok: perms.history }];
+  const writeGranted = perms.writeGranted ?? [];
+  const missingWrite = WRITE_TYPES.filter((ty) => !writeGranted.includes(ty));
+  const missing = perms.missing.length + (perms.history ? 0 : 1) + missingWrite.length;
+  const rows = [
+    ...READ_TYPES.map((ty) => ({ key: `read-${ty}`, label: typeLabel(ty), ok: perms.granted.includes(ty) })),
+    ...WRITE_TYPES.map((ty) => ({ key: `write-${ty}`, label: `${typeLabel(ty)} (${t("source.write")})`, ok: writeGranted.includes(ty) })),
+    { key: "history", label: t("source.pastData"), ok: perms.history },
+  ];
   const summary = missing ? t("source.notAllowedCount", { count: missing }) : t("source.allAllowed");
   const [open, setOpen] = useState(missing > 0);
   const chevron = useAnimatedStyle(() => ({ transform: [{ rotate: withTiming(open ? "180deg" : "0deg", { duration: DURATION.base }) }] }), [open]);
@@ -190,7 +196,9 @@ export function DataSource({ now }: { now: number }) {
   const [checking, setChecking] = useState(false);
   const last = lastSyncTs ? lastSyncTs * 1000 : null;
   const revoked = hc && !!perms.state && perms.state.granted.length === 0;
-  const needsPermissions = hc && !!perms.state && !revoked && (perms.state.missing.length > 0 || !perms.state.history);
+  const writeGranted = perms.state?.writeGranted ?? [];
+  const missingWrite = WRITE_TYPES.filter((ty) => !writeGranted.includes(ty));
+  const needsPermissions = hc && !!perms.state && !revoked && (perms.state.missing.length > 0 || !perms.state.history || missingWrite.length > 0);
 
   const label = sample ? t("source.sampleData") : hc ? t("source.healthConnect") : t("source.notConnected");
   const syncedLine = last ? t("source.syncedAgo", { ago: ago(last, Math.max(now, last)) }) : t("source.notSyncedYet");
@@ -298,7 +306,7 @@ export function DataSource({ now }: { now: number }) {
           </Button>
         </View>
       )}
-      {hc && perms.state && <DataTypes key={String(perms.state.missing.length)} perms={perms.state} />}
+      {hc && perms.state && <DataTypes key={`${perms.state.missing.length}-${missingWrite.length}`} perms={perms.state} />}
       <ConfirmDialog
         open={confirm === "reimport"}
         title={t("source.reimportTitle")}

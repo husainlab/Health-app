@@ -119,6 +119,8 @@
     "rowLabel": "{{label}}, {{state}}",
     "allowed": "Permitido",
     "notAllowed": "No permitido",
+    "write": "Escritura",
+    "writePermissionWarning": "Guardado localmente. Permite escribir en Ajustes › Fuente de datos para sincronizar con Health Connect.",
     "syncFailed": "Falló la sincronización: {{error}}",
     "synced": "Sincronizado",
     "syncing": "Sincronizando…",

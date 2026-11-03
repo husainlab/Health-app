@@ -119,6 +119,8 @@
     "rowLabel": "{{label}}, {{state}}",
     "allowed": "Permitido",
     "notAllowed": "Não permitido",
+    "write": "Gravação",
+    "writePermissionWarning": "Salvo localmente. Permita gravação em Configurações › Fonte de dados para sincronizar com Health Connect.",
     "syncFailed": "Falha ao sincronizar: {{error}}",
     "synced": "Sincronizado",
     "syncing": "Sincronizando…",

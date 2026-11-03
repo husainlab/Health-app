@@ -14,6 +14,7 @@ describe("Health Connect write record mappers", () => {
     expect(record).toMatchObject({
       recordType: "Hydration",
       volume: { value: 500, unit: "milliliters" },
+      metadata: { recordingMethod: 3 },
     });
   });
 
@@ -22,6 +23,7 @@ describe("Health Connect write record mappers", () => {
     expect(record).toMatchObject({
       recordType: "Weight",
       weight: { value: 72.5, unit: "kilograms" },
+      metadata: { recordingMethod: 3 },
     });
   });
 
@@ -30,6 +32,7 @@ describe("Health Connect write record mappers", () => {
     expect(record).toMatchObject({
       recordType: "BodyFat",
       percentage: 18.2,
+      metadata: { recordingMethod: 3 },
     });
   });
 
@@ -46,6 +49,7 @@ describe("Health Connect write record mappers", () => {
       protein: { value: 12, unit: "grams" },
       totalCarbohydrate: { value: 55, unit: "grams" },
       totalFat: { value: 6, unit: "grams" },
+      metadata: { recordingMethod: 3 },
     });
   });
 });

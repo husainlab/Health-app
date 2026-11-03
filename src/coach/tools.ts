@@ -412,10 +412,11 @@ export function coachTools(ctx: QueryCtx, t: Texts = defaultTexts) {
         });
         if (!r.ok) return { ok: false, error: r.error, message: `Failed to log meal: ${r.error}` };
         dataChanged();
+        const syncNote = r.warning ? `Saved locally, but Health Connect sync failed (${r.warning}).` : "Saved and synced to Health Connect.";
         return {
           ok: true,
           entry: { kind: "food", name: name.trim(), meal, kcal, protein: protein ?? null, carbs: carbs ?? null, fat: fat ?? null, fiber: fiber ?? null, portion: portion ?? null },
-          message: `Logged ${name.trim()} (${kcal} kcal) for ${meal.toLowerCase()}. Saved and synced to Health Connect.`,
+          message: `Logged ${name.trim()} (${kcal} kcal) for ${meal.toLowerCase()}. ${syncNote}`,
         };
       },
     }),
@@ -430,10 +431,11 @@ export function coachTools(ctx: QueryCtx, t: Texts = defaultTexts) {
         const r = await logEntry(actCtx, { kind: "water", ml, at });
         if (!r.ok) return { ok: false, error: r.error, message: `Failed to log water: ${r.error}` };
         dataChanged();
+        const syncNote = r.warning ? `Saved locally, but Health Connect sync failed (${r.warning}).` : "Saved and synced to Health Connect.";
         return {
           ok: true,
           entry: { kind: "water", ml },
-          message: `Logged ${ml} ml of water. Saved and synced to Health Connect.`,
+          message: `Logged ${ml} ml of water. ${syncNote}`,
         };
       },
     }),
@@ -451,10 +453,11 @@ export function coachTools(ctx: QueryCtx, t: Texts = defaultTexts) {
         const r = await logEntry(actCtx, { kind: "weight", kg: roundedKg, fatPct: roundedFat, at });
         if (!r.ok) return { ok: false, error: r.error, message: `Failed to log weight: ${r.error}` };
         dataChanged();
+        const syncNote = r.warning ? `Saved locally, but Health Connect sync failed (${r.warning}).` : "Saved, updated Health Age, and synced to Health Connect.";
         return {
           ok: true,
           entry: { kind: "weight", kg: roundedKg, fatPct: roundedFat },
-          message: `Logged weight ${roundedKg} kg${roundedFat != null ? ` (${roundedFat}% body fat)` : ""}. Saved, updated Health Age, and synced to Health Connect.`,
+          message: `Logged weight ${roundedKg} kg${roundedFat != null ? ` (${roundedFat}% body fat)` : ""}. ${syncNote}`,
         };
       },
     }),

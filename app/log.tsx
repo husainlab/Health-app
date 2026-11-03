@@ -66,7 +66,11 @@ export default function LogPage() {
     }
     dataChanged();
     if (close) goBack();
-    toast.success(t("logForm.saved", { kind: KIND_LABEL[input.kind] }));
+    if (r.warning) {
+      toast.error(r.warning);
+    } else {
+      toast.success(t("logForm.saved", { kind: KIND_LABEL[input.kind] }));
+    }
   };
   const save = () => {
     const input = toInput(kind, form, time);

@@ -118,6 +118,8 @@
     "rowLabel": "{{label}}, {{state}}",
     "allowed": "Allowed",
     "notAllowed": "Not allowed",
+    "write": "Write",
+    "writePermissionWarning": "Saved locally. Allow write permissions in Settings › Data source to sync to Health Connect.",
     "syncFailed": "Sync failed: {{error}}",
     "synced": "Synced",
     "syncing": "Syncing…",
