@@ -45,7 +45,7 @@ export const PROVIDERS: Provider[] = [
   {
     id: "google",
     label: "Google Gemini",
-    model: "gemini-2.0-flash",
+    model: "gemini-3.5-flash",
     keyUrl: "https://aistudio.google.com/apikey",
     create: (apiKey, model, fetch) => createGoogleGenerativeAI({ apiKey: apiKey!, fetch })(model),
   },
