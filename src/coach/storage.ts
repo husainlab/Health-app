@@ -5,8 +5,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { UIMessage } from "ai";
 import * as SecureStore from "expo-secure-store";
-import { appStore } from "@/state/app";
 import { CHAT_PAGE, titleOf, type ChatCursor, type ChatRow } from "./chats";
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const getStore = () => (require("@/state/app") as typeof import("@/state/app")).appStore();
 
 /** What the screens may know about the setup: never the key itself. */
 export type CoachSetup = {
@@ -84,30 +86,30 @@ export async function apiKey(): Promise<string | null> {
 
 /** One page of chats, newest first, after `before` when given; `next` is the cursor for the page after, if any. */
 export async function listChats(before?: ChatCursor): Promise<{ chats: ChatRow[]; next: ChatCursor | null }> {
-  const rows = await appStore().coachChats(CHAT_PAGE + 1, before);
+  const rows = await getStore().coachChats(CHAT_PAGE + 1, before);
   const chats = rows.slice(0, CHAT_PAGE);
   const last = chats.at(-1);
   return { chats, next: rows.length > CHAT_PAGE && last ? { updatedAt: last.updatedAt, id: last.id } : null };
 }
 
-export const chatCount = (): Promise<number> => appStore().coachChatCount();
+export const chatCount = (): Promise<number> => getStore().coachChatCount();
 
 export async function loadChat(id: string): Promise<UIMessage[] | null> {
-  return (await appStore().coachChatMessages(id)) as UIMessage[] | null;
+  return (await getStore().coachChatMessages(id)) as UIMessage[] | null;
 }
 
 /** Saves the whole chat; the title follows the first question, so editing it renames the chat. */
 export async function saveChat(id: string, messages: UIMessage[]): Promise<void> {
-  await appStore().putCoachChat(id, titleOf(messages), messages, now());
+  await getStore().putCoachChat(id, titleOf(messages), messages, now());
   emit();
 }
 
 export async function deleteChat(id: string): Promise<void> {
-  await appStore().deleteCoachChats(id);
+  await getStore().deleteCoachChats(id);
   emit();
 }
 
 export async function deleteAllChats(): Promise<void> {
-  await appStore().deleteCoachChats();
+  await getStore().deleteCoachChats();
   emit();
 }

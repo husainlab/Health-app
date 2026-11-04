@@ -42,6 +42,16 @@ export type AlertSource = "health_connect" | "demo" | null;
 /** A source that syncs the person's own data (demo data never notifies). */
 export const isOwnData = (s: AlertSource): s is "health_connect" => s === "health_connect";
 
+export type RecoveryStats = {
+  value: number;
+  hrvRmssd?: number | null;
+  rhr?: number | null;
+  sleepDurationMs?: number | null;
+  sleepPerformance?: number | null;
+  targetLow?: number | null;
+  targetHigh?: number | null;
+};
+
 export type DecideInput = {
   /** Unix seconds. */
   now: number;
@@ -50,6 +60,7 @@ export type DecideInput = {
   settings: { recoveryReady: boolean; cantSync: boolean };
   /** Today's stored Recovery value; null while the night hasn't been scored. */
   recoveryToday: number | null;
+  recoveryStats?: RecoveryStats | null;
   /** Unix seconds of the last successful sync; null when there has been none. */
   lastSyncTs: number | null;
   markers: Markers;
@@ -84,8 +95,31 @@ export const DEEP_LINK = {
   monitor: "health://health/monitor",
 } as const;
 
-/** The web's "Recovery ready" body: "78%: Green". */
-export const recoveryBody = (value: number) => i18n.t("notifications:recovery.body", { percent: Math.round(value), band: BAND_WORD[recoveryBand(Math.round(value))] });
+/** The "Recovery ready" body: base rating with informative sleep, vitals and target stats when available. */
+export function recoveryBody(value: number, stats?: RecoveryStats | null): string {
+  const percent = Math.round(value);
+  const band = BAND_WORD[recoveryBand(percent)];
+  const base = i18n.t("notifications:recovery.body", { percent, band });
+  if (!stats) return base;
+
+  const parts: string[] = [];
+  if (stats.sleepDurationMs != null && stats.sleepDurationMs > 0) {
+    const hours = Math.floor(stats.sleepDurationMs / 3600_000);
+    const mins = Math.round((stats.sleepDurationMs % 3600_000) / 60_000);
+    const perf = stats.sleepPerformance != null ? ` (${Math.round(stats.sleepPerformance)}%)` : "";
+    parts.push(`Sleep ${hours}h ${mins}m${perf}`);
+  }
+  if (stats.hrvRmssd != null && stats.hrvRmssd > 0) {
+    parts.push(`HRV ${Math.round(stats.hrvRmssd)}ms`);
+  }
+  if (stats.rhr != null && stats.rhr > 0) {
+    parts.push(`RHR ${Math.round(stats.rhr)}bpm`);
+  }
+  if (stats.targetLow != null && stats.targetHigh != null) {
+    parts.push(`Target ${Math.round(stats.targetLow)}–${Math.round(stats.targetHigh)}%`);
+  }
+  return parts.length ? `${base} · ${parts.join(" · ")}` : base;
+}
 
 /** "38 hours" / "3 days", no Intl.PluralRules (Hermes). */
 export function sinceWords(seconds: number): string {
@@ -109,7 +143,14 @@ export function decide(input: DecideInput): Alert[] {
   const day = localDay(input.now, input.timeZone);
   const rec = input.recoveryToday;
   if (input.settings.recoveryReady && rec != null && Number.isFinite(rec) && !sentFor(input.markers.recoveryDay, day)) {
-    out.push({ kind: "recovery", title: i18n.t("notifications:recovery.title"), body: recoveryBody(rec), url: DEEP_LINK.recovery, day, mark: { recoveryDay: day } });
+    out.push({
+      kind: "recovery",
+      title: i18n.t("notifications:recovery.title"),
+      body: recoveryBody(rec, input.recoveryStats),
+      url: DEEP_LINK.recovery,
+      day,
+      mark: { recoveryDay: day },
+    });
   }
   const last = input.lastSyncTs;
   if (input.settings.cantSync && last != null && input.now - last >= CANT_SYNC_AFTER_S && !sentFor(input.markers.cantSyncDay, day)) {

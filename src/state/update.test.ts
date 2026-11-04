@@ -10,8 +10,6 @@ import {
   UPSTREAM_BASE_COMMIT,
 } from "./update";
 
-(globalThis as unknown as { __DEV__: boolean }).__DEV__ = false;
-
 const storage = new Map<string, string>();
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {

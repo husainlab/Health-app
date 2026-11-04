@@ -32,6 +32,11 @@ describe("decide: Recovery ready", () => {
     expect(recoveryBody(100)).toBe("100%: Green");
   });
 
+  it("enriches body with sleep, HRV, RHR and target stats when provided", () => {
+    const stats = { value: 60, sleepDurationMs: 7.2 * 3600000, hrvRmssd: 48, rhr: 56, targetLow: 8, targetHigh: 12 };
+    expect(recoveryBody(60, stats)).toBe("60%: Yellow · Sleep 7h 12m · HRV 48ms · RHR 56bpm · Target 8–12%");
+  });
+
   it("waits while today has no Recovery yet", () => {
     expect(decide({ ...base, recoveryToday: null })).toEqual([]);
     expect(decide({ ...base, recoveryToday: Number.NaN })).toEqual([]);

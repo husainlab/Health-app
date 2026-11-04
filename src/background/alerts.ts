@@ -4,7 +4,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { ScoreRow, Store } from "@/data/store";
 import { addDays, localDay } from "@/lib/time";
-import { decide, EMPTY_MARKERS, markSent, type Alert, type AlertSource, type Markers } from "./decide";
+import { generateNotificationInsight } from "./briefing";
+import { decide, EMPTY_MARKERS, markSent, type Alert, type AlertSource, type Markers, type RecoveryStats } from "./decide";
 import { cancelBedtime, notificationPermission, scheduleBedtime, sendNow } from "./notify";
 import { readSettings, type BackgroundSettings } from "./settings";
 import { decideSmart, MONITOR_LOOKBACK_DAYS, monitorBefore, monitorState, planBedtime, strainOf, type BedtimeAction, type BedtimeReminder } from "./smart";
@@ -71,8 +72,32 @@ export async function notifyAfterRun(store: Store, timeZone: string, now = Math.
       settings.weeklyReport ? store.getReports() : Promise.resolve([]),
     ]);
     const row = rows.find((r) => r.day === today) ?? null;
+    const target = strainOf(row).target;
+    const recoveryVal = row?.recovery?.value;
+    const recoveryStats: RecoveryStats | null =
+      row?.recovery && typeof recoveryVal === "number"
+        ? {
+            value: recoveryVal,
+            hrvRmssd: row.recovery.inputs?.hrv ?? null,
+            rhr: row.recovery.inputs?.rhr ?? null,
+            sleepDurationMs: row.sleep?.main?.asleepMin ? row.sleep.main.asleepMin * 60_000 : null,
+            sleepPerformance: row.sleep?.performance ?? null,
+            targetLow: target?.low ?? null,
+            targetHigh: target?.high ?? null,
+          }
+        : null;
+
     const due = [
-      ...decide({ now, timeZone, source, settings, recoveryToday: row?.recovery?.value ?? null, lastSyncTs: sync.lastSyncTs, markers }),
+      ...decide({
+        now,
+        timeZone,
+        source,
+        settings,
+        recoveryToday: row?.recovery?.value ?? null,
+        recoveryStats,
+        lastSyncTs: sync.lastSyncTs,
+        markers,
+      }),
       ...decideSmart({
         now,
         timeZone,
@@ -85,6 +110,23 @@ export async function notifyAfterRun(store: Store, timeZone: string, now = Math.
         markers,
       }),
     ];
+
+    // If AI is configured, generate personalized lock-screen insights
+    for (const a of due) {
+      if (a.kind === "recovery" && recoveryStats) {
+        const aiBody = await generateNotificationInsight({
+          type: "recovery",
+          statsText: a.body,
+        });
+        if (aiBody) a.body = aiBody;
+      } else if (a.kind === "strain_target") {
+        const aiBody = await generateNotificationInsight({
+          type: "strain",
+          statsText: a.body,
+        });
+        if (aiBody) a.body = aiBody;
+      }
+    }
     const sent: Alert[] = [];
     for (const a of due) if (await sendNow(a)) sent.push(a);
     const bedtime = await applyPlan(bedtimePlan(settings, source, markers, rows, today, timeZone, now));

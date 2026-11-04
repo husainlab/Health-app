@@ -18,7 +18,7 @@ export function installNotificationHandler(): void {
   if (handlerInstalled) return;
   handlerInstalled = true;
   Notifications.setNotificationHandler({
-    handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: false, shouldSetBadge: false }),
+    handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }),
   });
 }
 
@@ -27,7 +27,13 @@ let channel: Promise<void> | null = null;
 export function ensureChannel(): Promise<void> {
   channel ??=
     Platform.OS === "android"
-      ? Notifications.setNotificationChannelAsync(CHANNEL_ID, { name: "Health", importance: Notifications.AndroidImportance.DEFAULT }).then(() => undefined)
+      ? Notifications.setNotificationChannelAsync(CHANNEL_ID, {
+          name: "Health",
+          importance: Notifications.AndroidImportance.HIGH,
+          sound: "default",
+          vibrationPattern: [0, 250, 250, 250],
+          enableVibrate: true,
+        }).then(() => undefined)
       : Promise.resolve();
   return channel;
 }

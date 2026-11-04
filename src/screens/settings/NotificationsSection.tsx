@@ -265,7 +265,8 @@ function NotificationsCard({ s, timeZone }: { s: Prefs; timeZone: string }) {
   };
   const test = async () => {
     if (!(await allowed(true))) return;
-    const ok = await sendNow({ title: t("notif.testTitle"), body: t("notif.testBody", { body: recoveryBody(78) }), url: DEEP_LINK.notifications });
+    const stats = { value: 78, sleepDurationMs: 7.5 * 3600000, hrvRmssd: 58, rhr: 54, targetLow: 10, targetHigh: 14 };
+    const ok = await sendNow({ title: t("notif.testTitle"), body: recoveryBody(78, stats), url: DEEP_LINK.notifications });
     if (ok) toast.success(t("notif.testSent"));
     else toast.error(t("notif.testFailed"));
   };

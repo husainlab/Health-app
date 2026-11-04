@@ -1,5 +1,8 @@
 // Vitest setup: i18next in English, synchronously, so tests that read copy keep asserting English.
 import { vi } from "vitest";
+
+(globalThis as unknown as { __DEV__: boolean }).__DEV__ = false;
+
 import { initI18n } from "./config";
 import "./types";
 
