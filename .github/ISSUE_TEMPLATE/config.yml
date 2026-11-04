@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/adityaongit/pulse-mobile/security/advisories/new
+    url: https://github.com/husainlab/Health-app/security/advisories/new
     about: Please report vulnerabilities privately, never in a public issue. See SECURITY.md.
-  - name: The web app (self-hosted Pulse)
-    url: https://github.com/adityaongit/pulse/issues
-    about: Issues with the Pulse web app or its server go to the pulse repository.

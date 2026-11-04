@@ -133,7 +133,7 @@
     "whatsNew": "Novità",
     "later": "Più tardi",
     "upstreamAvailable": "Aggiornamento open source",
-    "upstreamBody": "Il progetto open source originale Pulse ha nuovi aggiornamenti ({{sha}}).",
+    "upstreamBody": "Nuovo aggiornamento open source disponibile ({{sha}}).",
     "viewChanges": "Vedi modifiche",
     "dismiss": "Ignora"
   },

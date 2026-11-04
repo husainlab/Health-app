@@ -133,7 +133,7 @@
     "whatsNew": "Novidades",
     "later": "Depois",
     "upstreamAvailable": "Atualização de código aberto",
-    "upstreamBody": "O projeto de código aberto Pulse original tem novas atualizações ({{sha}}).",
+    "upstreamBody": "Novas atualizações de código aberto estão disponíveis ({{sha}}).",
     "viewChanges": "Ver mudanças",
     "dismiss": "Dispensar"
   },

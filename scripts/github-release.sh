@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 # Publishes a version's APKs as a GitHub release (docs/releases.md).
 # usage: scripts/github-release.sh <version> <apk>...
-# Creates the release v<version>, titled "Pulse Mobile <version>", on HEAD (or reuses it if it exists) and uploads each
-# APK as an asset, named as the file is (pulse-mobile-<version>-<abi>.apk). <version> must be app.json's expo.version.
-# The token is $GH_TOKEN (~/.zshrc sets it to adityaongit's under ~/personal/; $GITHUB_TOKEN there is the work
-# account's, so it is not used), else the github.com password git's credential helper holds.
+# Creates the release v<version>, titled "Health <version>", on HEAD (or reuses it if it exists) and uploads each
+# APK as an asset, named as the file is (Health-<version>.apk). <version> must be app.json's expo.version.
 set -euo pipefail
 REPO=husainlab/Health-app
 version=${1:?usage: scripts/github-release.sh <version> <apk>...}

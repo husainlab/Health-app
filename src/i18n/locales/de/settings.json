@@ -44,7 +44,7 @@
     "appUpdate": "App-Update",
     "install": "Installieren",
     "upstream": "Open-Source-Code",
-    "upstreamHint": "Prüft, ob das originale Pulse-Open-Source-Projekt neue Commits hat.",
+    "upstreamHint": "Prüft, ob der Upstream-Open-Source-Code neue Commits hat.",
     "upstreamChecking": "Prüfe Upstream…",
     "upstreamCheckNow": "Upstream prüfen",
     "upstreamLatest": "Open-Source-Code ist auf dem neuesten Stand.",

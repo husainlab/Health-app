@@ -30,7 +30,7 @@ Grab the signed APK directly or from the [latest release](https://github.com/hus
 ## What you get
 
 - **Sleep, Recovery and Strain** every morning, with a Strain Target for the day
-- **Pulse Age**, **Stress** and **Energy Bank** through the day
+- **Health Age**, **Stress** and **Energy Bank** through the day
 - **Health Monitor**, **Journal**, **Trends**, **Reports** and **My Dashboard**
 
 ## How it works
@@ -63,5 +63,5 @@ Expo SDK 57 with a development build (Health Connect is a native module, so not 
 
 [PolyForm Noncommercial 1.0.0](LICENSE) · [Security](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
-<sub>Pulse Mobile is an independent project, not affiliated with or endorsed by Fitbit, Google, WHOOP, Bevel, Garmin or any other
+<sub>Health is an independent project, not affiliated with or endorsed by Fitbit, Google, WHOOP, Bevel, Garmin or any other
 wearable maker. The code names other products only to cite what they publish.</sub>

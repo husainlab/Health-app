@@ -44,7 +44,7 @@
     "appUpdate": "Actualización de la app",
     "install": "Instalar",
     "upstream": "Código abierto",
-    "upstreamHint": "Comprueba si el proyecto de código abierto Pulse original tiene nuevos commits.",
+    "upstreamHint": "Comprueba si el código abierto upstream tiene nuevos commits.",
     "upstreamChecking": "Comprobando upstream…",
     "upstreamCheckNow": "Comprobar upstream",
     "upstreamLatest": "El código abierto está al día.",
