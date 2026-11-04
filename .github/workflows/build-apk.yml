@@ -100,6 +100,7 @@ jobs:
 
       - name: Build Release APK (arm64-v8a for OnePlus Nord)
         env:
+          EXPO_PUBLIC_GITHUB_TOKEN: ${{ secrets.GH_PAT_READ || '' }}
           RELEASE_STORE_FILE: ${{ github.workspace }}/credentials/release.keystore
           RELEASE_STORE_PASSWORD: healthapp123
           RELEASE_KEY_ALIAS: health

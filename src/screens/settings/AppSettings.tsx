@@ -15,11 +15,11 @@ import { rememberTheme, setDisplay, setLanguage, useApp } from "@/state/app";
 import { LinkList } from "@/ui/shells/LinkList";
 import { SectionShell } from "@/ui/shells/SectionShell";
 import { APP_VERSION } from "@/queries/settings";
-import { checkForAppUpdate, checkForUpstreamUpdate, installUpdate, setUpdateCheck, useUpdate } from "@/state/update";
+import { checkForAppUpdate, checkForUpstreamUpdate, getGithubTokenLast4, getUpdate, installUpdate, setGithubToken, useUpdate } from "@/state/update";
 import { cn } from "@/ui/cn";
 import { Text } from "@/ui/Text";
 import { toast } from "@/ui/Toast";
-import { ROW, ROW_LABEL, ROW_RULE, ROW_VALUE, SelectRow, SmallButton, SwitchRow, type SelectOption } from "./controls";
+import { ROW, ROW_LABEL, ROW_RULE, ROW_VALUE, SelectRow, SmallButton, TextField, type SelectOption } from "./controls";
 
 // The labels resolve when a row draws (never at import), so a language switch reaches them.
 const themes = (): SelectOption<Theme>[] => [
@@ -94,18 +94,34 @@ function DisplayRows({ initialTheme }: { initialTheme: Theme }) {
 
 /**
  * Updates: checks for newer Health builds on GitHub and upstream open-source code updates (src/state/update.ts).
+ * Manual only: checks run only when the user taps check.
+ * Supports private repository updates via a GitHub Personal Access Token.
  */
 function Updates() {
   const { t } = useTranslation("settings");
-  const { enabled, available, upstreamUpdate } = useUpdate();
+  const { available, upstreamUpdate } = useUpdate();
   const [checkingApp, setCheckingApp] = useState(false);
   const [checkingUpstream, setCheckingUpstream] = useState(false);
+  const [editingToken, setEditingToken] = useState(false);
+  const [tokenInput, setTokenInput] = useState("");
+  const [tokenLast4, setTokenLast4] = useState<string | null>(null);
+
+  useEffect(() => {
+    void getGithubTokenLast4().then(setTokenLast4);
+  }, []);
 
   const checkAppNow = async () => {
     setCheckingApp(true);
     const update = await checkForAppUpdate(true);
     setCheckingApp(false);
-    if (!update) toast.success(t("app.latest", { version: APP_VERSION }));
+    const err = getUpdate().checkError;
+    if (err === "unauthorized") {
+      toast.error(t("app.githubTokenMissing"));
+    } else if (err === "network") {
+      toast.error(t("app.checkFailed"));
+    } else if (!update) {
+      toast.success(t("app.latest", { version: APP_VERSION }));
+    }
   };
 
   const checkUpstreamNow = async () => {
@@ -115,12 +131,19 @@ function Updates() {
     if (!update) toast.success(t("app.upstreamLatest"));
   };
 
+  const saveToken = async () => {
+    await setGithubToken(tokenInput.trim() ? tokenInput.trim() : null);
+    const last4 = await getGithubTokenLast4();
+    setTokenLast4(last4);
+    setEditingToken(false);
+    setTokenInput("");
+    toast.success(last4 ? t("app.githubTokenSaved") : t("app.githubTokenCleared"));
+  };
+
   return (
     <SectionShell variant="card" title={t("app.updates")}>
-      <SwitchRow rule={false} label={t("app.checkForUpdates")} hint={t("app.checkForUpdatesHint")} value={enabled} onChange={(on) => void setUpdateCheck(on)} />
-
       {/* App Release Update */}
-      <View className={cn(ROW, ROW_RULE)}>
+      <View className={ROW}>
         <View className="flex-1 pr-3">
           <Text className={ROW_LABEL}>{t("app.appUpdate")}</Text>
           <Text className="text-xs text-foreground-secondary">{t("app.version", { version: APP_VERSION })}</Text>
@@ -149,6 +172,41 @@ function Updates() {
           <SmallButton label={checkingUpstream ? t("app.upstreamChecking") : t("app.upstreamCheckNow")} onPress={() => void checkUpstreamNow()} />
         )}
       </View>
+
+      {/* GitHub Token for Private Repo */}
+      <View className={cn(ROW, ROW_RULE)}>
+        <View className="flex-1 pr-3">
+          <Text className={ROW_LABEL}>{t("app.githubToken")}</Text>
+          <Text className="text-xs text-foreground-secondary">
+            {tokenLast4 ? `••••${tokenLast4}` : t("app.githubTokenNone")}
+          </Text>
+        </View>
+        <SmallButton label={editingToken ? t("app.cancel") : t("app.edit")} onPress={() => setEditingToken(!editingToken)} />
+      </View>
+      {editingToken && (
+        <View className="gap-2 px-4 pb-3">
+          <Text className="text-xs text-foreground-secondary">{t("app.githubTokenHint")}</Text>
+          <TextField
+            variant="input"
+            secureTextEntry
+            placeholder={t("app.githubTokenPlaceholder")}
+            value={tokenInput}
+            onChangeText={setTokenInput}
+          />
+          <View className="flex-row items-center justify-end gap-2 pt-1">
+            {!!tokenLast4 && (
+              <SmallButton
+                label={t("app.clear")}
+                onPress={() => {
+                  setTokenInput("");
+                  void saveToken();
+                }}
+              />
+            )}
+            <SmallButton label={t("app.save")} onPress={() => void saveToken()} />
+          </View>
+        </View>
+      )}
     </SectionShell>
   );
 }

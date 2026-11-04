@@ -28,7 +28,6 @@ import type { DisplayPrefs } from "@/lib/units";
 import type { QueryCtx } from "@/queries/ctx";
 import { ensureDefaultTags } from "@/queries/journal";
 import { applyDisplay } from "./display";
-import { checkForUpdate } from "./update";
 
 export type { Source };
 export type Status = "booting" | "needs_profile" | "needs_permissions" | "syncing" | "ready" | "error";
@@ -189,7 +188,6 @@ export async function boot(applyTheme: (theme: string) => void): Promise<void> {
     patch({ theme: theme === "light" || theme === "dark" ? theme : "system" });
     patch({ store: st, profile, source, sync, availability: avail });
     watchForeground();
-    void checkForUpdate();
     if (!profile) return patch({ status: "needs_profile" });
     if (!source) return patch({ status: "needs_permissions" });
     if (source === "health_connect") {
@@ -217,8 +215,6 @@ function watchForeground() {
     if (away > RESYNC_AWAY_MS && state.onboarded) void run();
     // Android lets the person change Pulse's language in the system settings while it runs: "Phone's language" follows it.
     void followPhoneLanguage();
-    // At most once a day (src/state/update.ts): a phone left open for days still hears of a release.
-    void checkForUpdate();
   });
 }
 

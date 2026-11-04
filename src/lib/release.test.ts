@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { apkFor, isNewer, parseRelease } from "./release";
+import { apkFor, assetUrlFor, isNewer, parseRelease } from "./release";
 
 const asset = (name: string) => ({ name, browser_download_url: `https://github.com/x/releases/download/v0.4.0/${name}` });
 const LATEST = {
@@ -23,12 +23,16 @@ describe("releases (release.ts)", () => {
     const healthRelease = {
       tag_name: "v0.4.3",
       html_url: "https://github.com/husainlab/Health-app/releases/tag/v0.4.3",
-      assets: [asset("Health-0.4.3.apk"), asset("Health-release.apk")],
+      assets: [
+        { ...asset("Health-0.4.3.apk"), url: "https://api.github.com/repos/husainlab/Health-app/releases/assets/101" },
+        { ...asset("Health-release.apk"), url: "https://api.github.com/repos/husainlab/Health-app/releases/assets/102" },
+      ],
     };
     const r = parseRelease(healthRelease)!;
     expect(r.version).toBe("0.4.3");
     expect(apkFor(r, ["arm64-v8a"])).toBe(healthRelease.assets[0].browser_download_url);
     expect(apkFor(r, ["mips"])).toBe(healthRelease.assets[0].browser_download_url);
+    expect(assetUrlFor(r, ["arm64-v8a"])).toBe("https://api.github.com/repos/husainlab/Health-app/releases/assets/101");
   });
 
   it("compares versions part by part, never as text", () => {

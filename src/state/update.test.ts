@@ -5,8 +5,11 @@ import {
   checkForUpdate,
   dismissUpstreamUpdate,
   fetchUpstreamLatest,
+  getGithubTokenLast4,
   getUpdate,
+  installUpdate,
   putOffUpdate,
+  setGithubToken,
   UPSTREAM_BASE_COMMIT,
 } from "./update";
 
@@ -20,8 +23,21 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
   },
 }));
 
+const secureStorage = new Map<string, string>();
+vi.mock("expo-secure-store", () => ({
+  getItemAsync: vi.fn(async (k: string) => secureStorage.get(k) ?? null),
+  setItemAsync: vi.fn(async (k: string, v: string) => void secureStorage.set(k, v)),
+  deleteItemAsync: vi.fn(async (k: string) => void secureStorage.delete(k)),
+}));
+
 vi.mock("expo-device", () => ({
   supportedCpuArchitectures: ["arm64-v8a"],
+}));
+
+const { createDownloadTaskMock } = vi.hoisted(() => ({
+  createDownloadTaskMock: vi.fn(() => ({
+    downloadAsync: async () => ({ contentUri: "content://apk" }),
+  })),
 }));
 
 vi.mock("expo-file-system", () => ({
@@ -29,9 +45,7 @@ vi.mock("expo-file-system", () => ({
   File: class {
     exists = false;
     delete() {}
-    static createDownloadTask() {
-      return { downloadAsync: async () => ({ contentUri: "content://apk" }) };
-    }
+    static createDownloadTask = createDownloadTaskMock;
   },
 }));
 
@@ -142,5 +156,61 @@ describe("update state (update.ts)", () => {
     } as unknown as Response);
 
     await expect(checkForUpdate(true)).resolves.not.toThrow();
+  });
+
+  it("handles private repository 404 with unauthorized checkError", async () => {
+    await setGithubToken(null);
+    global.fetch = vi.fn().mockResolvedValue({
+      status: 404,
+      ok: false,
+    } as unknown as Response);
+
+    const notice = await checkForAppUpdate(true);
+    expect(notice).toBeNull();
+    expect(getUpdate().checkError).toBe("unauthorized");
+  });
+
+  it("manages GitHub token and includes Authorization header for private repos", async () => {
+    await setGithubToken("github_pat_1234567890abcdef");
+    expect(await getGithubTokenLast4()).toBe("cdef");
+    expect(getUpdate().hasGithubToken).toBe(true);
+
+    let sentHeaders: any = null;
+    global.fetch = vi.fn().mockImplementation(async (url: string, init?: any) => {
+      sentHeaders = init?.headers;
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          tag_name: "v9.9.9",
+          html_url: "https://github.com/husainlab/Health-app/releases/tag/v9.9.9",
+          assets: [
+            {
+              name: "Health-9.9.9.apk",
+              url: "https://api.github.com/repos/husainlab/Health-app/releases/assets/999",
+              browser_download_url: "https://github.com/husainlab/Health-app/releases/download/v9.9.9/Health-9.9.9.apk",
+            },
+          ],
+        }),
+      } as unknown as Response;
+    });
+
+    const notice = await checkForAppUpdate(true);
+    expect(sentHeaders?.Authorization).toBe("Bearer github_pat_1234567890abcdef");
+    expect(notice?.assetUrl).toBe("https://api.github.com/repos/husainlab/Health-app/releases/assets/999");
+
+    // Test installUpdate with private asset URL & headers
+    createDownloadTaskMock.mockClear();
+    await installUpdate();
+    expect(createDownloadTaskMock).toHaveBeenCalledWith(
+      "https://api.github.com/repos/husainlab/Health-app/releases/assets/999",
+      expect.anything(),
+      expect.objectContaining({
+        headers: {
+          Authorization: "Bearer github_pat_1234567890abcdef",
+          Accept: "application/octet-stream",
+        },
+      })
+    );
   });
 });
