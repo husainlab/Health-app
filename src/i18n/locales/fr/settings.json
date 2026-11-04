@@ -62,6 +62,7 @@
     "githubTokenSaved": "Jeton GitHub enregistré de manière sécurisée.",
     "githubTokenCleared": "Jeton GitHub effacé.",
     "githubTokenMissing": "Dépôt privé : veuillez configurer un jeton d'accès GitHub ci-dessous.",
+    "githubTokenInvalid": "Le jeton GitHub est invalide ou n'a pas accès au dépôt (nécessite Contents: Read-only).",
     "cancel": "Annuler",
     "save": "Enregistrer",
     "clear": "Effacer",

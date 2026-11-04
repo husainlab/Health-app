@@ -62,6 +62,7 @@
     "githubTokenSaved": "GitHub token saved securely.",
     "githubTokenCleared": "GitHub token cleared.",
     "githubTokenMissing": "Private repository: please configure a GitHub access token below.",
+    "githubTokenInvalid": "GitHub token is invalid or lacks access to the repository (requires Contents: Read-only).",
     "cancel": "Cancel",
     "save": "Save",
     "clear": "Clear",

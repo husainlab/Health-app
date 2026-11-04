@@ -127,8 +127,9 @@ function Updates() {
     const update = await checkForAppUpdate(true);
     setCheckingApp(false);
     const err = getUpdate().checkError;
+    const hasToken = getUpdate().hasGithubToken;
     if (err === "unauthorized") {
-      toast.error(t("app.githubTokenMissing"));
+      toast.error(hasToken ? t("app.githubTokenInvalid") : t("app.githubTokenMissing"));
     } else if (err === "network") {
       toast.error(t("app.checkFailed"));
     } else if (!update) {

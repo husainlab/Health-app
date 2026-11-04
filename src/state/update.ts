@@ -11,8 +11,8 @@ import { useSyncExternalStore } from "react";
 import { apkFor, assetUrlFor, isNewer, parseRelease, type Release } from "@/lib/release";
 import { APP_VERSION } from "@/queries/settings";
 
-/** GitHub's latest-release endpoint for Health's repository. */
-export const RELEASES_URL = "https://api.github.com/repos/husainlab/Health-app/releases/latest";
+/** GitHub's latest-release endpoint for Health's repository. Uses releases list to reliably detect empty releases. */
+export const RELEASES_URL = "https://api.github.com/repos/husainlab/Health-app/releases?per_page=1";
 
 /** GitHub's commit endpoint for the original upstream open-source Pulse repository. */
 export const UPSTREAM_COMMITS_URL = "https://api.github.com/repos/adityaongit/pulse-mobile/commits?per_page=1";
@@ -89,11 +89,17 @@ const subscribe = (l: () => void) => {
 export const useUpdate = () => useSyncExternalStore(subscribe, () => state);
 export const getUpdate = () => state;
 
-/** Retrieves the GitHub Personal Access Token from hardware-backed SecureStore or build environment. */
+/** Retrieves the GitHub Personal Access Token from hardware-backed SecureStore, AsyncStorage fallback, or build environment. */
 export async function getGithubToken(): Promise<string | null> {
   try {
     const saved = await SecureStore.getItemAsync(GITHUB_TOKEN_KEY);
     if (saved && saved.trim()) return saved.trim();
+  } catch {
+    // fallback to AsyncStorage
+  }
+  try {
+    const savedAsync = await AsyncStorage.getItem(GITHUB_TOKEN_KEY);
+    if (savedAsync && savedAsync.trim()) return savedAsync.trim();
   } catch {
     // fallback
   }
@@ -108,13 +114,23 @@ export async function getGithubTokenLast4(): Promise<string | null> {
   return token.length > 4 ? token.slice(-4) : token;
 }
 
-/** Sets or clears the GitHub token in hardware-backed SecureStore. */
+/** Sets or clears the GitHub token in hardware-backed SecureStore with AsyncStorage fallback. */
 export async function setGithubToken(token: string | null): Promise<void> {
-  const clean = token?.trim();
+  const clean = token?.trim() || null;
   if (clean) {
-    await SecureStore.setItemAsync(GITHUB_TOKEN_KEY, clean);
+    try {
+      await SecureStore.setItemAsync(GITHUB_TOKEN_KEY, clean);
+    } catch {
+      // ignore SecureStore failure
+    }
+    await AsyncStorage.setItem(GITHUB_TOKEN_KEY, clean).catch(() => {});
   } else {
-    await SecureStore.deleteItemAsync(GITHUB_TOKEN_KEY);
+    try {
+      await SecureStore.deleteItemAsync(GITHUB_TOKEN_KEY);
+    } catch {
+      // ignore SecureStore failure
+    }
+    await AsyncStorage.removeItem(GITHUB_TOKEN_KEY).catch(() => {});
   }
   const effective = await getGithubToken();
   patch({ hasGithubToken: !!effective });
@@ -157,20 +173,29 @@ async function fetchLatest(): Promise<{ release: Release | null; error: UpdateCh
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   const headers: Record<string, string> = {
     Accept: "application/vnd.github+json",
+    "User-Agent": "Health-App",
+    "X-GitHub-Api-Version": "2022-11-28",
   };
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
   try {
     const res = await fetch(RELEASES_URL, { headers, signal: ctl.signal });
-    if (res.status === 404 || res.status === 401 || res.status === 403) {
+    if (res.status === 401 || res.status === 403 || res.status === 404) {
       return { release: null, error: "unauthorized" };
     }
     if (!res.ok) {
       return { release: null, error: "network" };
     }
     const json = (await res.json()) as unknown;
-    const release = parseRelease(Array.isArray(json) ? json[0] : json);
+    if (Array.isArray(json)) {
+      if (json.length === 0) {
+        return { release: null, error: null };
+      }
+      const release = parseRelease(json[0]);
+      return { release, error: null };
+    }
+    const release = parseRelease(json);
     return { release, error: null };
   } catch {
     return { release: null, error: "network" };
@@ -195,6 +220,8 @@ export async function fetchUpstreamLatest(): Promise<UpstreamUpdate | null> {
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   const headers: Record<string, string> = {
     Accept: "application/vnd.github+json",
+    "User-Agent": "Health-App",
+    "X-GitHub-Api-Version": "2022-11-28",
   };
   if (token) {
     headers.Authorization = `Bearer ${token}`;
@@ -298,7 +325,9 @@ export async function installUpdate(): Promise<void> {
   // For private repositories, download via GitHub API asset endpoint with Authorization header.
   // For public repositories, use browser_download_url.
   const downloadUrl = token && u.assetUrl ? u.assetUrl : u.apk;
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = {
+    "User-Agent": "Health-App",
+  };
   if (token && u.assetUrl) {
     headers.Authorization = `Bearer ${token}`;
     headers.Accept = "application/octet-stream";

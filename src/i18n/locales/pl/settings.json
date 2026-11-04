@@ -62,6 +62,7 @@
     "githubTokenSaved": "Token GitHub został bezpiecznie zapisany.",
     "githubTokenCleared": "Token GitHub usunięty.",
     "githubTokenMissing": "Prywatne repozytorium: wprowadź token dostępu do GitHuba poniżej.",
+    "githubTokenInvalid": "Token GitHub jest nieprawidłowy lub nie ma dostępu do repozytorium (wymaga Contents: Read-only).",
     "cancel": "Anuluj",
     "save": "Zapisz",
     "clear": "Wyczyść",

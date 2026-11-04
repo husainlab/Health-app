@@ -62,6 +62,7 @@
     "githubTokenSaved": "Токен GitHub безопасно сохранен.",
     "githubTokenCleared": "Токен GitHub удален.",
     "githubTokenMissing": "Приватный репозиторий: укажите токен доступа GitHub ниже.",
+    "githubTokenInvalid": "Токен GitHub недействителен или не имеет доступа к репозиторию (требуется Contents: Read-only).",
     "cancel": "Отмена",
     "save": "Сохранить",
     "clear": "Очистить",

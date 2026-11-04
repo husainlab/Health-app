@@ -250,11 +250,25 @@ describe("update state (update.ts)", () => {
       "https://api.github.com/repos/husainlab/Health-app/releases/assets/999",
       expect.anything(),
       expect.objectContaining({
-        headers: {
+        headers: expect.objectContaining({
           Authorization: "Bearer github_pat_1234567890abcdef",
           Accept: "application/octet-stream",
-        },
+          "User-Agent": "Health-App",
+        }),
       })
     );
+  });
+
+  it("identifies no update when repository returns empty releases array", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      status: 200,
+      ok: true,
+      json: async () => [],
+    } as unknown as Response);
+
+    const notice = await checkForAppUpdate(true);
+    expect(notice).toBeNull();
+    expect(getUpdate().checkError).toBeNull();
+    expect(getUpdate().available).toBeNull();
   });
 });
