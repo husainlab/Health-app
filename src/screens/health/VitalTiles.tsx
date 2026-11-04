@@ -16,7 +16,7 @@ const GLYPH: Record<VitalKey, LucideIcon> = { resp: Wind, spo2: Droplet, resting
 const ICON = (k: VitalKey): ReactNode => <Icon icon={GLYPH[k]} size={20} tone="muted-foreground" strokeWidth={1.5} />;
 const FORMAT: Record<VitalKey, FormatKey> = { resp: "decimal1", spo2: "int", restingHr: "int", hrv: "int", skinTempDev: "signed1" };
 
-/** Rows of two tiles (four vitals since SpO2 left: no wide last tile). */
+/** The two-column grid with the fifth tile across both, as rows of two. */
 function Grid({ tiles }: { tiles: ReactNode[] }) {
   const rows: ReactNode[][] = [];
   for (let i = 0; i < tiles.length; i += 2) rows.push(tiles.slice(i, i + 2));

@@ -80,8 +80,9 @@ import type { LoadStatus } from "@/core/engine/strain";
  * Pulse Age and the reports read Fitbit's nightly HRV and the day's resting HR (dayRestingHr: Fitbit's daily value, else
  * the sleep-session estimate) instead of the engine's own aggregates of the night's samples.
  * 30: Pulse Age's VO2 max falls back to Pulse's own daily estimate when the 28 days have no Fitbit VO2 max.
+ * 31: Restore SpO2 to Health Monitor with 95% clinical floor and personal baseline range.
  */
-export const SCORING_VERSION = 30;
+export const SCORING_VERSION = 31;
 
 export type PipelineOptions = {
   timeZone: string;

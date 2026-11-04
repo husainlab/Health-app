@@ -369,6 +369,7 @@ function healthspanInsight(pace: number | null, deltaYears: number, cs: Healthsp
 
 const VITALS: { key: VitalKey; short: string; unit: string; signed?: boolean; pick: (r: DayRow) => number | null | undefined }[] = [
   { key: "resp", short: "Resp", unit: "rpm", pick: (r) => r.metrics?.respBpm },
+  { key: "spo2", short: "SpO2", unit: "%", pick: (r) => r.metrics?.spo2Pct },
   // The engine's night values, the ones Health Monitor's band and Recovery use (the daily ones before a scored night).
   { key: "restingHr", short: "RHR", unit: "bpm", pick: (r) => r.rhr },
   { key: "hrv", short: "HRV", unit: "ms", pick: (r) => r.metrics?.hrvMs },

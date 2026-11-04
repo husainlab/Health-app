@@ -5,6 +5,7 @@ const MONITOR_VITALS = {
   rhr: { key: "restingHr", unit: "bpm" },
   hrv: { key: "hrv", unit: "ms" },
   resp: { key: "resp", unit: "rpm" },
+  spo2: { key: "spo2", unit: "%" },
   skin: { key: "skinTempDev", unit: "°C" },
 } as const;
 

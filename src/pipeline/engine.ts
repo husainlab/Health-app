@@ -675,18 +675,24 @@ const MONITOR_FIELD = { restingHr: "rhr", hrv: "hrv", resp: "resp", spo2: "spo2"
 
 /**
  * Health Monitor's vitals on the engine's rule (reference study, other-calculators.md § Vitals): normal within ±1 SD
- * (population) of the mean over the window, the night shown included; low below, high above. halo's illness signal stays.
+ * (population) of the mean over the window, the night shown included; low below, high above. SpO2 is one-sided with a 95% floor.
  */
 export function engineMonitor(f: Fold, row: HealthMonitorRow): HealthMonitorRow {
   if (row.reason !== null) return row;
   const nights = f.monitorRows.slice(-MONITOR_WINDOW);
-  // No SpO2: Fitbit does not write it to Health Connect, so it is left out rather than shown empty.
-  const vitals = row.vitals.filter((v) => v.key !== "spo2").map((v) => {
+  const vitals = row.vitals.map((v) => {
     const xs = nights.map((n) => n[MONITOR_FIELD[v.key]]).filter((x): x is number => x != null && Number.isFinite(x));
     const s = popStats(xs);
-    const range = s && { low: roundHalfAway(s.mean - s.sd, 2), high: roundHalfAway(s.mean + s.sd, 2) };
-    const status: typeof v.status =
-      v.value == null || !s ? "no_data" : s.sd === 0 ? "in_range" : v.value < s.mean - s.sd ? "low" : v.value > s.mean + s.sd ? "high" : "in_range";
+    let range: { low: number; high: number } | null = null;
+    let status: typeof v.status = "no_data";
+    if (v.key === "spo2") {
+      const low = s ? Math.max(roundHalfAway(s.mean - s.sd, 1), 95) : 95;
+      range = { low, high: 100 };
+      status = v.value == null ? "no_data" : v.value < low ? "low" : "in_range";
+    } else {
+      range = s && { low: roundHalfAway(s.mean - s.sd, 2), high: roundHalfAway(s.mean + s.sd, 2) };
+      status = v.value == null || !s ? "no_data" : s.sd === 0 ? "in_range" : v.value < s.mean - s.sd ? "low" : v.value > s.mean + s.sd ? "high" : "in_range";
+    }
     return { ...v, range, rangeSource: "pulse" as const, status };
   });
   return {

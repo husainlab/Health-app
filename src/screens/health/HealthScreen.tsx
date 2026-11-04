@@ -36,9 +36,18 @@ const TILE = "font-numeric text-4xl leading-10 font-bold tracking-[-0.01em]";
 const EMPTY = "text-[15px] leading-[22px] text-foreground-secondary";
 
 const VITAL_ICON: Record<VitalKey, LucideIcon> = { resp: Wind, spo2: Droplet, restingHr: Heart, hrv: Activity, skinTempDev: Thermometer };
-const VITAL_ORDER: VitalKey[] = ["resp", "restingHr", "hrv", "skinTempDev"];
-/** The tile's short name; RHR and HRV are glossary terms and stay as they are. */
-const shortOf = (key: VitalKey) => (key === "resp" ? i18n.t("health:hub.shortResp") : key === "skinTempDev" ? i18n.t("health:hub.shortTemp") : key === "restingHr" ? "RHR" : "HRV");
+const VITAL_ORDER: VitalKey[] = ["resp", "spo2", "restingHr", "hrv", "skinTempDev"];
+/** The tile's short name; RHR, HRV and SpO2 are glossary terms and stay as they are. */
+const shortOf = (key: VitalKey) =>
+  key === "resp"
+    ? i18n.t("health:hub.shortResp")
+    : key === "spo2"
+      ? "SpO2"
+      : key === "skinTempDev"
+        ? i18n.t("health:hub.shortTemp")
+        : key === "restingHr"
+          ? "RHR"
+          : "HRV";
 const ACWR_KEY: Record<ChipTone, "optimal" | "pushing" | "highRisk" | "detraining"> = { optimal: "optimal", warning: "pushing", alert: "highRisk", neutral: "detraining" };
 
 const skeleton = <Skeleton className="h-16 w-full" />;
