@@ -22,6 +22,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
+          fetch-depth: 0
           persist-credentials: true
 
       - name: Free runner disk space
@@ -134,37 +135,55 @@ jobs:
           NEW_VER="${{ steps.bump_version.outputs.new_version }}"
           APK_SRC="android/app/build/outputs/apk/release/Health-${NEW_VER}.apk"
 
-          # Remove old versioned APKs
-          git rm -f Health-*.apk 2>/dev/null || true
-
-          # Copy both versioned APK and fixed Health-release.apk
-          cp "$APK_SRC" "./Health-${NEW_VER}.apk"
-          cp "$APK_SRC" "./Health-release.apk"
-
-          # Stage and commit locally before any fetch/push
-          git add -f "Health-${NEW_VER}.apk" "Health-release.apk" app.json package.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore(release): bump version to ${NEW_VER} and update APK [skip ci]"
-          fi
-
-          # Retry loop to push to origin main
           MAX_RETRIES=5
           PUSH_SUCCESS=0
+
           for i in $(seq 1 $MAX_RETRIES); do
             echo "Push attempt $i of $MAX_RETRIES..."
-            if git push origin HEAD:main; then
+
+            # Sync cleanly with origin main without binary rebase conflicts
+            git fetch origin main
+            git checkout -B main origin/main
+            git reset --hard origin/main
+
+            # Read version from latest app.json on origin/main and bump it
+            node -e '
+              const fs = require("fs");
+              const appJson = JSON.parse(fs.readFileSync("app.json", "utf8"));
+              const pkgJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+              const parts = (appJson.expo.version || "0.4.1").split(".").map(Number);
+              parts[2] = (parts[2] || 0) + 1;
+              const newVersion = parts.join(".");
+              appJson.expo.version = newVersion;
+              if (!appJson.expo.android) appJson.expo.android = {};
+              appJson.expo.android.versionCode = (appJson.expo.android.versionCode || 1) + 1;
+              pkgJson.version = newVersion;
+              fs.writeFileSync("app.json", JSON.stringify(appJson, null, 2) + "\n");
+              fs.writeFileSync("package.json", JSON.stringify(pkgJson, null, 2) + "\n");
+              console.log("Bumped version to: " + newVersion);
+            '
+
+            FINAL_VER=$(node -p 'require("./app.json").expo.version')
+
+            # Clean any old APKs
+            git rm -f Health-*.apk 2>/dev/null || true
+            rm -f Health-*.apk
+
+            # Copy APKs into root
+            cp "$APK_SRC" "./Health-${FINAL_VER}.apk"
+            cp "$APK_SRC" "./Health-release.apk"
+
+            git add -f "Health-${FINAL_VER}.apk" "Health-release.apk" app.json package.json
+            git commit -m "chore(release): bump version to ${FINAL_VER} and update APK [skip ci]"
+
+            if git push origin main; then
               echo "Successfully pushed APK and version bump to main branch!"
+              echo "final_version=${FINAL_VER}" >> $GITHUB_ENV
               PUSH_SUCCESS=1
               break
             fi
 
-            echo "Push failed. Fetching origin main and rebasing..."
-            git fetch origin main
-            if ! git rebase -X theirs origin/main; then
-              echo "Rebase conflict occurred, aborting rebase..."
-              git rebase --abort || true
-              git merge -X theirs --no-edit origin/main || true
-            fi
+            echo "Push race condition detected. Waiting 5s before retrying..."
             sleep 5
           done
 
@@ -175,13 +194,21 @@ jobs:
 
       - name: Publish to GitHub Releases
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          NEW_VER="${{ steps.bump_version.outputs.new_version }}"
-          gh release create "v${NEW_VER}" \
-            "Health-${NEW_VER}.apk" \
+          RELEASE_VER="${{ env.final_version || steps.bump_version.outputs.new_version }}"
+          echo "Publishing release v${RELEASE_VER}..."
+
+          # Ensure the tag is created and pushed cleanly
+          git tag -f "v${RELEASE_VER}"
+          git push -f origin "v${RELEASE_VER}" || echo "Git tag push warning"
+
+          gh release create "v${RELEASE_VER}" \
+            "Health-${RELEASE_VER}.apk" \
             "Health-release.apk" \
-            --title "Health ${NEW_VER}" \
-            --notes "Production signed APK for Health ${NEW_VER}" \
-            --clobber || true
+            --target main \
+            --title "Health ${RELEASE_VER}" \
+            --notes "Production signed APK for Health ${RELEASE_VER}" \
+            --clobber || echo "GitHub release creation warning"

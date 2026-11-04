@@ -169,7 +169,8 @@ async function fetchLatest(): Promise<{ release: Release | null; error: UpdateCh
     if (!res.ok) {
       return { release: null, error: "network" };
     }
-    const release = parseRelease(await res.json());
+    const json = (await res.json()) as unknown;
+    const release = parseRelease(Array.isArray(json) ? json[0] : json);
     return { release, error: null };
   } catch {
     return { release: null, error: "network" };

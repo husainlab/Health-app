@@ -18,12 +18,12 @@ No server, no account, no cloud: Health reads your Fitbit data from Health Conne
 
 <div align="center">
 
-<a href="https://github.com/husainlab/Health-app/releases/latest/download/Health-release.apk"><img src="assets/badges/android.svg" alt="Download Health for Android" height="56"></a>
+<a href="https://github.com/husainlab/Health-app/raw/main/Health-release.apk"><img src="assets/badges/android.svg" alt="Download Health for Android" height="56"></a>
 
-[**Direct APK Download (Health-release.apk)**](https://github.com/husainlab/Health-app/releases/latest/download/Health-release.apk) · [Latest Release](https://github.com/husainlab/Health-app/releases/latest) · [Direct Repository APK](https://raw.githubusercontent.com/husainlab/Health-app/main/Health-release.apk)
+[**Direct APK Download (Health-release.apk)**](https://github.com/husainlab/Health-app/raw/main/Health-release.apk) · [View in Repository](https://github.com/husainlab/Health-app/blob/main/Health-release.apk) · [Releases](https://github.com/husainlab/Health-app/releases)
 
-Grab the signed APK directly or from the [latest release](https://github.com/husainlab/Health-app/releases/latest). Sideloading asks you to allow
-"Install unknown apps" for whichever app you download it with.
+*Signed release APK built automatically on every update.*  
+*Note: Make sure you are signed into your GitHub account in your browser when clicking the download links.*
 
 </div>
 
