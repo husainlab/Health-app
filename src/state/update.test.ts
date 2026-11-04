@@ -3,10 +3,13 @@ import {
   checkForAppUpdate,
   checkForUpstreamUpdate,
   checkForUpdate,
+  clearIgnoredUpstreamUpdate,
   dismissUpstreamUpdate,
   fetchUpstreamLatest,
   getGithubTokenLast4,
+  getIgnoredUpstreamSha,
   getUpdate,
+  ignoreUpstreamUpdate,
   installUpdate,
   putOffUpdate,
   setGithubToken,
@@ -123,6 +126,47 @@ describe("update state (update.ts)", () => {
 
     dismissUpstreamUpdate();
     expect(getUpdate().upstreamUpdate).toBeNull();
+    expect(await getIgnoredUpstreamSha()).toBe(newSha);
+  });
+
+  it("supports ignoring upstream commit and resetting it", async () => {
+    const newSha = "fedcba9876543210fedcba9876543210fedcba98";
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [
+        {
+          sha: newSha,
+          commit: {
+            message: "feat: experimental upstream change",
+            author: { date: "2026-11-04T12:00:00Z" },
+          },
+          html_url: `https://github.com/adityaongit/pulse-mobile/commit/${newSha}`,
+        },
+      ],
+    } as unknown as Response);
+
+    // Initial check finds the update
+    let update = await fetchUpstreamLatest();
+    expect(update).not.toBeNull();
+    expect(update?.sha).toBe(newSha);
+
+    // Ignore the commit
+    await ignoreUpstreamUpdate(newSha);
+    expect(await getIgnoredUpstreamSha()).toBe(newSha);
+    expect(getUpdate().ignoredUpstreamSha).toBe(newSha);
+
+    // Subsequent check ignores this commit
+    update = await fetchUpstreamLatest();
+    expect(update).toBeNull();
+
+    // Resetting ignored commit allows it to be discovered again
+    await clearIgnoredUpstreamUpdate();
+    expect(await getIgnoredUpstreamSha()).toBeNull();
+    expect(getUpdate().ignoredUpstreamSha).toBeNull();
+
+    update = await fetchUpstreamLatest();
+    expect(update).not.toBeNull();
+    expect(update?.sha).toBe(newSha);
   });
 
   it("checkForAppUpdate checks latest GitHub release and puts off with Later", async () => {

@@ -15,7 +15,18 @@ import { rememberTheme, setDisplay, setLanguage, useApp } from "@/state/app";
 import { LinkList } from "@/ui/shells/LinkList";
 import { SectionShell } from "@/ui/shells/SectionShell";
 import { APP_VERSION } from "@/queries/settings";
-import { checkForAppUpdate, checkForUpstreamUpdate, getGithubTokenLast4, getUpdate, installUpdate, setGithubToken, useUpdate } from "@/state/update";
+import {
+  checkForAppUpdate,
+  checkForUpstreamUpdate,
+  clearIgnoredUpstreamUpdate,
+  getGithubTokenLast4,
+  getIgnoredUpstreamSha,
+  getUpdate,
+  ignoreUpstreamUpdate,
+  installUpdate,
+  setGithubToken,
+  useUpdate,
+} from "@/state/update";
 import { cn } from "@/ui/cn";
 import { Text } from "@/ui/Text";
 import { toast } from "@/ui/Toast";
@@ -99,7 +110,7 @@ function DisplayRows({ initialTheme }: { initialTheme: Theme }) {
  */
 function Updates() {
   const { t } = useTranslation("settings");
-  const { available, upstreamUpdate } = useUpdate();
+  const { available, upstreamUpdate, ignoredUpstreamSha } = useUpdate();
   const [checkingApp, setCheckingApp] = useState(false);
   const [checkingUpstream, setCheckingUpstream] = useState(false);
   const [editingToken, setEditingToken] = useState(false);
@@ -108,6 +119,7 @@ function Updates() {
 
   useEffect(() => {
     void getGithubTokenLast4().then(setTokenLast4);
+    void getIgnoredUpstreamSha();
   }, []);
 
   const checkAppNow = async () => {
@@ -163,11 +175,35 @@ function Updates() {
         <View className="flex-1 pr-3">
           <Text className={ROW_LABEL}>{t("app.upstream")}</Text>
           <Text className="text-xs text-foreground-secondary">
-            {upstreamUpdate ? t("app.upstreamUpdateFound", { sha: upstreamUpdate.shortSha }) : t("app.upstreamHint")}
+            {upstreamUpdate
+              ? t("app.upstreamUpdateFound", { sha: upstreamUpdate.shortSha })
+              : ignoredUpstreamSha
+                ? t("app.ignoredCommit", { sha: ignoredUpstreamSha.slice(0, 7) })
+                : t("app.upstreamHint")}
           </Text>
         </View>
         {upstreamUpdate ? (
-          <SmallButton label={t("app.viewOnGitHub")} onPress={() => void Linking.openURL(upstreamUpdate.url).catch(() => {})} />
+          <View className="flex-row items-center gap-2">
+            <SmallButton
+              label={t("app.skip")}
+              onPress={() => {
+                void ignoreUpstreamUpdate(upstreamUpdate.sha);
+                toast.success(t("app.upstreamSkipped"));
+              }}
+            />
+            <SmallButton label={t("app.viewOnGitHub")} onPress={() => void Linking.openURL(upstreamUpdate.url).catch(() => {})} />
+          </View>
+        ) : ignoredUpstreamSha ? (
+          <View className="flex-row items-center gap-2">
+            <SmallButton
+              label={t("app.reset")}
+              onPress={() => {
+                void clearIgnoredUpstreamUpdate();
+                toast.success(t("app.upstreamReset"));
+              }}
+            />
+            <SmallButton label={checkingUpstream ? t("app.upstreamChecking") : t("app.upstreamCheckNow")} onPress={() => void checkUpstreamNow()} />
+          </View>
         ) : (
           <SmallButton label={checkingUpstream ? t("app.upstreamChecking") : t("app.upstreamCheckNow")} onPress={() => void checkUpstreamNow()} />
         )}

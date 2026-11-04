@@ -25,6 +25,8 @@ const TIMEOUT_MS = 15_000;
 const CACHE_KEY = "health.update";
 /** The last check for upstream code: when, and the upstream update info ({ checkedAt, update }). */
 const UPSTREAM_CACHE_KEY = "health.update.upstream";
+/** Key for the upstream commit SHA the person chose to skip/ignore. */
+export const IGNORED_UPSTREAM_KEY = "health.update.upstream_ignored";
 /** SecureStore key for the GitHub Personal Access Token (for private repository updates). */
 export const GITHUB_TOKEN_KEY = "pulse.github.token";
 /** "off" when the person turned the check off. */
@@ -53,6 +55,8 @@ export type UpdateState = {
   progress: number | null;
   /** An upstream update from the original open-source Pulse repo, if newer than our baseline; null otherwise. */
   upstreamUpdate: UpstreamUpdate | null;
+  /** Upstream commit SHA that the user chose to skip/ignore. */
+  ignoredUpstreamSha: string | null;
   /** Whether a GitHub token is configured. */
   hasGithubToken: boolean;
   /** Error from the last manual check. */
@@ -64,6 +68,7 @@ let state: UpdateState = {
   available: null,
   progress: null,
   upstreamUpdate: null,
+  ignoredUpstreamSha: null,
   hasGithubToken: false,
   checkError: null,
 };
@@ -113,6 +118,27 @@ export async function setGithubToken(token: string | null): Promise<void> {
   }
   const effective = await getGithubToken();
   patch({ hasGithubToken: !!effective });
+}
+
+/** Retrieves the upstream commit SHA that the user chose to skip/ignore on this device. */
+export async function getIgnoredUpstreamSha(): Promise<string | null> {
+  const sha = await AsyncStorage.getItem(IGNORED_UPSTREAM_KEY).catch(() => null);
+  if (state.ignoredUpstreamSha !== sha) {
+    patch({ ignoredUpstreamSha: sha });
+  }
+  return sha;
+}
+
+/** Marks an upstream commit as skipped/ignored on this device. */
+export async function ignoreUpstreamUpdate(sha: string): Promise<void> {
+  patch({ upstreamUpdate: null, ignoredUpstreamSha: sha });
+  await AsyncStorage.setItem(IGNORED_UPSTREAM_KEY, sha).catch(() => {});
+}
+
+/** Clears the ignored upstream commit so it can be re-evaluated against the baseline. */
+export async function clearIgnoredUpstreamUpdate(): Promise<void> {
+  patch({ ignoredUpstreamSha: null });
+  await AsyncStorage.removeItem(IGNORED_UPSTREAM_KEY).catch(() => {});
 }
 
 /** The release's notice for this phone: a later version than this one, with an APK for its CPU, not put off. */
@@ -183,8 +209,13 @@ export async function fetchUpstreamLatest(): Promise<UpstreamUpdate | null> {
     const c = json[0] as GithubCommit;
     if (typeof c.sha !== "string") return null;
     const sha = c.sha;
-    // If the latest commit is the baseline commit, upstream has no new updates.
-    if (sha.toLowerCase() === UPSTREAM_BASE_COMMIT.toLowerCase() || sha.startsWith(UPSTREAM_BASE_COMMIT.slice(0, 7))) {
+    const ignoredSha = await getIgnoredUpstreamSha();
+    // If the latest commit is the baseline commit or has been skipped/ignored, upstream has no new updates.
+    if (
+      sha.toLowerCase() === UPSTREAM_BASE_COMMIT.toLowerCase() ||
+      sha.startsWith(UPSTREAM_BASE_COMMIT.slice(0, 7)) ||
+      (ignoredSha && (sha.toLowerCase() === ignoredSha.toLowerCase() || sha.startsWith(ignoredSha.slice(0, 7))))
+    ) {
       return null;
     }
     const shortSha = sha.slice(0, 7);
@@ -244,10 +275,14 @@ export function putOffUpdate(): void {
   patch({ available: null });
 }
 
-/** Dismisses the upstream open-source update notice for this session. */
+/** Dismisses the upstream open-source update notice and permanently ignores this commit on this device. */
 export function dismissUpstreamUpdate(): void {
   upstreamDismissed = true;
+  const current = state.upstreamUpdate;
   patch({ upstreamUpdate: null });
+  if (current) {
+    void ignoreUpstreamUpdate(current.sha);
+  }
 }
 
 /** Downloads the APK into the cache and opens Android's installer on it. Supports private repo asset authorization. */
