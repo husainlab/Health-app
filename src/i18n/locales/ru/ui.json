@@ -133,7 +133,11 @@
     "toVersion": "Обновить до Health {{version}}",
     "update": "Обновить",
     "whatsNew": "Что нового",
-    "later": "Позже"
+    "later": "Позже",
+    "upstreamAvailable": "Обновление исходного кода",
+    "upstreamBody": "В оригинальном открытом проекте Pulse появились новые обновления ({{sha}}).",
+    "viewChanges": "Посмотреть изменения",
+    "dismiss": "Закрыть"
   },
   "sync": {
     "failed": "Сбой синхронизации",

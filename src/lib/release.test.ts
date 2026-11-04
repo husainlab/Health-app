@@ -19,6 +19,18 @@ describe("releases (release.ts)", () => {
     expect(parseRelease({ message: "API rate limit exceeded" })).toBeNull();
   });
 
+  it("parses Health-named releases and defaults to arm64/default", () => {
+    const healthRelease = {
+      tag_name: "v0.4.3",
+      html_url: "https://github.com/husainlab/Health-app/releases/tag/v0.4.3",
+      assets: [asset("Health-0.4.3.apk"), asset("Health-release.apk")],
+    };
+    const r = parseRelease(healthRelease)!;
+    expect(r.version).toBe("0.4.3");
+    expect(apkFor(r, ["arm64-v8a"])).toBe(healthRelease.assets[0].browser_download_url);
+    expect(apkFor(r, ["mips"])).toBe(healthRelease.assets[0].browser_download_url);
+  });
+
   it("compares versions part by part, never as text", () => {
     expect(isNewer("0.4.0", "0.3.0")).toBe(true);
     expect(isNewer("0.10.0", "0.9.9")).toBe(true);

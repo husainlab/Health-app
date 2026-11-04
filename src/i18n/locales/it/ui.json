@@ -131,7 +131,11 @@
     "toVersion": "Aggiorna a Health {{version}}",
     "update": "Aggiorna",
     "whatsNew": "Novità",
-    "later": "Più tardi"
+    "later": "Più tardi",
+    "upstreamAvailable": "Aggiornamento open source",
+    "upstreamBody": "Il progetto open source originale Pulse ha nuovi aggiornamenti ({{sha}}).",
+    "viewChanges": "Vedi modifiche",
+    "dismiss": "Ignora"
   },
   "sync": {
     "failed": "Sincronizzazione non riuscita",

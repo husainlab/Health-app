@@ -129,7 +129,11 @@
     "toVersion": "Update to Health {{version}}",
     "update": "Update",
     "whatsNew": "What’s new",
-    "later": "Later"
+    "later": "Later",
+    "upstreamAvailable": "Open-source update",
+    "upstreamBody": "The original Pulse open-source project has new updates ({{sha}}).",
+    "viewChanges": "View changes",
+    "dismiss": "Dismiss"
   },
   "sync": {
     "failed": "Sync failed",

@@ -4,7 +4,7 @@
 // (NotificationsSection.tsx); this section links there.
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import { colorScheme } from "nativewind";
 import { Bell, Monitor, Moon, Sun } from "lucide-react-native";
 import { saveTheme, type Theme } from "@/actions/preferences";
@@ -15,7 +15,7 @@ import { rememberTheme, setDisplay, setLanguage, useApp } from "@/state/app";
 import { LinkList } from "@/ui/shells/LinkList";
 import { SectionShell } from "@/ui/shells/SectionShell";
 import { APP_VERSION } from "@/queries/settings";
-import { checkForUpdate, getUpdate, setUpdateCheck, useUpdate } from "@/state/update";
+import { checkForAppUpdate, checkForUpstreamUpdate, installUpdate, setUpdateCheck, useUpdate } from "@/state/update";
 import { cn } from "@/ui/cn";
 import { Text } from "@/ui/Text";
 import { toast } from "@/ui/Toast";
@@ -93,25 +93,61 @@ function DisplayRows({ initialTheme }: { initialTheme: Theme }) {
 }
 
 /**
- * Updates: the daily check for a newer Pulse on GitHub (src/state/update.ts), and Check now. The check is the one request
- * Pulse makes on its own, and it carries nothing about the person.
+ * Updates: checks for newer Health builds on GitHub and upstream open-source code updates (src/state/update.ts).
  */
 function Updates() {
   const { t } = useTranslation("settings");
-  const { enabled, available } = useUpdate();
-  const [checking, setChecking] = useState(false);
-  const checkNow = async () => {
-    setChecking(true);
-    await checkForUpdate(true);
-    setChecking(false);
-    if (!getUpdate().available) toast.success(t("app.latest", { version: APP_VERSION }));
+  const { enabled, available, upstreamUpdate } = useUpdate();
+  const [checkingApp, setCheckingApp] = useState(false);
+  const [checkingUpstream, setCheckingUpstream] = useState(false);
+
+  const checkAppNow = async () => {
+    setCheckingApp(true);
+    const update = await checkForAppUpdate(true);
+    setCheckingApp(false);
+    if (!update) toast.success(t("app.latest", { version: APP_VERSION }));
   };
+
+  const checkUpstreamNow = async () => {
+    setCheckingUpstream(true);
+    const update = await checkForUpstreamUpdate(true);
+    setCheckingUpstream(false);
+    if (!update) toast.success(t("app.upstreamLatest"));
+  };
+
   return (
     <SectionShell variant="card" title={t("app.updates")}>
       <SwitchRow rule={false} label={t("app.checkForUpdates")} hint={t("app.checkForUpdatesHint")} value={enabled} onChange={(on) => void setUpdateCheck(on)} />
+
+      {/* App Release Update */}
       <View className={cn(ROW, ROW_RULE)}>
-        <Text className={ROW_LABEL}>{t("app.version", { version: APP_VERSION })}</Text>
-        {available ? <Text className={ROW_VALUE}>{t("app.isOut", { version: available.version })}</Text> : <SmallButton label={checking ? t("app.checking") : t("app.checkNow")} onPress={() => void checkNow()} />}
+        <View className="flex-1 pr-3">
+          <Text className={ROW_LABEL}>{t("app.appUpdate")}</Text>
+          <Text className="text-xs text-foreground-secondary">{t("app.version", { version: APP_VERSION })}</Text>
+        </View>
+        {available ? (
+          <View className="flex-row items-center gap-2">
+            <Text className={ROW_VALUE}>{t("app.isOut", { version: available.version })}</Text>
+            <SmallButton label={t("app.install")} onPress={() => void installUpdate()} />
+          </View>
+        ) : (
+          <SmallButton label={checkingApp ? t("app.checking") : t("app.checkNow")} onPress={() => void checkAppNow()} />
+        )}
+      </View>
+
+      {/* Upstream Open Source Code Update */}
+      <View className={cn(ROW, ROW_RULE)}>
+        <View className="flex-1 pr-3">
+          <Text className={ROW_LABEL}>{t("app.upstream")}</Text>
+          <Text className="text-xs text-foreground-secondary">
+            {upstreamUpdate ? t("app.upstreamUpdateFound", { sha: upstreamUpdate.shortSha }) : t("app.upstreamHint")}
+          </Text>
+        </View>
+        {upstreamUpdate ? (
+          <SmallButton label={t("app.viewOnGitHub")} onPress={() => void Linking.openURL(upstreamUpdate.url).catch(() => {})} />
+        ) : (
+          <SmallButton label={checkingUpstream ? t("app.upstreamChecking") : t("app.upstreamCheckNow")} onPress={() => void checkUpstreamNow()} />
+        )}
       </View>
     </SectionShell>
   );

@@ -1,4 +1,4 @@
-// Pulse's releases on GitHub (docs/releases.md), read for the in-app update notice (src/state/update.ts): the latest
+// Health's releases on GitHub (docs/releases.md), read for the in-app update notice (src/state/update.ts): the latest
 // release's version and its APKs, one per CPU architecture, and which one a phone takes. Pure, so it is tested in Node.
 
 /** Each CPU architecture Android reports (Build.SUPPORTED_ABIS) and the suffix of its APK in a release. */
@@ -22,9 +22,25 @@ export function parseRelease(json: unknown): Release | null {
   const apks: Record<string, string> = {};
   for (const a of Array.isArray(r.assets) ? (r.assets as GithubAsset[]) : []) {
     if (typeof a.name !== "string" || typeof a.browser_download_url !== "string") continue;
-    // pulse-mobile-<version>-<suffix>.apk (scripts/github-release.sh).
-    const prefix = `pulse-mobile-${version}-`;
-    if (a.name.startsWith(prefix) && a.name.endsWith(".apk")) apks[a.name.slice(prefix.length, -".apk".length)] = a.browser_download_url;
+    // Direct matches: Health-<version>.apk takes precedence over Health-release.apk
+    if (a.name === `Health-${version}.apk` || a.name === "Health.apk") {
+      apks.default = a.browser_download_url;
+      apks.arm64 = a.browser_download_url;
+      continue;
+    }
+    if (a.name === "Health-release.apk") {
+      if (!apks.default) apks.default = a.browser_download_url;
+      if (!apks.arm64) apks.arm64 = a.browser_download_url;
+      continue;
+    }
+    // Architecture-specific suffixes: Health-<version>-<suffix>.apk or pulse-mobile-<version>-<suffix>.apk
+    const pulsePrefix = `pulse-mobile-${version}-`;
+    const healthPrefix = `Health-${version}-`;
+    if (a.name.startsWith(pulsePrefix) && a.name.endsWith(".apk")) {
+      apks[a.name.slice(pulsePrefix.length, -".apk".length)] = a.browser_download_url;
+    } else if (a.name.startsWith(healthPrefix) && a.name.endsWith(".apk")) {
+      apks[a.name.slice(healthPrefix.length, -".apk".length)] = a.browser_download_url;
+    }
   }
   return { version, page: r.html_url, apks };
 }
@@ -49,8 +65,9 @@ export function isNewer(latest: string, current: string): boolean {
 /** The APK for a phone: its first supported architecture (Android lists the preferred one first) that the release has. */
 export function apkFor(release: Release, abis: readonly string[]): string | null {
   for (const abi of abis) {
-    const url = ABI_ASSET[abi] && release.apks[ABI_ASSET[abi]];
+    const suffix = ABI_ASSET[abi];
+    const url = suffix && release.apks[suffix];
     if (url) return url;
   }
-  return null;
+  return release.apks.default ?? null;
 }

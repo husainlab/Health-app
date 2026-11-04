@@ -132,50 +132,54 @@ jobs:
 
           NEW_VER="${{ steps.bump_version.outputs.new_version }}"
           APK_SRC="android/app/build/outputs/apk/release/Health-${NEW_VER}.apk"
-          APK_DEST="./Health-${NEW_VER}.apk"
 
-          # Robust retry loop in case concurrent pushes or ref locks occur during the 55MB APK upload
+          # Remove old versioned APKs
+          git rm -f Health-*.apk 2>/dev/null || true
+
+          # Copy both versioned APK and fixed Health-release.apk
+          cp "$APK_SRC" "./Health-${NEW_VER}.apk"
+          cp "$APK_SRC" "./Health-release.apk"
+
+          # Stage and commit locally before any fetch/push
+          git add -f "Health-${NEW_VER}.apk" "Health-release.apk" app.json package.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(release): bump version to ${NEW_VER} and update APK [skip ci]"
+          fi
+
+          # Retry loop to push to origin main
           MAX_RETRIES=5
+          PUSH_SUCCESS=0
           for i in $(seq 1 $MAX_RETRIES); do
             echo "Push attempt $i of $MAX_RETRIES..."
-
-            # Pull latest changes from remote main
-            git fetch origin main
-            git rebase origin/main || {
-              # Resolve any conflicts on version files in favor of this release
-              git checkout --ours app.json package.json 2>/dev/null || git checkout --theirs app.json package.json 2>/dev/null || true
-              git add app.json package.json
-              git rebase --continue || git rebase --abort
-            }
-
-            # Ensure only the new APK is present
-            git rm -f Health-*.apk 2>/dev/null || true
-            cp "$APK_SRC" "$APK_DEST"
-            git add -f "$APK_DEST" app.json package.json
-
-            # Commit if changes exist
-            if ! git diff --cached --quiet; then
-              git commit -m "chore(release): bump version to ${NEW_VER} and update APK [skip ci]" || true
-            fi
-
-            # Push to origin main
             if git push origin HEAD:main; then
               echo "Successfully pushed APK and version bump to main branch!"
-              exit 0
+              PUSH_SUCCESS=1
+              break
             fi
 
-            echo "Push failed. Waiting 10 seconds before retry..."
-            sleep 10
+            echo "Push failed. Fetching origin main and rebasing..."
+            git fetch origin main
+            if ! git rebase -X ours origin/main; then
+              echo "Rebase conflict occurred, aborting rebase..."
+              git rebase --abort || true
+              git merge -X ours --no-edit origin/main || true
+            fi
+            sleep 5
           done
 
-          echo "Failed to push release after $MAX_RETRIES attempts"
-          exit 1
+          if [ "$PUSH_SUCCESS" -ne 1 ]; then
+            echo "Failed to push release after $MAX_RETRIES attempts"
+            exit 1
+          fi
 
       - name: Publish to GitHub Releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "v${{ steps.bump_version.outputs.new_version }}" "Health-${{ steps.bump_version.outputs.new_version }}.apk" \
-            --title "Health ${{ steps.bump_version.outputs.new_version }}" \
-            --notes "Production signed APK for Health ${{ steps.bump_version.outputs.new_version }}" \
+          NEW_VER="${{ steps.bump_version.outputs.new_version }}"
+          gh release create "v${NEW_VER}" \
+            "Health-${NEW_VER}.apk" \
+            "Health-release.apk" \
+            --title "Health ${NEW_VER}" \
+            --notes "Production signed APK for Health ${NEW_VER}" \
             --clobber || true
