@@ -179,7 +179,8 @@ describe("parity with the web app", () => {
     // Version 29: Fitbit's HRV and resting HR are every vital's source of truth. Version 28's value was "32eeb5d9e23357a3".
     // 30: Pulse Age's VO2 max falls back to the estimate (the seed has Fitbit's, so only the version moves). Version 29's value was "22839852f7ee4661".
     // Version 31: restore SpO2 to Health Monitor with 95 % floor and baseline range. Version 30's value was "25a36d10947fc464".
-    "daily_scores.scoring_version": "9d8a77fc84882991",
+    // Version 32: Health Monitor without SpO2. Version 31's value was "9d8a77fc84882991".
+    "daily_scores.scoring_version": "ae95b29d44b502c1",
     // Version 15: Activity Strain is the session's Banister TRIMP plus its muscular load through 5.05 · ln(1 + 0.09 · T)
     // (a seeded 45-minute strength session goes from 8.2 to 9.9 on 0–21), each activity stores its `cardioTrimp` and
     // `muscularTrimp`, and its zone seconds count Zone 1 from 40 % of the reserve. Version 14's value was "cb2d75373aaf4d20".
@@ -246,8 +247,8 @@ describe("parity with the web app", () => {
     // which tempers a few days' scores (the seeded illness's 2026-08-03 scores 51 where it scored 69). The web's
     // value was "3a2163c7f92d4dab".
     // Version 29: HRV and resting HR are Fitbit's, the values every screen shows. Version 28's value was "47289fc792ec11ef".
-    // Version 31: Health Monitor includes SpO2. Version 30's value was "4d132dadfd15bf77".
-    "daily_scores.health_monitor": "07d250420e0536b6",
+    // Version 32: Health Monitor without SpO2.
+    "daily_scores.health_monitor": "4d132dadfd15bf77",
     // Mobile rebuilds Pulse Age on WHOOP's Healthspan method (src/core/algorithms/healthspan.ts): 6.0 years per ln HR
     // (WHOOP's 10 × an overlap factor of 0.6) with no 9/n rescaling (a missing term counts 0), WHOOP's references and
     // curves (sleep from 7 h, Arem and Ahmadi zone curves, strength flat after 40 min, lean mass as body fat %), zone time
@@ -409,7 +410,7 @@ describe("the last 30 days", () => {
     expect(Math.min(...efforts)).toBeGreaterThanOrEqual(0); // a rest day can sit at 0
   });
 
-  it("have Health Monitor's five vitals on every night with data (including SpO2)", () => {
+  it("have Health Monitor's four vitals on every night with data (no SpO2: Health Connect has none)", () => {
     for (const d of last30()) {
       const hm = col(d, "health_monitor");
       if (bandOffNights.includes(d)) {
@@ -417,7 +418,7 @@ describe("the last 30 days", () => {
         continue;
       }
       if (hm.reason !== null) throw new Error(`${d}: ${hm.reason}`);
-      expect(hm.vitals.map((v) => v.key).sort()).toEqual(["hrv", "resp", "restingHr", "skinTempDev", "spo2"]);
+      expect(hm.vitals.map((v) => v.key).sort()).toEqual(["hrv", "resp", "restingHr", "skinTempDev"]);
     }
   });
 

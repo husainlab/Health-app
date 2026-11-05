@@ -9,16 +9,9 @@ import { resources } from "./resources";
 export const NAMESPACES = ["common", "reasons", "metrics", "home", "sleep", "recovery", "strain", "health", "journal", "trends", "nutrition", "goals", "reports", "coach", "settings", "onboarding", "more", "howItWorks", "notifications", "errors", "ui", "coachTools"] as const;
 
 
-/** Each language by its own name. Add a code here with its folder under locales/. */
+/** English is the sole supported language. */
 export const LANGUAGES = [
   { code: "en", name: "English" },
-  { code: "de", name: "Deutsch" },
-  { code: "fr", name: "Français" },
-  { code: "es", name: "Español" },
-  { code: "pt-BR", name: "Português (Brasil)" },
-  { code: "ru", name: "Русский" },
-  { code: "pl", name: "Polski" },
-  { code: "it", name: "Italiano" },
 ] as const;
 /** A development-only language: English wrapped and padded by 40%, so a string that was not moved into keys stays plain and a layout that cannot take longer words overflows. */
 export const PSEUDO = "en-XA";
@@ -35,23 +28,14 @@ export function pseudo(text: string): string {
   return `[${out}${" ·".repeat(Math.ceil(text.length * 0.2))}]`;
 }
 
-/** Languages a native speaker has signed off; the others show "Beta" in the picker. A sign-off adds its code here. */
+/** Languages a native speaker has signed off; English only. */
 export const REVIEWED = new Set<string>(["en"]);
 
-/** What the person picked: "auto" follows the phone. */
+/** What the person picked: "auto" follows the phone (resolving to English). */
 export type LanguageChoice = "auto" | LanguageCode;
 
-const codes = LANGUAGES.map((l) => l.code as string);
-
-/** The first of the phone's locales (BCP 47 tags, best first) that Pulse speaks: exact tag, then its language, else English. */
-export function matchLanguage(tags: readonly string[]): LanguageCode {
-  for (const tag of tags) {
-    const exact = codes.find((c) => c.toLowerCase() === tag.toLowerCase());
-    if (exact) return exact as LanguageCode;
-    const base = tag.split("-")[0].toLowerCase();
-    const byBase = codes.find((c) => c.split("-")[0].toLowerCase() === base);
-    if (byBase) return byBase as LanguageCode;
-  }
+/** English is always matched. */
+export function matchLanguage(_tags: readonly string[]): LanguageCode {
   return "en";
 }
 

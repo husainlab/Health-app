@@ -66,11 +66,8 @@ describe("in another locale", () => {
 });
 
 describe("unitLabel", () => {
-  it("localises min and h and leaves other units alone", async () => {
-    const { i18n } = await import("@/i18n/config");
+  it("formats min and h and leaves other units alone", () => {
     expect([unitLabel("min"), unitLabel("h"), unitLabel("bpm"), unitLabel("%")]).toEqual(["min", "h", "bpm", "%"]);
-    await i18n.changeLanguage("ru");
-    expect([unitLabel("min"), unitLabel("h"), unitLabel("ms")]).toEqual(["мин", "ч", "ms"]);
-    await i18n.changeLanguage("en");
+    expect([unitLabel("min"), unitLabel("h"), unitLabel("ms")]).toEqual(["min", "h", "ms"]);
   });
 });

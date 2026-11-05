@@ -81,8 +81,9 @@ import type { LoadStatus } from "@/core/engine/strain";
  * the sleep-session estimate) instead of the engine's own aggregates of the night's samples.
  * 30: Pulse Age's VO2 max falls back to Pulse's own daily estimate when the 28 days have no Fitbit VO2 max.
  * 31: Restore SpO2 to Health Monitor with 95% clinical floor and personal baseline range.
+ * 32: Health Monitor without SpO2 (Health Connect does not sync it from Fitbit).
  */
-export const SCORING_VERSION = 31;
+export const SCORING_VERSION = 32;
 
 export type PipelineOptions = {
   timeZone: string;

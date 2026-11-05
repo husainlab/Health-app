@@ -84,11 +84,11 @@ describe.each(others)("%s", (lng) => {
 
 describe("matchLanguage", () => {
   it.each([
-    [["de-AT", "en-US"], "de"],
-    [["pt-PT"], "pt-BR"],
-    [["pt-BR"], "pt-BR"],
-    [["ja-JP", "pl-PL"], "pl"],
-    [["it-IT"], "it"],
+    [["de-AT", "en-US"], "en"],
+    [["pt-PT"], "en"],
+    [["pt-BR"], "en"],
+    [["ja-JP", "pl-PL"], "en"],
+    [["it-IT"], "en"],
     [["ja-JP"], "en"],
     [[], "en"],
   ])("%j → %s", (tags, want) => expect(matchLanguage(tags)).toBe(want));
