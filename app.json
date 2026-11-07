@@ -5,13 +5,13 @@
     "platforms": [
       "android"
     ],
-    "version": "0.4.6",
+    "version": "0.4.7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "health",
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 6,
+      "versionCode": 7,
       "adaptiveIcon": {
         "backgroundColor": "#0f1113",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
