@@ -280,5 +280,46 @@ describe("coach tools", () => {
       expect(femaleRes.ok).toBe(true);
       expect(femaleRes.message).toContain("Logged period");
     });
+
+    it("get_user_goals returns active lifestyle targets or defaults", async () => {
+      const tools = coachTools(ctx);
+      const goals = await call(tools.get_user_goals, {});
+      expect(goals.targetWeightKg).toBeNull();
+      expect(goals.dailyStepGoal).toBe(10000);
+      expect(goals.containers).toEqual([]);
+
+      const customLifestyleCtx: QueryCtx = {
+        ...ctx,
+        profile: {
+          ...PROFILE,
+          lifestyle: {
+            targetWeightKg: 75,
+            calorieTargetMin: 1800,
+            calorieTargetMax: 2000,
+            dailyStepGoal: 20000,
+            zeroRefinedSugar: true,
+            indianCookingFactor: true,
+            hometownMode: false,
+            containers: [{ id: "c1", name: "Hexagon Plate", shape: "hexagon", dimensionText: "32 cm" }],
+          },
+        },
+      };
+      const customGoals = await call(coachTools(customLifestyleCtx).get_user_goals, {});
+      expect(customGoals.targetWeightKg).toBe(75);
+      expect(customGoals.calorieTargetMin).toBe(1800);
+      expect(customGoals.calorieTargetMax).toBe(2000);
+      expect(customGoals.dailyStepGoal).toBe(20000);
+      expect(customGoals.containers).toHaveLength(1);
+    });
+
+    it("get_deficit_status returns live deficit, burn, consumption and distance to goal", async () => {
+      const tools = coachTools(ctx);
+      const status = await call(tools.get_deficit_status, { day: TODAY });
+      expect(status.day).toBe(TODAY);
+      expect(status).toHaveProperty("caloriesConsumed");
+      expect(status).toHaveProperty("caloriesBurned");
+      expect(status).toHaveProperty("calorieDeficit");
+      expect(status.stepGoal).toBe(10000);
+    });
   });
 });

@@ -3,7 +3,7 @@
 // Help, Your data, then About. The account row is Profile (no accounts); Coach opens the coach's settings.
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Activity, Archive, Bluetooth, BotMessageSquare, BookOpen, CalendarDays, CalendarRange, ChartLine, Database, ListChecks, Palette, Plug, Target, UserRound, Wind } from "lucide-react-native";
+import { Activity, Archive, Bluetooth, BotMessageSquare, BookOpen, CalendarDays, CalendarRange, ChartLine, Database, ListChecks, Palette, Plug, Target, UserRound, Utensils, Wind } from "lucide-react-native";
 import { i18n } from "@/i18n/config";
 import { formatDay, rangeLabel } from "@/lib/format";
 import { getMore } from "@/queries/settings";
@@ -15,6 +15,7 @@ import { SCORE_DOCS } from "./howItWorksContent";
 /** Each part of Settings is a row here, as the reference app's "Account & settings". Notifications sit under App. */
 const settingsRows = (): LinkListRow[] => [
   { icon: UserRound, label: i18n.t("more:row.profile"), href: "/settings?s=profile" },
+  { icon: Utensils, label: i18n.t("more:row.lifestyle"), href: "/lifestyle" },
   { icon: Plug, label: i18n.t("more:row.dataSource"), href: "/settings?s=source" },
   { icon: Palette, label: i18n.t("more:row.app"), href: "/settings?s=app" },
   { icon: Bluetooth, label: i18n.t("more:row.liveHeartRate"), href: "/settings?s=live" },

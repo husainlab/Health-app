@@ -26,6 +26,8 @@ import { logEntry } from "@/actions/log";
 import { saveJournalEntry } from "@/actions/journal";
 import { dataChanged } from "@/state/dataVersion";
 import type { Flow, Meal, Mood, OvulationResult, Symptom, Valence } from "@/queries/log";
+import { getNutrition } from "@/queries/nutrition";
+import { NO_CUSTOM } from "@/nutrition/targets";
 import { defaultTexts, type Texts } from "./texts";
 
 const round = (v: number, dp = 0) => Math.round(v * 10 ** dp) / 10 ** dp;
@@ -368,6 +370,62 @@ export function coachTools(ctx: QueryCtx, t: Texts = defaultTexts) {
         const p = ctx.profile;
         const age = Math.floor((Date.parse(todayOf(ctx)) - Date.parse(p.birthDate)) / (365.2425 * 86_400_000));
         return { age, sex: p.sex, maxHr: p.maxHr, timeZone: ctx.timeZone, firstDayWithData: await firstDay(ctx), today: todayOf(ctx), weekAgo: addDays(todayOf(ctx), -7) };
+      },
+    }),
+    get_user_goals: tool({
+      description: t("tool.get_user_goals"),
+      inputSchema: z.object({}),
+      execute: async () => {
+        const p = ctx.profile;
+        const lifestyle = p.lifestyle;
+        return {
+          targetWeightKg: lifestyle?.targetWeightKg ?? null,
+          calorieTargetMin: lifestyle?.calorieTargetMin ?? null,
+          calorieTargetMax: lifestyle?.calorieTargetMax ?? null,
+          dailyStepGoal: lifestyle?.dailyStepGoal ?? 10000,
+          walkRoutines: lifestyle?.walkRoutines ?? null,
+          eatingSchedule: lifestyle?.eatingSchedule ?? null,
+          zeroRefinedSugar: lifestyle?.zeroRefinedSugar ?? false,
+          indianCookingFactor: lifestyle?.indianCookingFactor ?? false,
+          hometownMode: lifestyle?.hometownMode ?? false,
+          containers: lifestyle?.containers ?? [],
+          customNotes: lifestyle?.customNotes ?? null,
+        };
+      },
+    }),
+    get_deficit_status: tool({
+      description: t("tool.get_deficit_status"),
+      inputSchema: z.object({ day: Day(t("tool.get_day.day")) }),
+      execute: async ({ day }) => {
+        const d = await dayOf(ctx, day);
+        const [nut, str] = await Promise.all([getNutrition(ctx, NO_CUSTOM), getStrain(d, ctx)]);
+        const kcalIn = nut.totals.kcal;
+        const stepsStat = str.summary.find((s) => s.key === "steps")?.metric.value ?? null;
+        const burnedStat = str.summary.find((s) => s.key === "calories")?.metric.value ?? null;
+        const kcalOut = nut.balance.kcalOut.value ?? burnedStat;
+        const deficit = kcalOut != null && kcalIn != null ? Math.round(kcalOut - kcalIn) : null;
+        const targetMax = ctx.profile.lifestyle?.calorieTargetMax ?? nut.targets.kcal.value;
+        const remainingKcal = kcalIn != null && targetMax != null ? Math.max(0, targetMax - kcalIn) : null;
+        const steps = stepsStat;
+        const stepGoal = ctx.profile.lifestyle?.dailyStepGoal ?? 10000;
+        const foodCount = nut.meals.reduce((sum, m) => sum + m.items.length, 0);
+        return {
+          day: d,
+          caloriesConsumed: kcalIn,
+          caloriesBurned: kcalOut,
+          calorieDeficit: deficit,
+          targetCalories: targetMax,
+          remainingCalories: remainingKcal,
+          stepsTaken: steps,
+          stepGoal,
+          stepProgressPct: steps != null ? Math.round((steps / stepGoal) * 100) : null,
+          foodItemsCount: foodCount,
+          macros: {
+            protein: nut.totals.protein,
+            carbs: nut.totals.carbs,
+            fat: nut.totals.fat,
+          },
+        };
       },
     }),
     get_how_it_works: tool({

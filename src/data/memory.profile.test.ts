@@ -12,6 +12,19 @@ describe("profile name and photo", () => {
     expect(await store.getProfile()).toMatchObject({ name: "Asha Rao", photo: "file:///data/avatar/1.jpg" });
     await store.setProfile({ ...base, name: "Asha Rao", photo: null });
     expect((await store.getProfile())?.photo).toBeNull();
+    await store.setProfile({
+      ...base,
+      lifestyle: {
+        targetWeightKg: 75,
+        calorieTargetMin: 1800,
+        calorieTargetMax: 2000,
+        zeroRefinedSugar: true,
+        indianCookingFactor: true,
+        containers: [{ id: "c1", name: "Hexagon Plate", shape: "hexagon", dimensionText: "32 cm" }],
+      },
+    });
+    expect((await store.getProfile())?.lifestyle?.targetWeightKg).toBe(75);
+    expect((await store.getProfile())?.lifestyle?.containers?.[0]?.name).toBe("Hexagon Plate");
     await store.clearAll();
     expect(await store.getProfile()).toBeNull();
   });

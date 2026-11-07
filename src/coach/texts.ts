@@ -107,6 +107,14 @@ export const TOOL_DOCS: Record<string, ToolDoc> = {
     description: "Read age, sex, max HR, time zone and data start. No name/email, training goals, preferences or available time; ask the user when those are needed for a plan.",
     params: {},
   },
+  get_user_goals: {
+    description: "Read the user's active lifestyle profile, target weight, calorie budget range, daily step goals, walking routines, container references, and dietary preferences.",
+    params: {},
+  },
+  get_deficit_status: {
+    description: "Read today's live energy balance: total calories burned from Fitbit, calories consumed from logged food, current calorie deficit or surplus, remaining calorie budget, and steps taken toward the daily step goal.",
+    params: { day: DAY },
+  },
   get_how_it_works: {
     description: "Look up the exact calculation formulas, scientific weighting, score bands, and limits of any Health score or algorithm (recovery, strain, strain-target, sleep, sleep-planner, pulse-age/health-age, stress, energy-bank, health-monitor, fitness, training-load, training-readiness, training-effect, training-status). Call with a topic or empty to list available topics.",
     params: { topic: { type: "string, optional", description: "The score or algorithm topic to look up (e.g. recovery, strain, sleep, health-age, energy-bank, training-load). Omit to list all available topics." } },

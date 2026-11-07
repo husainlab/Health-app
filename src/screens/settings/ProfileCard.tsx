@@ -56,6 +56,13 @@ export function ProfileCard({ profile }: { profile: SettingsVM["profile"] }) {
           </View>
         ))}
       </View>
+      <View className="mt-4 border-t border-border pt-3">
+        <SmallButton
+          label={t("profile.editLifestyle")}
+          onPress={() => push("/lifestyle")}
+          className="w-full justify-center"
+        />
+      </View>
       <Text className={`${CAPTION} mt-2`}>{t("profile.daysStart")}</Text>
     </SectionShell>
   );

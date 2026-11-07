@@ -51,6 +51,7 @@ import { sleepKey, sleepQuery } from "../sleep/SleepScreen";
 import { strainKey, strainQuery } from "../strain/StrainScreen";
 import { useScreenReady } from "@/ui/shells/useScreenReady";
 import { preloadWhenIdle, useScreen } from "../useScreen";
+import { DailyFocusHudWidget } from "./DailyFocusHudWidget";
 import { EditDashboardButton } from "./EditDashboard";
 import { DetectedRow } from "../activity/ActivityCost";
 import { HeartRateTile } from "./HeartRateTile";
@@ -196,6 +197,7 @@ function Home({ vm, timeZone }: { vm: HomePageVM; timeZone: string }) {
               {vm.insights.length > 0 && <HomeInsight day={d} items={vm.insights} />}
               {vm.monitorAlert && <MonitorAlert alert={vm.monitorAlert} href={at("/health/monitor")} />}
             </View>
+            {vm.isToday && <DailyFocusHudWidget vm={vm} />}
             <SectionShell variant="section" title={t("section.myDay")} action={<PlusKey label={vm.isToday ? t("add.today") : t("add.day", { day: formatDay(d, DAY.short) })} />}>
               <View className="gap-3">
                 {vm.outlook && <DayBanner outlook={vm.outlook} />}

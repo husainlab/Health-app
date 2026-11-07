@@ -254,6 +254,16 @@ export async function setDisplay(display: DisplayPrefs): Promise<void> {
   dataChanged();
 }
 
+/** Sets the editable lifestyle profile, goals, containers and preferences (Settings › Goals / Profile). */
+export async function setLifestyle(lifestyle: import("@/data/types").LifestyleProfile | null): Promise<void> {
+  const { store, profile } = state;
+  if (!store || !profile) return;
+  const p = { ...profile, lifestyle };
+  await store.setProfile(p);
+  patch({ profile: p });
+  dataChanged();
+}
+
 /** Starts i18next and the formatters' locale in what `choice` means (the phone's language for "auto"). */
 async function applyLanguage(choice: LanguageChoice): Promise<void> {
   const language = resolveChoice(choice);

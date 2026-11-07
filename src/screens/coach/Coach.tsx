@@ -5,11 +5,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useChat } from "@ai-sdk/react";
 import type { CoachActivity } from "@/coach/activity";
 import type { UIMessage } from "ai";
-import { Activity, ArrowUp, ChevronRight, Dumbbell, Moon, NotebookPen, RefreshCw, RotateCcw, Share2, Square, type LucideIcon } from "lucide-react-native";
+import { Activity, ArrowUp, Camera, ChevronRight, Dumbbell, Moon, NotebookPen, RefreshCw, RotateCcw, Share2, Square, type LucideIcon } from "lucide-react-native";
 import type { CoachSuggestion as CoreSuggestion } from "@/core/algorithms/coachSuggestions";
 import { plainText } from "@/coach/chats";
 import { i18n } from "@/i18n/config";
-import { deviceTransport } from "@/coach/session";
+import { deviceModel, deviceTransport } from "@/coach/session";
+import { takeMealPhoto } from "@/nutrition/photo";
+import { estimateFood } from "@/nutrition/estimate";
+import { useApp } from "@/state/app";
+import { toast } from "@/ui/Toast";
 import { Mark } from "@/ui/brand";
 import { cn } from "@/ui/cn";
 import { Gradient } from "@/ui/Gradient";
@@ -38,6 +42,8 @@ const RUNNING = [
   "get_health",
   "get_report",
   "get_profile",
+  "get_user_goals",
+  "get_deficit_status",
   "log_nutrition",
   "log_water",
   "log_weight",
@@ -240,6 +246,46 @@ export function Coach({ id, initial, prefill, auto, activity, providerLabel, sug
     requestAnimationFrame(() => scroll.current?.scrollToEnd({ animated: true }));
   }, [messages.length, status]);
 
+  const lifestyle = useApp((s) => s.profile?.lifestyle);
+  const [estimatingPhoto, setEstimatingPhoto] = useState(false);
+
+  const snapFoodPhoto = async () => {
+    if (busy || estimatingPhoto) return;
+    try {
+      const res = await takeMealPhoto();
+      if (!res.ok) {
+        if (res.reason === "failed") toast.error("Could not capture photo.");
+        return;
+      }
+      setEstimatingPhoto(true);
+      toast.success("Analyzing meal with AI Vision...");
+      const m = await deviceModel();
+      if (!m?.model) {
+        setEstimatingPhoto(false);
+        toast.error("Please configure your AI provider key in Coach Settings first.");
+        return;
+      }
+      const r = await estimateFood(m.model, { image: res.photo }, {
+        context: {
+          containers: lifestyle?.containers,
+          indianCookingFactor: lifestyle?.indianCookingFactor,
+          zeroRefinedSugar: lifestyle?.zeroRefinedSugar,
+        },
+      });
+      setEstimatingPhoto(false);
+      if (!r.ok) {
+        toast.error("Could not estimate meal from photo.");
+        return;
+      }
+      const foodsDesc = r.estimate.foods.map((f) => `${f.name} (${f.portion}, ${f.kcal} kcal, ${f.protein}g protein, ${f.carbs}g carbs, ${f.fat}g fat)`).join(", ");
+      const prompt = `I'm eating: ${foodsDesc}. Total: ${r.estimate.totals.kcal} kcal, ${r.estimate.totals.protein}g protein, ${r.estimate.totals.carbs}g carbs, ${r.estimate.totals.fat}g fat. Please evaluate this against my calorie and deficit goals, and log it.`;
+      send(prompt);
+    } catch {
+      setEstimatingPhoto(false);
+      toast.error("Photo analysis failed.");
+    }
+  };
+
   const send = (text: string) => {
     const t = text.trim();
     if (!t || busy) return;
@@ -291,6 +337,15 @@ export function Coach({ id, initial, prefill, auto, activity, providerLabel, sug
       {/* The composer: a rounded field with Send (or Stop while answering), over the safe area. */}
       <View className="shrink-0 px-4 pt-2" style={{ paddingBottom: keyboardInset ? COMPOSER_GAP : bottom }}>
         <View className="flex-row items-end gap-1.5 rounded-[28px] border border-border bg-card p-1.5">
+          <Press
+            accessibilityRole="button"
+            accessibilityLabel="Snap meal photo"
+            onPress={snapFoodPhoto}
+            disabled={busy || estimatingPhoto}
+            className={cn("size-11 items-center justify-center rounded-full bg-secondary", (busy || estimatingPhoto) && "opacity-40")}
+          >
+            <Icon icon={Camera} size={18} tone="foreground-secondary" />
+          </Press>
           <TextInput
             value={input}
             onChangeText={setInput}
