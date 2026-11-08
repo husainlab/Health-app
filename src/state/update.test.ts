@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import * as IntentLauncher from "expo-intent-launcher";
 import {
   checkForAppUpdate,
   checkForUpstreamUpdate,
@@ -45,6 +46,9 @@ vi.mock("expo-file-system", () => ({
 
 vi.mock("expo-intent-launcher", () => ({
   startActivityAsync: vi.fn(),
+  ActivityAction: {
+    MANAGE_UNKNOWN_APP_SOURCES: "android.settings.MANAGE_UNKNOWN_APP_SOURCES",
+  },
 }));
 
 describe("update state (update.ts)", () => {
@@ -225,6 +229,7 @@ describe("update state (update.ts)", () => {
     expect(notice?.apk).toBe("https://github.com/husainlab/Health-app/releases/download/v9.9.9/Health-9.9.9.apk");
 
     createDownloadTaskMock.mockClear();
+    vi.mocked(IntentLauncher.startActivityAsync).mockClear();
     await installUpdate();
     expect(createDownloadTaskMock).toHaveBeenCalledWith(
       "https://github.com/husainlab/Health-app/releases/download/v9.9.9/Health-9.9.9.apk",
@@ -236,6 +241,42 @@ describe("update state (update.ts)", () => {
     const lastCall = (createDownloadTaskMock.mock.calls as any[])[0];
     const callOptions = lastCall?.[2] as { headers?: Record<string, string> } | undefined;
     expect(callOptions?.headers).toBeUndefined();
+    expect(IntentLauncher.startActivityAsync).toHaveBeenCalledWith(
+      "android.intent.action.VIEW",
+      expect.objectContaining({
+        data: "content://apk",
+        type: "application/vnd.android.package-archive",
+        flags: 1 | 268435456,
+      })
+    );
+  });
+
+  it("attempts to open manage unknown app sources when installer intent fails", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        tag_name: "v9.9.9",
+        html_url: "https://github.com/husainlab/Health-app/releases/tag/v9.9.9",
+        assets: [
+          {
+            name: "Health-9.9.9.apk",
+            browser_download_url: "https://github.com/husainlab/Health-app/releases/download/v9.9.9/Health-9.9.9.apk",
+          },
+        ],
+      }),
+    } as unknown as Response);
+
+    await checkForAppUpdate(true);
+    vi.mocked(IntentLauncher.startActivityAsync).mockRejectedValueOnce(new Error("permission_denied"));
+
+    await expect(installUpdate()).rejects.toThrow("permission_denied");
+    expect(IntentLauncher.startActivityAsync).toHaveBeenCalledWith(
+      "android.settings.MANAGE_UNKNOWN_APP_SOURCES",
+      expect.objectContaining({
+        data: "package:in.portlabs.health",
+      })
+    );
+    expect(getUpdate().progress).toBeNull();
   });
 
   it("falls back to repository tags when releases endpoint returns empty array", async () => {

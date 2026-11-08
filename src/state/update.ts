@@ -30,8 +30,10 @@ const UPSTREAM_CACHE_KEY = "health.update.upstream";
 export const IGNORED_UPSTREAM_KEY = "health.update.upstream_ignored";
 /** "off" when the person turned the check off. */
 const CHECK_KEY = "health.update.check";
-/** Android's FLAG_GRANT_READ_URI_PERMISSION: the installer may read the APK through Health's file provider. */
+/** Android's FLAG_GRANT_READ_URI_PERMISSION (1) | FLAG_ACTIVITY_NEW_TASK (0x10000000 = 268435456). */
 const GRANT_READ_URI = 1;
+const FLAG_ACTIVITY_NEW_TASK = 268435456;
+const INSTALL_FLAGS = GRANT_READ_URI | FLAG_ACTIVITY_NEW_TASK;
 
 export type UpstreamUpdate = {
   sha: string;
@@ -280,7 +282,11 @@ export async function installUpdate(): Promise<void> {
   const u = state.available;
   if (!u || state.progress !== null) return;
   const file = new File(Paths.cache, `health-${u.version}.apk`);
-  if (file.exists) file.delete();
+  try {
+    if (file.exists) file.delete();
+  } catch {
+    // Ignore error if file does not exist or cannot be deleted yet
+  }
   patch({ progress: 0 });
 
   try {
@@ -289,11 +295,26 @@ export async function installUpdate(): Promise<void> {
     });
     const done = await task.downloadAsync();
     if (!done) throw new Error("download_paused");
-    await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
-      data: done.contentUri,
-      type: "application/vnd.android.package-archive",
-      flags: GRANT_READ_URI,
-    });
+    const contentUri = done.contentUri ?? (done as { uri?: string }).uri;
+    if (!contentUri) throw new Error("apk_uri_missing");
+
+    try {
+      await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
+        data: contentUri,
+        type: "application/vnd.android.package-archive",
+        flags: INSTALL_FLAGS,
+      });
+    } catch (launchErr) {
+      // If direct package installer intent fails (e.g. unknown sources not allowed), guide user
+      try {
+        await IntentLauncher.startActivityAsync(IntentLauncher.ActivityAction.MANAGE_UNKNOWN_APP_SOURCES, {
+          data: "package:in.portlabs.health",
+        });
+      } catch {
+        // Ignore fallback error
+      }
+      throw launchErr;
+    }
   } finally {
     patch({ progress: null });
   }

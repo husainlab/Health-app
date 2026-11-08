@@ -80,7 +80,7 @@ function DisplayRows({ initialTheme }: { initialTheme: Theme }) {
  */
 function Updates() {
   const { t } = useTranslation("settings");
-  const { available, upstreamUpdate, ignoredUpstreamSha } = useUpdate();
+  const { available, progress, upstreamUpdate, ignoredUpstreamSha } = useUpdate();
   const [checkingApp, setCheckingApp] = useState(false);
   const [checkingUpstream, setCheckingUpstream] = useState(false);
 
@@ -117,8 +117,30 @@ function Updates() {
         </View>
         {available ? (
           <View className="flex-row items-center gap-2">
-            <Text className={ROW_VALUE}>{t("app.isOut", { version: available.version })}</Text>
-            <SmallButton label={t("app.install")} onPress={() => void installUpdate()} />
+            <Text className={ROW_VALUE}>
+              {progress !== null
+                ? progress >= 1
+                  ? t("app.installing")
+                  : t("app.downloading", { percent: Math.round(progress * 100) })
+                : t("app.isOut", { version: available.version })}
+            </Text>
+            <SmallButton
+              label={
+                progress !== null
+                  ? progress >= 1
+                    ? t("app.installing")
+                    : `${Math.round(progress * 100)}%`
+                  : t("app.install")
+              }
+              disabled={progress !== null}
+              onPress={() => {
+                if (progress !== null) return;
+                installUpdate().catch((err: unknown) => {
+                  console.error("[update] Install failed:", err);
+                  toast.error(t("app.installFailed"));
+                });
+              }}
+            />
           </View>
         ) : (
           <SmallButton label={checkingApp ? t("app.checking") : t("app.checkNow")} onPress={() => void checkAppNow()} />

@@ -126,6 +126,7 @@
     "available": "Update available",
     "body": "Health {{version}} is out. Updating keeps your data.",
     "downloading": "Downloading… {{percent}}%",
+    "installing": "Installing…",
     "toVersion": "Update to Health {{version}}",
     "update": "Update",
     "whatsNew": "What’s new",

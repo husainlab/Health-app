@@ -219,19 +219,42 @@ export function SwitchRow({ label, hint, value, onChange, disabled, rule = true 
 }
 
 /** A small text button on the ground ("Edit", "Change", "Done"): the web's ghost / sm sizes, which the kit's Button lacks. */
-export function SmallButton({ label, accessibilityLabel, onPress, icon, solid, className }: { label: string; accessibilityLabel?: string; onPress: () => void; icon?: LucideIcon; solid?: boolean; className?: string }) {
+export function SmallButton({
+  label,
+  accessibilityLabel,
+  onPress,
+  icon,
+  solid,
+  disabled,
+  className,
+}: {
+  label: string;
+  accessibilityLabel?: string;
+  onPress: () => void;
+  icon?: LucideIcon;
+  solid?: boolean;
+  disabled?: boolean;
+  className?: string;
+}) {
   return (
     <Press
-      activeScale={0.96}
-      activeBg={solid ? undefined : "bg-fill-faint"}
+      disabled={disabled}
+      activeScale={disabled ? 1 : 0.96}
+      activeBg={disabled || solid ? undefined : "bg-fill-faint"}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
       onPress={() => {
+        if (disabled) return;
         haptic.tap();
         onPress();
       }}
       hitSlop={{ top: 4, bottom: 4 }}
-      className={cn("h-9 flex-row items-center justify-center gap-1.5 rounded-full px-3", solid && "bg-primary px-5", className)}
+      className={cn(
+        "h-9 flex-row items-center justify-center gap-1.5 rounded-full px-3",
+        solid && "bg-primary px-5",
+        disabled && "opacity-50",
+        className
+      )}
     >
       {icon && <Icon icon={icon} size={14} tone={solid ? "primary-foreground" : "foreground-secondary"} strokeWidth={2} />}
       <Text className={cn("text-[13px] font-semibold", solid ? "text-primary-foreground" : "text-foreground-secondary")}>{label}</Text>

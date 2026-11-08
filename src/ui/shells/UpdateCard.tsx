@@ -28,7 +28,7 @@ export function UpdateCard() {
         <Text className="text-[13px] leading-[18px] text-foreground-secondary">{t("update.body", { version: u.version })}</Text>
         {progress !== null ? (
           <Text accessibilityLiveRegion="polite" className="mt-2 min-h-11 py-3 text-[15px] font-semibold leading-5 tabular-nums">
-            {t("update.downloading", { percent: Math.round(progress * 100) })}
+            {progress >= 1 ? t("update.installing") : t("update.downloading", { percent: Math.round(progress * 100) })}
           </Text>
         ) : (
           <View className="mt-2 min-h-11 flex-row items-center gap-6">
