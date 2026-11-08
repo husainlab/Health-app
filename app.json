@@ -5,7 +5,7 @@
     "platforms": [
       "android"
     ],
-    "version": "0.4.9",
+    "version": "0.4.10",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": [
@@ -14,7 +14,7 @@
     ],
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 9,
+      "versionCode": 10,
       "adaptiveIcon": {
         "backgroundColor": "#0f1113",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

@@ -1,7 +1,7 @@
 {
   "name": "health-mobile",
   "main": "index.ts",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "dependencies": {
     "@ai-sdk/anthropic": "4.0.71",
     "@ai-sdk/google": "4.0.87",
