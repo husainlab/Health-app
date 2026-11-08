@@ -115,6 +115,7 @@ export function CoachScreen() {
             prefill={brief && !c ? t("suggestions.brief") : !c && seed.length ? t("activity.expand") : question}
             auto={(brief || sendNow) && !c}
             activity={activity}
+            providerId={setup.provider}
             providerLabel={providerLabel(setup.provider)}
             suggestions={data.suggestions}
             today={data.today}

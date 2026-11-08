@@ -181,11 +181,8 @@ async function fetchLatest(): Promise<{ release: Release | null; error: UpdateCh
   }
   try {
     const res = await fetch(RELEASES_URL, { headers, signal: ctl.signal });
-    if (res.status === 401 || (token && (res.status === 403 || res.status === 404))) {
+    if (res.status === 401 || res.status === 403 || res.status === 404) {
       return { release: null, error: "unauthorized" };
-    }
-    if (res.status === 404) {
-      return { release: null, error: null };
     }
     if (!res.ok) {
       return { release: null, error: "network" };

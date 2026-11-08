@@ -109,8 +109,8 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Health uses the camera for your profile picture, or for a meal photo your own AI provider estimates. Profile pictures stay on this phone; a meal photo is sent once and not kept.",
-          "photosPermission": "Health uses a photo you choose as your profile picture, or as a meal photo your own AI provider estimates.",
+          "cameraPermission": "Health uses the camera for your profile picture, meal photo estimates, and attachments to your Coach.",
+          "photosPermission": "Health uses photos you select for your profile picture, meal photo estimates, and attachments to your Coach.",
           "microphonePermission": false
         }
       ],

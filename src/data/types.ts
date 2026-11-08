@@ -6,28 +6,6 @@ import type { DisplayPrefs } from "@/lib/units";
 
 export type Sex = "male" | "female";
 
-export type ContainerSpec = {
-  id: string;
-  name: string;
-  shape?: "hexagon" | "oval" | "round" | "cup" | "rectangular" | "bowl" | "plate" | "other";
-  dimensionText: string;
-  capacityMl?: number | null;
-};
-
-export type LifestyleProfile = {
-  targetWeightKg?: number | null;
-  calorieTargetMin?: number | null;
-  calorieTargetMax?: number | null;
-  zeroRefinedSugar?: boolean;
-  indianCookingFactor?: boolean;
-  eatingSchedule?: string | null;
-  containers?: ContainerSpec[];
-  dailyStepGoal?: number | null;
-  walkRoutines?: string | null;
-  hometownMode?: boolean;
-  customNotes?: string | null;
-};
-
 export type Profile = {
   /** "YYYY-MM-DD" */
   birthDate: string;
@@ -50,11 +28,6 @@ export type Profile = {
   sleepGoal?: { hours: number; method: "manual" | "automatic" } | null;
   /** Units and the clock (Settings › App). Absent: the phone's own (src/lib/units.ts deviceDisplayPrefs). */
   display?: DisplayPrefs | null;
-  /**
-   * Personal lifestyle, goals, container sizes, and diet preferences for AI coaching and calorie tracking.
-   * Fully editable in settings.
-   */
-  lifestyle?: LifestyleProfile | null;
 };
 
 /** One sleep session; `day` is the local wake day. */

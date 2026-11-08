@@ -64,7 +64,16 @@
     "placeholder": "Message Coach",
     "askLabel": "Ask Coach",
     "stop": "Stop",
-    "send": "Send"
+    "send": "Send",
+    "attach": "Attach image or file",
+    "attachCamera": "Take photo",
+    "attachGallery": "Choose from library",
+    "attachFile": "Choose document or file",
+    "cameraDenied": "Camera permission was denied.",
+    "cameraDeniedBody": "Enable camera access in device settings to take a photo for Coach.",
+    "fileTooLarge": "File is too large (10 MB maximum).",
+    "unsupportedFile": "This AI provider only supports image attachments. Please attach a photo, screenshot, or text file.",
+    "removeAttachment": "Remove attachment"
   },
   "bar": {
     "chats": "Chats",

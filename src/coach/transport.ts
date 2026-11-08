@@ -80,7 +80,7 @@ export async function coachTurn(deps: CoachDeps, chatId: string, messages: UIMes
   const valid = await validateUIMessages({ messages: withCheckpoint(messages, stored), tools }).catch(() => null);
   if (!valid || valid.at(-1)?.role !== "user") throw new Error("bad_request" satisfies CoachProblem);
 
-  const history = await coachHistory(valid, m.model, texts, abortSignal);
+  const history = await coachHistory(valid, m.model, texts, abortSignal, m.provider);
   const activity = selectedActivity(valid);
   if (activity) {
     const facts = await activityFacts(ctx, activity);

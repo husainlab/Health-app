@@ -1,30 +1,29 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { AccessibilityInfo, ScrollView, Share, TextInput, View } from "react-native";
+import { AccessibilityInfo, ActivityIndicator, Alert, Image, ScrollView, Share, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useChat } from "@ai-sdk/react";
 import type { CoachActivity } from "@/coach/activity";
 import type { UIMessage } from "ai";
-import { Activity, ArrowUp, Camera, ChevronRight, Dumbbell, Moon, NotebookPen, RefreshCw, RotateCcw, Share2, Square, type LucideIcon } from "lucide-react-native";
+import { Activity, ArrowUp, Camera, ChevronRight, Dumbbell, FileText, Image as ImageIcon, Moon, NotebookPen, Paperclip, RefreshCw, RotateCcw, Share2, Square, X, type LucideIcon } from "lucide-react-native";
 import type { CoachSuggestion as CoreSuggestion } from "@/core/algorithms/coachSuggestions";
 import { plainText } from "@/coach/chats";
 import { i18n } from "@/i18n/config";
-import { deviceModel, deviceTransport } from "@/coach/session";
-import { takeMealPhoto } from "@/nutrition/photo";
-import { estimateFood } from "@/nutrition/estimate";
-import { useApp } from "@/state/app";
-import { toast } from "@/ui/Toast";
+import { deviceTransport } from "@/coach/session";
 import { Mark } from "@/ui/brand";
 import { cn } from "@/ui/cn";
 import { Gradient } from "@/ui/Gradient";
 import { Icon } from "@/ui/Icon";
 import { useKeyboardInset } from "@/ui/keyboard";
+import { MenuPanel, useMenu } from "@/ui/Menu";
 import { Press } from "@/ui/Press";
 import { Text } from "@/ui/Text";
 import { useTheme } from "@/ui/theme";
 import { Evidence } from "./Evidence";
 import { Prose } from "./Prose";
 import { push } from "@/ui/navigate";
+import { pickCoachDocument, pickCoachGalleryImage, takeCoachPhoto, type CoachAttachment } from "@/coach/attachments";
+import { providerSupportsPdf } from "@/coach/providers";
 
 type Part = UIMessage["parts"][number];
 
@@ -42,8 +41,6 @@ const RUNNING = [
   "get_health",
   "get_report",
   "get_profile",
-  "get_user_goals",
-  "get_deficit_status",
   "log_nutrition",
   "log_water",
   "log_weight",
@@ -118,6 +115,7 @@ function UserMessage({ m, busy, onEdit }: { m: UIMessage; busy: boolean; onEdit:
   const { t } = useTranslation("coach");
   const { c } = useTheme();
   const text = m.parts.map((p) => (p.type === "text" ? p.text : "")).join("");
+  const fileParts = m.parts.filter((p): p is Part & { type: "file"; mediaType: string; url: string; filename?: string } => p.type === "file");
   const [draft, setDraft] = useState<string | null>(null);
   if (draft !== null)
     return (
@@ -149,9 +147,33 @@ function UserMessage({ m, busy, onEdit }: { m: UIMessage; busy: boolean; onEdit:
     );
   return (
     <View className="items-end pl-8">
-      <Text selectable className="max-w-full rounded-2xl bg-secondary px-4 py-3 text-[15px] leading-6 text-foreground">
-        {text}
-      </Text>
+      {fileParts.length > 0 && (
+        <View className="mb-1.5 flex-row flex-wrap justify-end gap-2">
+          {fileParts.map((f, i) =>
+            f.mediaType.startsWith("image/") ? (
+              <Image
+                key={i}
+                source={{ uri: f.url }}
+                accessibilityLabel={f.filename || "Attached image"}
+                className="h-44 w-56 rounded-2xl bg-secondary"
+                resizeMode="cover"
+              />
+            ) : (
+              <View key={i} className="flex-row items-center gap-2 rounded-xl border border-border bg-card px-3 py-2">
+                <Icon icon={FileText} size={16} tone="foreground-secondary" />
+                <Text numberOfLines={1} className="max-w-[200px] text-[13px] font-medium text-foreground">
+                  {f.filename || "Document"}
+                </Text>
+              </View>
+            ),
+          )}
+        </View>
+      )}
+      {!!text && (
+        <Text selectable className="max-w-full rounded-2xl bg-secondary px-4 py-3 text-[15px] leading-6 text-foreground">
+          {text}
+        </Text>
+      )}
       <Press accessibilityRole="button" accessibilityLabel={t("chat.editMessage")} disabled={busy} onPress={() => setDraft(text)} activeScale={0.96} className={cn("min-h-10 min-w-10 items-center justify-center px-2", busy && "opacity-30")}>
         <Text className="text-xs leading-4 text-muted-foreground">{t("chat.editMessage")}</Text>
       </Press>
@@ -213,6 +235,7 @@ export type CoachProps = {
   /** Sends `prefill` at once (`?brief=1`, `?send=1`). */
   auto: boolean;
   activity?: CoachActivity;
+  providerId?: string | null;
   providerLabel: string;
   suggestions: CoachSuggestion[];
   today: string;
@@ -220,12 +243,15 @@ export type CoachProps = {
   onSaved: (id: string) => void;
 };
 
-export function Coach({ id, initial, prefill, auto, activity, providerLabel, suggestions, today, onSaved }: CoachProps) {
+export function Coach({ id, initial, prefill, auto, activity, providerId, providerLabel, suggestions, today, onSaved }: CoachProps) {
   const { t } = useTranslation("coach");
   const { c } = useTheme();
   const bottom = Math.max(useSafeAreaInsets().bottom, COMPOSER_GAP);
   const { ref: keyboardRef, onLayout: measureKeyboard, inset: keyboardInset } = useKeyboardInset();
   const [input, setInput] = useState(prefill);
+  const [pendingFiles, setPendingFiles] = useState<CoachAttachment[]>([]);
+  const [attaching, setAttaching] = useState(false);
+  const { ref: attachRef, anchor: attachAnchor, open: openAttach, close: closeAttach } = useMenu();
   const [error, setError] = useState<string | null>(null);
   const scroll = useRef<ScrollView>(null);
   const [transport] = useState(deviceTransport);
@@ -244,54 +270,57 @@ export function Coach({ id, initial, prefill, auto, activity, providerLabel, sug
   const busy = status === "submitted" || status === "streaming";
   useEffect(() => {
     requestAnimationFrame(() => scroll.current?.scrollToEnd({ animated: true }));
-  }, [messages.length, status]);
+  }, [messages.length, status, pendingFiles.length]);
 
-  const lifestyle = useApp((s) => s.profile?.lifestyle);
-  const [estimatingPhoto, setEstimatingPhoto] = useState(false);
-
-  const snapFoodPhoto = async () => {
-    if (busy || estimatingPhoto) return;
+  const handleAttach = async (kind: "camera" | "gallery" | "file") => {
+    setAttaching(true);
     try {
-      const res = await takeMealPhoto();
-      if (!res.ok) {
-        if (res.reason === "failed") toast.error("Could not capture photo.");
-        return;
+      if (kind === "camera") {
+        const res = await takeCoachPhoto();
+        if (res.ok) {
+          setPendingFiles((prev) => [...prev, res.attachment]);
+        } else if (res.reason === "denied") {
+          Alert.alert(t("chat.cameraDenied"), t("chat.cameraDeniedBody"));
+        }
+      } else if (kind === "gallery") {
+        const res = await pickCoachGalleryImage();
+        if (res.ok) {
+          setPendingFiles((prev) => [...prev, res.attachment]);
+        }
+      } else if (kind === "file") {
+        const supportsPdf = providerSupportsPdf(providerId);
+        const res = await pickCoachDocument({ supportsPdf });
+        if (res.ok) {
+          setPendingFiles((prev) => [...prev, res.attachment]);
+        } else if (res.reason === "too_large") {
+          Alert.alert(t("chat.fileTooLarge"));
+        } else if (res.reason === "unsupported") {
+          Alert.alert(t("chat.unsupportedFile"));
+        }
       }
-      setEstimatingPhoto(true);
-      toast.success("Analyzing meal with AI Vision...");
-      const m = await deviceModel();
-      if (!m?.model) {
-        setEstimatingPhoto(false);
-        toast.error("Please configure your AI provider key in Coach Settings first.");
-        return;
-      }
-      const r = await estimateFood(m.model, { image: res.photo }, {
-        context: {
-          containers: lifestyle?.containers,
-          indianCookingFactor: lifestyle?.indianCookingFactor,
-          zeroRefinedSugar: lifestyle?.zeroRefinedSugar,
-        },
-      });
-      setEstimatingPhoto(false);
-      if (!r.ok) {
-        toast.error("Could not estimate meal from photo.");
-        return;
-      }
-      const foodsDesc = r.estimate.foods.map((f) => `${f.name} (${f.portion}, ${f.kcal} kcal, ${f.protein}g protein, ${f.carbs}g carbs, ${f.fat}g fat)`).join(", ");
-      const prompt = `I'm eating: ${foodsDesc}. Total: ${r.estimate.totals.kcal} kcal, ${r.estimate.totals.protein}g protein, ${r.estimate.totals.carbs}g carbs, ${r.estimate.totals.fat}g fat. Please evaluate this against my calorie and deficit goals, and log it.`;
-      send(prompt);
-    } catch {
-      setEstimatingPhoto(false);
-      toast.error("Photo analysis failed.");
+    } finally {
+      setAttaching(false);
     }
   };
 
   const send = (text: string) => {
-    const t = text.trim();
-    if (!t || busy) return;
+    const tVal = text.trim();
+    if ((!tVal && pendingFiles.length === 0) || busy) return;
     setError(null);
     setInput("");
-    void sendMessage({ text: t, ...(activity && { metadata: { activity } }) });
+    const filesToSend = [...pendingFiles];
+    setPendingFiles([]);
+    const defaultText =
+      filesToSend.length > 0 && !tVal
+        ? filesToSend[0].mediaType.startsWith("image/")
+          ? "What is in this image?"
+          : "Please analyze this file."
+        : tVal;
+    void sendMessage({
+      text: defaultText,
+      ...(filesToSend.length > 0 && { files: filesToSend }),
+      ...(activity && { metadata: { activity } }),
+    });
   };
   // An at-once question (`?brief=1`, `?send=1`) is asked once.
   const asked = useRef(false);
@@ -306,6 +335,7 @@ export function Coach({ id, initial, prefill, auto, activity, providerLabel, sug
     void regenerate(messageId ? { messageId } : undefined);
   };
   const lastAnswer = messages.at(-1)?.role === "assistant" ? messages.at(-1)!.id : null;
+  const canSend = !!input.trim() || pendingFiles.length > 0;
 
   return (
     // The keyboard lifts the chat and the composer by however much of the screen it covers (src/ui/keyboard.ts).
@@ -334,18 +364,85 @@ export function Coach({ id, initial, prefill, auto, activity, providerLabel, sug
           </View>
         )}
       </ScrollView>
-      {/* The composer: a rounded field with Send (or Stop while answering), over the safe area. */}
+      {/* The composer: attachments preview and input field with Send, over the safe area. */}
       <View className="shrink-0 px-4 pt-2" style={{ paddingBottom: keyboardInset ? COMPOSER_GAP : bottom }}>
-        <View className="flex-row items-end gap-1.5 rounded-[28px] border border-border bg-card p-1.5">
-          <Press
-            accessibilityRole="button"
-            accessibilityLabel="Snap meal photo"
-            onPress={snapFoodPhoto}
-            disabled={busy || estimatingPhoto}
-            className={cn("size-11 items-center justify-center rounded-full bg-secondary", (busy || estimatingPhoto) && "opacity-40")}
-          >
-            <Icon icon={Camera} size={18} tone="foreground-secondary" />
-          </Press>
+        {pendingFiles.length > 0 && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-2 max-h-16 flex-row gap-2 px-1">
+            {pendingFiles.map((file, i) => (
+              <View key={i} className="relative flex-row items-center rounded-xl border border-border bg-card p-1">
+                {file.mediaType.startsWith("image/") ? (
+                  <Image source={{ uri: file.url }} className="size-12 rounded-lg" resizeMode="cover" />
+                ) : (
+                  <View className="h-12 flex-row items-center gap-1.5 px-2">
+                    <Icon icon={FileText} size={16} tone="foreground-secondary" />
+                    <Text numberOfLines={1} className="max-w-[120px] text-xs font-medium text-foreground">
+                      {file.filename}
+                    </Text>
+                  </View>
+                )}
+                <Press
+                  accessibilityRole="button"
+                  accessibilityLabel={t("chat.removeAttachment")}
+                  onPress={() => setPendingFiles((prev) => prev.filter((_, idx) => idx !== i))}
+                  className="absolute -right-1 -top-1 size-5 items-center justify-center rounded-full bg-foreground shadow-sm"
+                >
+                  <Icon icon={X} size={11} tone="background" strokeWidth={2.5} />
+                </Press>
+              </View>
+            ))}
+          </ScrollView>
+        )}
+        <View className="flex-row items-end gap-1 rounded-[28px] border border-border bg-card p-1.5">
+          <View ref={attachRef} collapsable={false}>
+            <Press
+              accessibilityRole="button"
+              accessibilityLabel={t("chat.attach")}
+              disabled={busy || attaching}
+              onPress={openAttach}
+              className={cn("size-11 items-center justify-center rounded-full", (busy || attaching) && "opacity-40")}
+            >
+              {attaching ? (
+                <ActivityIndicator size="small" color={c.coach} />
+              ) : (
+                <Icon icon={Paperclip} size={20} tone="foreground-secondary" />
+              )}
+            </Press>
+            <MenuPanel anchor={attachAnchor} onClose={closeAttach} align="start" className="min-w-[220px]">
+              <Press
+                accessibilityRole="menuitem"
+                onPress={() => {
+                  closeAttach();
+                  setTimeout(() => void handleAttach("camera"), 250);
+                }}
+                className="h-12 flex-row items-center gap-3 rounded-xl px-3"
+              >
+                <Icon icon={Camera} size={18} tone="foreground-secondary" />
+                <Text className="text-[14px] font-medium text-foreground">{t("chat.attachCamera")}</Text>
+              </Press>
+              <Press
+                accessibilityRole="menuitem"
+                onPress={() => {
+                  closeAttach();
+                  setTimeout(() => void handleAttach("gallery"), 250);
+                }}
+                className="h-12 flex-row items-center gap-3 rounded-xl px-3"
+              >
+                <Icon icon={ImageIcon} size={18} tone="foreground-secondary" />
+                <Text className="text-[14px] font-medium text-foreground">{t("chat.attachGallery")}</Text>
+              </Press>
+              <Press
+                accessibilityRole="menuitem"
+                onPress={() => {
+                  closeAttach();
+                  setTimeout(() => void handleAttach("file"), 250);
+                }}
+                className="h-12 flex-row items-center gap-3 rounded-xl px-3"
+              >
+                <Icon icon={FileText} size={18} tone="foreground-secondary" />
+                <Text className="text-[14px] font-medium text-foreground">{t("chat.attachFile")}</Text>
+              </Press>
+            </MenuPanel>
+          </View>
           <TextInput
             value={input}
             onChangeText={setInput}
@@ -358,14 +455,14 @@ export function Coach({ id, initial, prefill, auto, activity, providerLabel, sug
             returnKeyType="send"
             onSubmitEditing={() => send(input)}
             cursorColor={c.coach}
-            className="max-h-40 min-h-11 flex-1 py-2.5 pl-3.5 text-[16px] leading-6 text-foreground"
+            className="max-h-40 min-h-11 flex-1 py-2.5 pl-2 text-[16px] leading-6 text-foreground"
           />
           {busy ? (
             <Press accessibilityRole="button" accessibilityLabel={t("chat.stop")} onPress={() => void stop()} className="size-11 items-center justify-center rounded-full bg-secondary">
               <Icon icon={Square} size={14} />
             </Press>
           ) : (
-            <Press accessibilityRole="button" accessibilityLabel={t("chat.send")} disabled={!input.trim()} onPress={() => send(input)} className={cn("size-11 items-center justify-center rounded-full bg-primary", !input.trim() && "opacity-40")}>
+            <Press accessibilityRole="button" accessibilityLabel={t("chat.send")} disabled={!canSend} onPress={() => send(input)} className={cn("size-11 items-center justify-center rounded-full bg-primary", !canSend && "opacity-40")}>
               <Icon icon={ArrowUp} size={20} tone="primary-foreground" strokeWidth={2.25} />
             </Press>
           )}

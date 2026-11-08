@@ -29,7 +29,7 @@ import { DateTimeField } from "@/screens/log/DateTimeField";
 import { Chips, Field, FormAlert, Input } from "@/screens/log/fields";
 import { defaultAt, EMPTY_FOOD, foodFormOf, foodItemOf, mealAt, num, wallNow, type FoodForm } from "@/screens/log/form";
 import { useScreen } from "@/screens/useScreen";
-import { actionCtx, dataChanged, useApp } from "@/state/app";
+import { actionCtx, dataChanged } from "@/state/app";
 import { useNutritionTargets } from "@/state/nutrition";
 import { Button } from "@/ui/Button";
 import { cn } from "@/ui/cn";
@@ -199,7 +199,6 @@ export function FoodPage() {
 function Sheet({ edit, at: at0, meal: meal0, timeZone, today }: { edit: FoodItem | null; at: string; meal: Meal; timeZone: string; today: { kcal: number | null; protein: number | null } | null }) {
   const { t } = useTranslation("nutrition");
   const setup = useCoachSetup();
-  const lifestyle = useApp((s) => s.profile?.lifestyle);
   const hasKey = coachReady(setup);
   const provider = providerLabel(setup?.provider ?? null);
 
@@ -248,14 +247,7 @@ function Sheet({ edit, at: at0, meal: meal0, timeZone, today }: { edit: FoodItem
       setStep("start");
       return;
     }
-    const r = await estimateFood(model, input, {
-      signal: ctl.signal,
-      context: {
-        containers: lifestyle?.containers,
-        indianCookingFactor: lifestyle?.indianCookingFactor,
-        zeroRefinedSugar: lifestyle?.zeroRefinedSugar,
-      },
-    });
+    const r = await estimateFood(model, input, { signal: ctl.signal });
     if (ctl.signal.aborted || task.current !== ctl) return;
     task.current = null;
     if (!r.ok) {

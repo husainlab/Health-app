@@ -168,28 +168,5 @@
     "moved": "{{label}} moved to position {{position}} of {{total}}",
     "removed": "{{label}} removed from Home",
     "added": "{{label}} added at position {{position}}"
-  },
-  "hud": {
-    "title": "Daily Focus & Energy HUD",
-    "hometown": "✈️ Hometown Mode",
-    "targetBadge": "🎯 {{target}} kg Target",
-    "battery": "Battery: {{val}}%",
-    "walkingCardio": "Walking Cardio",
-    "stepsProgress": "{{steps}} / {{target}} steps ({{pct}}%)",
-    "deficitPlan": "Daily Deficit Plan",
-    "deficitText": "{{burned}} · Target: {{min}}–{{max}} kcal",
-    "fitbitSyncing": "Fitbit syncing",
-    "burnedKcal": "{{kcal}} kcal burned",
-    "snapMeal": "Snap Meal",
-    "water250": "+250ml Water",
-    "startWalk": "Start Walk",
-    "askCoach": "Ask Coach",
-    "focusAfternoon": "Avoid scrolling during the post-lunch dip. A 10-min brisk walk clears brain fog & burns calories.",
-    "focusGeneral": "Protecting your attention span: Replace screen pickups with quick walking breaks for clean dopamine.",
-    "windowPeak": "Peak Deep Work Window",
-    "windowDip": "Afternoon Dip — Best for a 15-min walk",
-    "windowWalk": "Terrace & Cardio Walk Window",
-    "windowWinddown": "Wind-Down & Screen Detox",
-    "windowBalanced": "Balanced Focus"
   }
 }

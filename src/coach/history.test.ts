@@ -61,3 +61,35 @@ it("the fingerprint is stable for the same messages and changes with any id, rol
   // Metadata (where the checkpoint itself lives) is not part of it.
   expect(fingerprint(a)).toBe(fingerprint(a.map((m) => ({ ...m, metadata: { x: 1 } }))));
 });
+
+it("adapts file attachments for model messages cleanly", async () => {
+  const model = new MockLanguageModelV4({ doGenerate: async () => ({ content: [{ type: "text", text: "OK" }], finishReason: { unified: "stop", raw: undefined }, usage, warnings: [] }) });
+  const b64Text = Buffer.from("Food log:\n1. Apple 95 kcal").toString("base64");
+  const testMsgs: UIMessage[] = [
+    {
+      id: "m0",
+      role: "user",
+      parts: [
+        { type: "text", text: "Analyze these files" },
+        { type: "file", mediaType: "image/jpeg", filename: "lunch.jpg", url: "data:image/jpeg;base64,/9j/4AAQ" },
+        { type: "file", mediaType: "text/plain", filename: "notes.txt", url: `data:text/plain;base64,${b64Text}` },
+        { type: "file", mediaType: "application/pdf", filename: "report.pdf", url: "data:application/pdf;base64,JVBERi" },
+      ],
+    },
+  ];
+
+  // For provider that supports PDF (e.g. Anthropic/Google/OpenAI)
+  const resultSupported = await coachHistory(testMsgs, model, defaultTexts, undefined, "google");
+  const userContent = resultSupported.modelMessages[0].content;
+  expect(Array.isArray(userContent)).toBe(true);
+  expect(JSON.stringify(userContent)).toContain("lunch.jpg");
+  // Text file decoded to plain text
+  expect(JSON.stringify(userContent)).toContain("Food log:\\n1. Apple 95 kcal");
+  // PDF kept as file part for google
+  expect(JSON.stringify(userContent)).toContain("report.pdf");
+
+  // For provider that does NOT support PDF (e.g. openrouter)
+  const resultUnsupported = await coachHistory(testMsgs, model, defaultTexts, undefined, "openrouter");
+  const openrouterContent = resultUnsupported.modelMessages[0].content;
+  expect(JSON.stringify(openrouterContent)).toContain("PDF analysis is not supported by this provider");
+});

@@ -34,6 +34,17 @@ Engine & Scoring Knowledge:
     - Habits & Behaviors: Call log_journal_behavior (e.g. caffeine, alcohol, magnesium, cold_shower, meditation, sauna, late_meal).
     - Menstrual Cycle & Ovulation: Call log_cycle (for female profiles).
   - When the user asks to log something or states they did/ate/weighed something, immediately invoke the appropriate log tool and warmly confirm what was logged, noting that it is saved on their device and synced to Health Connect.
+- Images and File Attachments:
+  - The user can attach camera photos, gallery photos, or files (such as food plates, nutrition labels, meals, weigh-in scales, lab/health reports, workout screenshots, or training logs) to ask any question or log data.
+  - Food & Calorie Questions and Logging:
+    - When the user sends a food or meal image, identify the visible items and realistic portion sizes.
+    - Estimate the total calories (kcal) and macronutrients (protein, carbs, fat, fiber).
+    - If the user asks to log it or track calories (e.g., "log this as lunch", "track this meal", "how many calories in this? please log"), call log_nutrition with the meal category (BREAKFAST, LUNCH, DINNER, SNACK) and calculated values, and warmly confirm what was logged.
+    - If they only asked for an analysis or question without asking to log, present the detailed estimate and ask if they would like you to log it for them.
+  - Documents, Reports & Other Images:
+    - For scale photos or weight logs, offer to log the weight using log_weight.
+    - For workout summaries or health reports, extract the metrics, explain what they mean in the context of their Health data, and provide recovery/training recommendations.
+    - Answer any general or specific questions about the attached file clearly and accurately.
 
 Grounding:
 - Fetch relevant tools before discussing the user's measurements. Never invent readings, baselines, workout details or calculated targets. Saved conversation summaries are historical context, not fresh measurements.
@@ -106,14 +117,6 @@ export const TOOL_DOCS: Record<string, ToolDoc> = {
   get_profile: {
     description: "Read age, sex, max HR, time zone and data start. No name/email, training goals, preferences or available time; ask the user when those are needed for a plan.",
     params: {},
-  },
-  get_user_goals: {
-    description: "Read the user's active lifestyle profile, target weight, calorie budget range, daily step goals, walking routines, container references, and dietary preferences.",
-    params: {},
-  },
-  get_deficit_status: {
-    description: "Read today's live energy balance: total calories burned from Fitbit, calories consumed from logged food, current calorie deficit or surplus, remaining calorie budget, and steps taken toward the daily step goal.",
-    params: { day: DAY },
   },
   get_how_it_works: {
     description: "Look up the exact calculation formulas, scientific weighting, score bands, and limits of any Health score or algorithm (recovery, strain, strain-target, sleep, sleep-planner, pulse-age/health-age, stress, energy-bank, health-monitor, fitness, training-load, training-readiness, training-effect, training-status). Call with a topic or empty to list available topics.",

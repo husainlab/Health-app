@@ -24,6 +24,8 @@ export type Provider = {
   keyUrl?: string;
   /** The person's own OpenAI-compatible server: they give its URL, and a key only if it needs one. */
   custom?: true;
+  /** Whether the provider supports PDF file parts natively. */
+  supportsPdf?: boolean;
   create: (apiKey: string | null, model: string, fetch?: Fetch, baseUrl?: string) => LanguageModel;
 };
 
@@ -33,6 +35,7 @@ export const PROVIDERS: Provider[] = [
     label: "Anthropic",
     model: "claude-opus-5-5",
     keyUrl: "https://console.anthropic.com/settings/keys",
+    supportsPdf: true,
     create: (apiKey, model, fetch) => createAnthropic({ apiKey: apiKey!, fetch })(model),
   },
   {
@@ -40,6 +43,7 @@ export const PROVIDERS: Provider[] = [
     label: "OpenAI",
     model: "gpt-5.4-mini",
     keyUrl: "https://platform.openai.com/api-keys",
+    supportsPdf: true,
     create: (apiKey, model, fetch) => createOpenAI({ apiKey: apiKey!, fetch })(model),
   },
   {
@@ -47,6 +51,7 @@ export const PROVIDERS: Provider[] = [
     label: "Google Gemini",
     model: "gemini-3.5-flash",
     keyUrl: "https://aistudio.google.com/apikey",
+    supportsPdf: true,
     create: (apiKey, model, fetch) => createGoogleGenerativeAI({ apiKey: apiKey!, fetch })(model),
   },
   {
@@ -54,6 +59,7 @@ export const PROVIDERS: Provider[] = [
     label: "Vercel AI Gateway",
     model: "anthropic/claude-sonnet-5.5",
     keyUrl: "https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai",
+    supportsPdf: true,
     create: (apiKey, model, fetch) => createGateway({ apiKey: apiKey!, fetch })(model),
   },
   {
@@ -61,6 +67,7 @@ export const PROVIDERS: Provider[] = [
     label: "OpenRouter",
     model: "anthropic/claude-sonnet-5.5",
     keyUrl: "https://openrouter.ai/settings/keys",
+    supportsPdf: false,
     create: (apiKey, model, fetch) => createOpenAICompatible({ name: "openrouter", baseURL: "https://openrouter.ai/api/v1", apiKey: apiKey!, fetch })(model),
   },
   {
@@ -70,12 +77,16 @@ export const PROVIDERS: Provider[] = [
     },
     model: "llama3.1:8b",
     custom: true,
+    supportsPdf: false,
     // No key, no Authorization header: a local Ollama takes none.
     create: (apiKey, model, fetch, baseUrl) => createOpenAICompatible({ name: "custom", baseURL: baseUrl!, apiKey: apiKey || undefined, fetch })(model),
   },
 ];
 
 export const providerOf = (id: string | null | undefined) => PROVIDERS.find((p) => p.id === id) ?? null;
+
+/** Whether a provider supports PDF documents directly. */
+export const providerSupportsPdf = (id: string | null | undefined): boolean => providerOf(id)?.supportsPdf ?? false;
 
 /** How the chat names the provider ("using Anthropic"). */
 export const providerLabel = (id: string | null) => providerOf(id)?.label ?? i18n.t("coach:providerFallback");

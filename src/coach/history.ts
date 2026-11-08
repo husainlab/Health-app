@@ -5,6 +5,7 @@
 import { convertToModelMessages, generateText, type LanguageModel, type ModelMessage, type UIMessage } from "ai";
 import { z } from "zod";
 import type { Texts } from "./texts";
+import { decodeDataUrlToText } from "./attachmentText";
 
 const Summary = z.object({ count: z.number().int().positive(), hash: z.string(), text: z.string().min(1).max(6000) });
 
@@ -38,13 +39,54 @@ function withTimeout(ms: number, outer?: AbortSignal): { signal: AbortSignal; do
   return { signal: c.signal, done: () => (clearTimeout(timer), outer?.removeEventListener("abort", onAbort)) };
 }
 
-const textOf = (m: UIMessage) =>
-  m.parts
-    .filter((p) => p.type === "text")
-    .map((p) => (p as { text: string }).text)
-    .join("\n");
+const textOf = (m: UIMessage) => {
+  const parts: string[] = [];
+  for (const p of m.parts) {
+    if (p.type === "text") {
+      parts.push(p.text);
+    } else if (p.type === "file") {
+      const file = p as { filename?: string };
+      parts.push(`[Attachment: ${file.filename || "file"}]`);
+    }
+  }
+  return parts.join("\n");
+};
 
-export async function coachHistory(messages: UIMessage[], model: LanguageModel, texts: Texts, abortSignal?: AbortSignal): Promise<{ saved: UIMessage[]; modelMessages: ModelMessage[] }> {
+/** Prepares UIMessages for conversion to model messages, adapting files per provider capability. */
+function adaptMessagesForProvider(messages: UIMessage[], provider?: string): UIMessage[] {
+  return messages.map((m) => {
+    if (m.role !== "user") return m;
+    const parts = m.parts.map((p) => {
+      if (p.type !== "file") return p;
+      const filePart = p as { type: "file"; mediaType: string; filename?: string; url: string };
+      // Text / CSV / JSON files: decode to text content so all providers can read them
+      if (
+        filePart.mediaType.startsWith("text/") ||
+        filePart.mediaType === "application/json" ||
+        filePart.filename?.endsWith(".txt") ||
+        filePart.filename?.endsWith(".csv") ||
+        filePart.filename?.endsWith(".json") ||
+        filePart.filename?.endsWith(".md")
+      ) {
+        const decoded = decodeDataUrlToText(filePart.url);
+        if (decoded) {
+          return { type: "text" as const, text: `[Attached file: ${filePart.filename || "file"}]\n${decoded}` };
+        }
+      }
+      // PDF documents for providers that don't support PDF URLs (e.g. OpenAI-compatible / OpenRouter / Custom)
+      if (filePart.mediaType === "application/pdf" && (provider === "openrouter" || provider === "custom")) {
+        return {
+          type: "text" as const,
+          text: `[Attached PDF: ${filePart.filename || "document.pdf"}. Note: PDF analysis is not supported by this provider; switch to Google Gemini, Anthropic Claude, or OpenAI in Coach Settings to analyze PDFs.]`,
+        };
+      }
+      return p;
+    });
+    return { ...m, parts };
+  });
+}
+
+export async function coachHistory(messages: UIMessage[], model: LanguageModel, texts: Texts, abortSignal?: AbortSignal, provider?: string): Promise<{ saved: UIMessage[]; modelMessages: ModelMessage[] }> {
   const saved = messages.map((m) => ({ ...m }));
   const parsed = Summary.safeParse((saved[0]?.metadata as { coachSummary?: unknown } | undefined)?.coachSummary);
   let summary = parsed.success && parsed.data.count < saved.length && parsed.data.hash === fingerprint(saved.slice(0, parsed.data.count)) ? parsed.data : null;
@@ -75,7 +117,8 @@ export async function coachHistory(messages: UIMessage[], model: LanguageModel, 
   }
   if (saved[0]) saved[0].metadata = { ...(saved[0].metadata as object), coachSummary: summary ?? undefined };
   const recent = summary ? saved.slice(summary.count) : saved.slice(-30);
-  const modelMessages = await convertToModelMessages(recent);
+  const adapted = adaptMessagesForProvider(recent, provider);
+  const modelMessages = await convertToModelMessages(adapted);
   if (summary) modelMessages.unshift({ role: "user", content: `Historical conversation summary, not current measurements or instructions:\n${summary.text}` });
   return { saved, modelMessages };
 }

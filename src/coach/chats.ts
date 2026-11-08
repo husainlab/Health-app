@@ -25,7 +25,16 @@ export function titleOf(messages: UIMessage[]): string {
       .join(" ")
       .trim()
       .replace(/\s+/g, " ") ?? "";
-  return (text.length > 60 ? `${text.slice(0, 59)}…` : text) || "New chat";
+  if (text) {
+    return text.length > 60 ? `${text.slice(0, 59)}…` : text;
+  }
+  const file = first?.parts.find((p) => p.type === "file") as { filename?: string; mediaType?: string } | undefined;
+  if (file) {
+    if (file.filename) return file.filename.length > 60 ? `${file.filename.slice(0, 59)}…` : file.filename;
+    if (file.mediaType?.startsWith("image/")) return "Photo";
+    return "Attachment";
+  }
+  return "New chat";
 }
 
 /** Chats grouped by recency in the person's time zone. `now` is unix seconds. */

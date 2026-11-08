@@ -202,7 +202,7 @@ describe("update state (update.ts)", () => {
     await expect(checkForUpdate(true)).resolves.not.toThrow();
   });
 
-  it("handles public repository 404 with no update found", async () => {
+  it("handles private repository 404 with unauthorized checkError", async () => {
     await setGithubToken(null);
     global.fetch = vi.fn().mockResolvedValue({
       status: 404,
@@ -211,7 +211,7 @@ describe("update state (update.ts)", () => {
 
     const notice = await checkForAppUpdate(true);
     expect(notice).toBeNull();
-    expect(getUpdate().checkError).toBeNull();
+    expect(getUpdate().checkError).toBe("unauthorized");
   });
 
   it("manages GitHub token and includes Authorization header for private repos", async () => {
