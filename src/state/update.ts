@@ -1,18 +1,19 @@
 // The in-app update notice. Checks for newer Health builds and upstream Pulse open-source commits.
 // Neither check is automatic: they run only on demand when the person taps "Check for updates" in Settings › App.
-// For private repositories, authenticated release checks and APK downloads are supported via a GitHub Personal Access Token (PAT).
 // Update downloads the APK for this phone's CPU into the app's cache and hands it to Android's installer.
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Device from "expo-device";
 import { File, Paths } from "expo-file-system";
 import * as IntentLauncher from "expo-intent-launcher";
-import * as SecureStore from "expo-secure-store";
 import { useSyncExternalStore } from "react";
-import { apkFor, assetUrlFor, isNewer, parseRelease, type Release } from "@/lib/release";
+import { apkFor, isNewer, parseRelease, type Release } from "@/lib/release";
 import { APP_VERSION } from "@/queries/settings";
 
 /** GitHub's latest-release endpoint for Health's repository. Uses releases list to reliably detect empty releases. */
 export const RELEASES_URL = "https://api.github.com/repos/husainlab/Health-app/releases?per_page=1";
+
+/** GitHub's tags endpoint for Health's repository (used as fallback if releases are not published). */
+export const TAGS_URL = "https://api.github.com/repos/husainlab/Health-app/tags?per_page=1";
 
 /** GitHub's commit endpoint for the original upstream open-source Pulse repository. */
 export const UPSTREAM_COMMITS_URL = "https://api.github.com/repos/adityaongit/pulse-mobile/commits?per_page=1";
@@ -27,8 +28,6 @@ const CACHE_KEY = "health.update";
 const UPSTREAM_CACHE_KEY = "health.update.upstream";
 /** Key for the upstream commit SHA the person chose to skip/ignore. */
 export const IGNORED_UPSTREAM_KEY = "health.update.upstream_ignored";
-/** SecureStore key for the GitHub Personal Access Token (for private repository updates). */
-export const GITHUB_TOKEN_KEY = "pulse.github.token";
 /** "off" when the person turned the check off. */
 const CHECK_KEY = "health.update.check";
 /** Android's FLAG_GRANT_READ_URI_PERMISSION: the installer may read the APK through Health's file provider. */
@@ -42,9 +41,9 @@ export type UpstreamUpdate = {
   url: string;
 };
 
-export type UpdateCheckError = "unauthorized" | "network" | null;
+export type UpdateCheckError = "network" | null;
 
-export type AppNotice = Release & { apk: string; assetUrl?: string | null };
+export type AppNotice = Release & { apk: string };
 
 export type UpdateState = {
   /** Whether Health checks for updates. */
@@ -57,8 +56,6 @@ export type UpdateState = {
   upstreamUpdate: UpstreamUpdate | null;
   /** Upstream commit SHA that the user chose to skip/ignore. */
   ignoredUpstreamSha: string | null;
-  /** Whether a GitHub token is configured. */
-  hasGithubToken: boolean;
   /** Error from the last manual check. */
   checkError: UpdateCheckError;
 };
@@ -69,7 +66,6 @@ let state: UpdateState = {
   progress: null,
   upstreamUpdate: null,
   ignoredUpstreamSha: null,
-  hasGithubToken: false,
   checkError: null,
 };
 
@@ -88,53 +84,6 @@ const subscribe = (l: () => void) => {
 
 export const useUpdate = () => useSyncExternalStore(subscribe, () => state);
 export const getUpdate = () => state;
-
-/** Retrieves the GitHub Personal Access Token from hardware-backed SecureStore, AsyncStorage fallback, or build environment. */
-export async function getGithubToken(): Promise<string | null> {
-  try {
-    const saved = await SecureStore.getItemAsync(GITHUB_TOKEN_KEY);
-    if (saved && saved.trim()) return saved.trim();
-  } catch {
-    // fallback to AsyncStorage
-  }
-  try {
-    const savedAsync = await AsyncStorage.getItem(GITHUB_TOKEN_KEY);
-    if (savedAsync && savedAsync.trim()) return savedAsync.trim();
-  } catch {
-    // fallback
-  }
-  const envToken = process.env.EXPO_PUBLIC_GITHUB_TOKEN;
-  return envToken && envToken.trim() ? envToken.trim() : null;
-}
-
-/** Last 4 characters of the GitHub token for safe display in settings. */
-export async function getGithubTokenLast4(): Promise<string | null> {
-  const token = await getGithubToken();
-  if (!token) return null;
-  return token.length > 4 ? token.slice(-4) : token;
-}
-
-/** Sets or clears the GitHub token in hardware-backed SecureStore with AsyncStorage fallback. */
-export async function setGithubToken(token: string | null): Promise<void> {
-  const clean = token?.trim() || null;
-  if (clean) {
-    try {
-      await SecureStore.setItemAsync(GITHUB_TOKEN_KEY, clean);
-    } catch {
-      // ignore SecureStore failure
-    }
-    await AsyncStorage.setItem(GITHUB_TOKEN_KEY, clean).catch(() => {});
-  } else {
-    try {
-      await SecureStore.deleteItemAsync(GITHUB_TOKEN_KEY);
-    } catch {
-      // ignore SecureStore failure
-    }
-    await AsyncStorage.removeItem(GITHUB_TOKEN_KEY).catch(() => {});
-  }
-  const effective = await getGithubToken();
-  patch({ hasGithubToken: !!effective });
-}
 
 /** Retrieves the upstream commit SHA that the user chose to skip/ignore on this device. */
 export async function getIgnoredUpstreamSha(): Promise<string | null> {
@@ -162,13 +111,11 @@ function noticeFor(release: Release | null): AppNotice | null {
   if (later || !release || !isNewer(release.version, APP_VERSION)) return null;
   const abis = Device.supportedCpuArchitectures ?? [];
   const apk = apkFor(release, abis);
-  const assetUrl = assetUrlFor(release, abis);
-  return apk ? { ...release, apk, assetUrl } : null;
+  return apk ? { ...release, apk } : null;
 }
 
-/** GitHub's latest release, with optional Bearer token authentication for private repositories. */
+/** GitHub's latest release from Health's public repository. */
 async function fetchLatest(): Promise<{ release: Release | null; error: UpdateCheckError }> {
-  const token = await getGithubToken();
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   const headers: Record<string, string> = {
@@ -176,27 +123,46 @@ async function fetchLatest(): Promise<{ release: Release | null; error: UpdateCh
     "User-Agent": "Health-App",
     "X-GitHub-Api-Version": "2022-11-28",
   };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
   try {
     const res = await fetch(RELEASES_URL, { headers, signal: ctl.signal });
-    if (res.status === 401 || res.status === 403 || res.status === 404) {
-      return { release: null, error: "unauthorized" };
-    }
     if (!res.ok) {
       return { release: null, error: "network" };
     }
     const json = (await res.json()) as unknown;
     if (Array.isArray(json)) {
-      if (json.length === 0) {
-        return { release: null, error: null };
+      if (json.length > 0) {
+        const release = parseRelease(json[0]);
+        if (release) return { release, error: null };
       }
-      const release = parseRelease(json[0]);
-      return { release, error: null };
+    } else {
+      const release = parseRelease(json);
+      if (release) return { release, error: null };
     }
-    const release = parseRelease(json);
-    return { release, error: null };
+
+    // Fallback: if no release is found in releases endpoint, check tags and point to repo release APK
+    try {
+      const tagsRes = await fetch(TAGS_URL, { headers, signal: ctl.signal });
+      if (tagsRes.ok) {
+        const tagsJson = (await tagsRes.json()) as unknown;
+        if (Array.isArray(tagsJson) && tagsJson.length > 0 && typeof tagsJson[0]?.name === "string") {
+          const tagName = tagsJson[0].name;
+          const version = tagName.startsWith("v") ? tagName.slice(1) : tagName;
+          const fallbackRelease: Release = {
+            version,
+            page: `https://github.com/husainlab/Health-app/releases/tag/${tagName}`,
+            apks: {
+              default: "https://raw.githubusercontent.com/husainlab/Health-app/main/Health-release.apk",
+              arm64: "https://raw.githubusercontent.com/husainlab/Health-app/main/Health-release.apk",
+            },
+          };
+          return { release: fallbackRelease, error: null };
+        }
+      }
+    } catch {
+      // ignore fallback error
+    }
+
+    return { release: null, error: null };
   } catch {
     return { release: null, error: "network" };
   } finally {
@@ -215,7 +181,6 @@ type GithubCommit = {
 
 /** Checks GitHub for upstream Pulse commits to see if new open-source code has landed. */
 export async function fetchUpstreamLatest(): Promise<UpstreamUpdate | null> {
-  const token = await getGithubToken();
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   const headers: Record<string, string> = {
@@ -223,9 +188,6 @@ export async function fetchUpstreamLatest(): Promise<UpstreamUpdate | null> {
     "User-Agent": "Health-App",
     "X-GitHub-Api-Version": "2022-11-28",
   };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
   try {
     const res = await fetch(UPSTREAM_COMMITS_URL, {
       headers,
@@ -313,29 +275,16 @@ export function dismissUpstreamUpdate(): void {
   }
 }
 
-/** Downloads the APK into the cache and opens Android's installer on it. Supports private repo asset authorization. */
+/** Downloads the APK into the cache and opens Android's installer on it. */
 export async function installUpdate(): Promise<void> {
   const u = state.available;
   if (!u || state.progress !== null) return;
-  const token = await getGithubToken();
   const file = new File(Paths.cache, `health-${u.version}.apk`);
   if (file.exists) file.delete();
   patch({ progress: 0 });
 
-  // For private repositories, download via GitHub API asset endpoint with Authorization header.
-  // For public repositories, use browser_download_url.
-  const downloadUrl = token && u.assetUrl ? u.assetUrl : u.apk;
-  const headers: Record<string, string> = {
-    "User-Agent": "Health-App",
-  };
-  if (token && u.assetUrl) {
-    headers.Authorization = `Bearer ${token}`;
-    headers.Accept = "application/octet-stream";
-  }
-
   try {
-    const task = File.createDownloadTask(downloadUrl, file, {
-      headers: Object.keys(headers).length ? headers : undefined,
+    const task = File.createDownloadTask(u.apk, file, {
       onProgress: ({ bytesWritten, totalBytes }) => totalBytes > 0 && patch({ progress: bytesWritten / totalBytes }),
     });
     const done = await task.downloadAsync();

@@ -12,6 +12,11 @@ export function dataChanged(): void {
   for (const l of versionListeners) l();
 }
 
+export const onDataChanged = (l: () => void) => {
+  versionListeners.add(l);
+  return () => versionListeners.delete(l);
+};
+
 const subscribeVersion = (l: () => void) => {
   versionListeners.add(l);
   return () => versionListeners.delete(l);

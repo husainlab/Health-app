@@ -8,7 +8,10 @@
     "version": "0.4.8",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "health",
+    "scheme": [
+      "health",
+      "pulse"
+    ],
     "userInterfaceStyle": "automatic",
     "android": {
       "versionCode": 8,
@@ -43,6 +46,7 @@
         "android.permission.health.READ_NUTRITION",
         "android.permission.health.WRITE_NUTRITION",
         "android.permission.health.READ_BLOOD_GLUCOSE",
+        "android.permission.health.READ_BLOOD_PRESSURE",
         "android.permission.health.READ_BODY_TEMPERATURE",
         "android.permission.health.READ_MENSTRUATION",
         "android.permission.health.READ_INTERMENSTRUAL_BLEEDING",
@@ -88,6 +92,7 @@
       ],
       "./plugins/withHighRefreshRate.js",
       "./plugins/withAppShortcuts.js",
+      "./plugins/withWidgets.js",
       "./plugins/withReleaseSigning.js",
       "react-native-health-connect",
       [

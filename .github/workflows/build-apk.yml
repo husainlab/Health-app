@@ -101,7 +101,6 @@ jobs:
 
       - name: Build Release APK (arm64-v8a for OnePlus Nord)
         env:
-          EXPO_PUBLIC_GITHUB_TOKEN: ${{ secrets.GH_PAT_READ || '' }}
           RELEASE_STORE_FILE: ${{ github.workspace }}/credentials/release.keystore
           RELEASE_STORE_PASSWORD: healthapp123
           RELEASE_KEY_ALIAS: health
@@ -198,17 +197,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          RELEASE_VER="${{ env.final_version || steps.bump_version.outputs.new_version }}"
+          RELEASE_VER=$(node -p 'require("./app.json").expo.version')
           echo "Publishing release v${RELEASE_VER}..."
 
           # Ensure the tag is created and pushed cleanly
           git tag -f "v${RELEASE_VER}"
           git push -f origin "v${RELEASE_VER}" || echo "Git tag push warning"
 
-          gh release create "v${RELEASE_VER}" \
-            "Health-${RELEASE_VER}.apk" \
-            "Health-release.apk" \
-            --target main \
-            --title "Health ${RELEASE_VER}" \
-            --notes "Production signed APK for Health ${RELEASE_VER}" \
-            --clobber || echo "GitHub release creation warning"
+          # Create or update GitHub release
+          if ! gh release view "v${RELEASE_VER}" >/dev/null 2>&1; then
+            gh release create "v${RELEASE_VER}" \
+              "Health-${RELEASE_VER}.apk" \
+              "Health-release.apk" \
+              --title "Health ${RELEASE_VER}" \
+              --notes "Production signed APK for Health ${RELEASE_VER}"
+          else
+            gh release upload "v${RELEASE_VER}" \
+              "Health-${RELEASE_VER}.apk" \
+              "Health-release.apk" \
+              --clobber
+          fi

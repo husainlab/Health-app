@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Health brand mark, matching Mark in src/ui/brand.tsx. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="15dp" android:viewportWidth="24" android:viewportHeight="24">
+  <path android:pathData="M6.9,6.6 V13.4" android:strokeWidth="4.2" android:strokeColor="@color/pulse_widget_optimal" android:strokeLineCap="round"/>
+  <path android:pathData="M15.0,10.6 V17.4" android:strokeWidth="4.2" android:strokeColor="@color/pulse_widget_secondary" android:strokeLineCap="round"/>
+</vector>

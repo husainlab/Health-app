@@ -33,6 +33,7 @@ import {
 } from "./common";
 import { illnessRaised, VITAL_LABEL } from "./home";
 import { zoneBounds, zoneNote, zoneRows } from "./strain";
+import { getBloodPressureSummary } from "./bloodPressure";
 import type {
   ChipTone,
   EcgReading,
@@ -384,10 +385,11 @@ const num = (v: number, dp: number, signed = false) => {
 export async function getMonitor(day: string, ctx: QueryCtx, preloaded?: Map<string, DayRow>): Promise<MonitorVM> {
   const today = todayOf(ctx);
   const isToday = day === today;
-  const [rows, rhythm, measured] = await Promise.all([
+  const [rows, rhythm, measured, bpSummary] = await Promise.all([
     preloaded?.has(addDays(day, -29)) ? preloaded : loadDays(ctx, addDays(day, -29), day),
     heartRhythm(ctx, day),
     measurements(ctx, day, today),
+    getBloodPressureSummary(day, ctx),
   ]);
   const row = rows.get(day);
   const hm = row?.healthMonitor;
@@ -429,6 +431,85 @@ export async function getMonitor(day: string, ctx: QueryCtx, preloaded?: Map<str
     };
   });
 
+  const bpVal = bpSummary.latest.value;
+  let bpVital: Vital;
+  if (bpVal) {
+    let chipTone: ChipTone = "optimal";
+    let chipText = "Normal";
+    let status: Vital["status"] = "in_range";
+    switch (bpVal.category) {
+      case "normal":
+        chipTone = "optimal";
+        chipText = i18n.t("health:bloodPressure.category.normal");
+        status = "in_range";
+        break;
+      case "elevated":
+        chipTone = "warning";
+        chipText = i18n.t("health:bloodPressure.category.elevated");
+        status = "high";
+        break;
+      case "stage1":
+        chipTone = "warning";
+        chipText = i18n.t("health:bloodPressure.category.stage1");
+        status = "high";
+        break;
+      case "stage2":
+        chipTone = "alert";
+        chipText = i18n.t("health:bloodPressure.category.stage2");
+        status = "high";
+        break;
+      case "crisis":
+        chipTone = "alert";
+        chipText = i18n.t("health:bloodPressure.category.crisis");
+        status = "high";
+        break;
+    }
+    bpVital = {
+      key: "bp",
+      label: i18n.t("health:title.bloodPressure"),
+      short: "BP",
+      unit: "mmHg",
+      customValue: `${bpVal.systolic}/${bpVal.diastolic}`,
+      metric: ok(bpVal.systolic),
+      range: { low: 90, high: 120 },
+      status,
+      chip: { tone: chipTone, text: chipText },
+      // The category is the latest reading's; with no other reading that day, say so.
+      ...(bpSummary.readings.length === 1 && { caption: i18n.t("health:bloodPressure.singleReading") }),
+      trend: {
+        points: bpSummary.history.map((h) => ({ day: h.day, value: h.systolic })),
+        // The 30-day summary has a mean but no spread, so no band is drawn rather than a誣made-up one.
+        baseline: null,
+      },
+      bp: {
+        systolic: bpVal.systolic,
+        diastolic: bpVal.diastolic,
+        category: bpVal.category,
+      },
+    };
+  } else {
+    const priorChip = bpSummary.latestPrior
+      ? { tone: "neutral" as const, text: i18n.t("health:bloodPressure.prior", { value: `${bpSummary.latestPrior.systolic}/${bpSummary.latestPrior.diastolic}` }) }
+      : null;
+    bpVital = {
+      key: "bp",
+      label: i18n.t("health:title.bloodPressure"),
+      short: "BP",
+      unit: "mmHg",
+      metric: none("no_data"),
+      range: { low: 90, high: 120 },
+      status: "no_data",
+      chip: priorChip,
+      trend: {
+        points: bpSummary.history.map((h) => ({ day: h.day, value: h.systolic })),
+        baseline: null,
+      },
+      bp: null,
+    };
+  }
+
+  const allVitals = [...vitals, bpVital];
+
   let count: MonitorVM["count"];
   if (!hm) count = none(isToday ? "awaiting_sleep_sync" : "band_not_worn");
   else if (hm.reason !== null) count = none(nightReason(hm.reason, isToday));
@@ -441,7 +522,8 @@ export async function getMonitor(day: string, ctx: QueryCtx, preloaded?: Map<str
     isToday,
     count,
     illness: hm && hm.reason === null && illnessRaised(hm) ? { level: hm.illness.level, score: hm.illness.score } : null,
-    vitals,
+    vitals: allVitals,
+    bloodPressure: bpSummary,
     heartRhythm: rhythm,
     measurements: measured,
   };

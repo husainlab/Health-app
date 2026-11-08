@@ -28,11 +28,12 @@ export function groupBy<T>(xs: T[], key: (x: T) => string) {
 export const byteOrder = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
 
 export async function load(store: Store, { timeZone: tz }: PipelineOptions) {
-  const [metricRows, sessionRows, exerciseRows, hrSpan] = await Promise.all([
+  const [metricRows, sessionRows, exerciseRows, hrSpan, bpRows] = await Promise.all([
     metricsWithLoggedBody(store),
     store.allSessions(),
     store.allExercises(),
     store.hrBounds(),
+    store.allBloodPressure(),
   ]);
   const metrics = metricRows.slice().sort((a, b) => byteOrder(a.day, b.day));
   const sessions = sessionRows.slice().sort((a, b) => a.startTs - b.startTs || byteOrder(a.id, b.id));
@@ -41,6 +42,7 @@ export async function load(store: Store, { timeZone: tz }: PipelineOptions) {
     ...metrics.map((m) => m.day),
     ...sessions.map((s) => s.day),
     ...exercises.map((x) => x.day),
+    ...bpRows.map((b) => b.day),
     ...(hrSpan ? [localDay(hrSpan.first, tz), localDay(hrSpan.last, tz)] : []),
   ].sort();
   if (!candidates.length) return null;
@@ -68,6 +70,7 @@ export async function load(store: Store, { timeZone: tz }: PipelineOptions) {
     mainOf,
     exercises,
     exercisesByDay: groupBy(exercises, (x) => x.day),
+    bloodPressureByDay: groupBy(bpRows, (b) => b.day),
   };
 }
 

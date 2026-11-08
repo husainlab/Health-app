@@ -27,6 +27,8 @@ export type KeyStatRowProps = {
   label: string;
   caption?: string;
   metric: Metric<number> | null | undefined;
+  /** Custom formatted value override, e.g. "120/80" for blood pressure. */
+  customValue?: string;
   unit?: string;
   format: FormatKey;
   /** The 30-day average, shown under the value (row) or as the delta chip (tile). */
@@ -56,12 +58,13 @@ type Computed = { valueText: string; avgText?: string; diffText?: string; dir?: 
 const LOADING: Computed = { valueText: "", loading: true };
 
 function compute(p: KeyStatRowProps, value: number | null, meta?: MetricMeta, reason?: ReasonCode): Computed {
-  if (value === null) return { valueText: MISSING, reason: reasonCopy(reason, meta?.nightsLeft).short };
+  if (value === null && !p.customValue) return { valueText: MISSING, reason: reasonCopy(reason, meta?.nightsLeft).short };
   const avg = p.average ?? null;
-  const t = avg !== null && p.direction !== "none" ? deltaTone(p.direction, value, avg, p.sd) : undefined;
-  const diff = avg !== null ? value - avg : null;
+  const t = avg !== null && value !== null && p.direction !== "none" ? deltaTone(p.direction, value, avg, p.sd) : undefined;
+  const diff = avg !== null && value !== null ? value - avg : null;
   const diffText = diff === null || formatValue(p.format, Math.abs(diff)) === formatValue(p.format, 0) ? undefined : `${diff > 0 ? "+" : "−"}${formatValue(p.format, Math.abs(diff))}`;
-  return { valueText: formatValue(p.format, value), avgText: avg !== null ? formatValue(p.format, avg) : undefined, diffText, dir: t?.dir, tone: t?.tone, meta };
+  const valueText = p.customValue ?? (value !== null ? formatValue(p.format, value) : MISSING);
+  return { valueText, avgText: avg !== null ? formatValue(p.format, avg) : undefined, diffText, dir: t?.dir, tone: t?.tone, meta };
 }
 
 /** The row's outer element: a link, a button, or a plain view. It reads as one sentence to a screen reader and hides its parts. */
@@ -146,7 +149,7 @@ function Tile({ p, c }: { p: KeyStatRowProps; c: Computed }) {
     ? ""
     : c.reason
       ? `${p.label}: ${c.reason}`
-      : [statSentence({ label: p.label, valueText: c.valueText, unit: p.unit, averageText: p.chip ? undefined : c.avgText, averageLabel: p.averageLabel, dir: c.dir, tone: c.tone }), p.chip?.text].filter(Boolean).join(", ");
+      : [statSentence({ label: p.label, valueText: c.valueText, unit: p.unit, averageText: p.chip ? undefined : c.avgText, averageLabel: p.averageLabel, dir: c.dir, tone: c.tone }), p.chip?.text, p.caption].filter(Boolean).join(", ");
   const shadow = useCardStyle(flagged && ring(colors["warning-ring"]));
   return (
     <Frame
@@ -196,6 +199,7 @@ function Tile({ p, c }: { p: KeyStatRowProps; c: Computed }) {
                     </StatusChip>
                   )
                 ))}
+              {!!p.caption && <Text className={CAPTION}>{p.caption}</Text>}
             </>
           )}
         </View>

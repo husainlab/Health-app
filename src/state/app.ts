@@ -1,3 +1,5 @@
+import { clearWidgets, refreshWidgets } from "@/widgets/publish";
+import { workoutNative, workoutNativeAvailable } from "../../modules/pulse-workouts";
 import { i18n } from "@/i18n/config";
 // App-wide state: the Store, the profile, where data comes from (Health Connect, or the demo generator for "Explore
 // with sample data"), the sync + scoring run, and the query context the screens read with. Follows halo's
@@ -23,11 +25,12 @@ import { setLocale } from "@/lib/locale";
 import { seedDemoFood } from "@/data/seedFood";
 import { forgetChanges } from "@/health/sync";
 import { localDay } from "@/lib/time";
-import { dataChanged, dataVersion, useDataVersion } from "./dataVersion";
+import { dataChanged, dataVersion, onDataChanged, useDataVersion } from "./dataVersion";
 import type { DisplayPrefs } from "@/lib/units";
 import type { QueryCtx } from "@/queries/ctx";
 import { ensureDefaultTags } from "@/queries/journal";
 import { applyDisplay } from "./display";
+import { SOURCE_KEY } from "./source";
 
 export type { Source };
 export type Status = "booting" | "needs_profile" | "needs_permissions" | "syncing" | "ready" | "error";
@@ -52,7 +55,6 @@ export type AppInfo = {
   theme: "system" | "light" | "dark";
 };
 
-const SOURCE_KEY = "pulse.source";
 const OWN_PROFILE_KEY = "pulse.ownProfile";
 
 export const THEME_KEY = "pulse.theme";
@@ -94,6 +96,9 @@ export const appState = () => state;
 
 // ── The data version ────────────────────────────────────────────────────────
 export { dataChanged, dataVersion, useDataVersion };
+onDataChanged(() => {
+  if (state.store && state.profile && state.source && state.onboarded) void refreshWidgets(queryCtx(), state.source);
+});
 
 // ── Contexts ────────────────────────────────────────────────────────────────
 
@@ -171,6 +176,11 @@ export async function boot(applyTheme: (theme: string) => void): Promise<void> {
   try {
     await applyLanguage(await readChoice());
     const st = await openStore();
+    // Finish a requested full reset before importing any surviving native journal.
+    if (workoutNativeAvailable && await workoutNative.resetPending()) {
+      await st.workouts.clear();
+      await workoutNative.finishReset();
+    }
     // The background task reuses this connection when it fires while the app is up; the task registration and the
     // check-in reminder are made to match the saved settings.
     registerAppStore(st);
@@ -188,11 +198,11 @@ export async function boot(applyTheme: (theme: string) => void): Promise<void> {
     patch({ theme: theme === "light" || theme === "dark" ? theme : "system" });
     patch({ store: st, profile, source, sync, availability: avail });
     watchForeground();
-    if (!profile) return patch({ status: "needs_profile" });
-    if (!source) return patch({ status: "needs_permissions" });
+    if (!profile) { await clearWidgets(); return patch({ status: "needs_profile" }); }
+    if (!source) { await clearWidgets(); return patch({ status: "needs_permissions" }); }
     if (source === "health_connect") {
       const perms = await permissionState().catch(() => null);
-      if (!perms || perms.granted.length === 0) return patch({ status: "needs_permissions" });
+      if (!perms || perms.granted.length === 0) { await clearWidgets(); return patch({ status: "needs_permissions" }); }
     }
     // Show the last scores at once; refresh in the background.
     const onboarded = sync.lastSyncTs !== null || source === "demo";
@@ -288,7 +298,11 @@ export async function exploreSample(): Promise<void> {
   try {
     // The demo data belongs to a demo person with their own profile; keep the person's own to restore later.
     if (profile && source !== "demo") await AsyncStorage.setItem(OWN_PROFILE_KEY, JSON.stringify(profile));
+    if (running) await running.catch(() => {});
     await store.clearAll();
+    // Only after the clear succeeds: a cleared source over rows that survived would let real data land on demo data.
+    await AsyncStorage.removeItem(SOURCE_KEY);
+    await clearWidgets();
     await forgetChanges();
     const timeZone = profile?.timeZone ?? deviceTimeZone();
     const today = localDay(Date.now() / 1000, timeZone);
@@ -320,7 +334,11 @@ export async function connectHealth(): Promise<PermissionState | null> {
   let profile = state.profile;
   if (state.source === "demo") {
     const own = await AsyncStorage.getItem(OWN_PROFILE_KEY).catch(() => null);
+    if (running) await running.catch(() => {});
     await store.clearAll();
+    // Only after the clear succeeds: a cleared source over rows that survived would let real data land on demo data.
+    await AsyncStorage.removeItem(SOURCE_KEY);
+    await clearWidgets();
     await AsyncStorage.removeItem(OWN_PROFILE_KEY).catch(() => {});
     profile = own ? (JSON.parse(own) as Profile) : null;
     if (profile) {
@@ -348,7 +366,15 @@ export async function reimport(): Promise<void> {
 export async function reset(): Promise<void> {
   const { store } = state;
   if (running) await running.catch(() => {});
+  const { workoutRecorder } = await import("@/live/workoutRecorder");
+  if (workoutNativeAvailable) await workoutNative.beginReset();
+  // A poll that began before beginReset could still be ingesting; any later one sees the reset and stops.
+  await workoutRecorder.settle();
+  if (store) await store.workouts.clear();
+  if (workoutNativeAvailable) await workoutNative.finishReset();
+  workoutRecorder.clearView();
   if (store) await store.clearAll();
+  await clearWidgets();
   deleteAllPhotos();
   await AsyncStorage.multiRemove([SOURCE_KEY, OWN_PROFILE_KEY]).catch(() => {});
   await forgetChanges();

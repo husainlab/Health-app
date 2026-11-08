@@ -6,13 +6,11 @@ import {
   clearIgnoredUpstreamUpdate,
   dismissUpstreamUpdate,
   fetchUpstreamLatest,
-  getGithubTokenLast4,
   getIgnoredUpstreamSha,
   getUpdate,
   ignoreUpstreamUpdate,
   installUpdate,
   putOffUpdate,
-  setGithubToken,
   UPSTREAM_BASE_COMMIT,
 } from "./update";
 
@@ -24,13 +22,6 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
     removeItem: async (k: string) => void storage.delete(k),
     clear: async () => void storage.clear(),
   },
-}));
-
-const secureStorage = new Map<string, string>();
-vi.mock("expo-secure-store", () => ({
-  getItemAsync: vi.fn(async (k: string) => secureStorage.get(k) ?? null),
-  setItemAsync: vi.fn(async (k: string, v: string) => void secureStorage.set(k, v)),
-  deleteItemAsync: vi.fn(async (k: string) => void secureStorage.delete(k)),
 }));
 
 vi.mock("expo-device", () => ({
@@ -202,64 +193,77 @@ describe("update state (update.ts)", () => {
     await expect(checkForUpdate(true)).resolves.not.toThrow();
   });
 
-  it("handles private repository 404 with unauthorized checkError", async () => {
-    await setGithubToken(null);
+  it("handles network failure with network checkError", async () => {
     global.fetch = vi.fn().mockResolvedValue({
-      status: 404,
+      status: 500,
       ok: false,
     } as unknown as Response);
 
     const notice = await checkForAppUpdate(true);
     expect(notice).toBeNull();
-    expect(getUpdate().checkError).toBe("unauthorized");
+    expect(getUpdate().checkError).toBe("network");
   });
 
-  it("manages GitHub token and includes Authorization header for private repos", async () => {
-    await setGithubToken("github_pat_1234567890abcdef");
-    expect(await getGithubTokenLast4()).toBe("cdef");
-    expect(getUpdate().hasGithubToken).toBe(true);
-
-    let sentHeaders: any = null;
-    global.fetch = vi.fn().mockImplementation(async (url: string, init?: any) => {
-      sentHeaders = init?.headers;
-      return {
-        ok: true,
-        status: 200,
-        json: async () => ({
+  it("downloads the update APK into cache without authorization headers", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [
+        {
           tag_name: "v9.9.9",
           html_url: "https://github.com/husainlab/Health-app/releases/tag/v9.9.9",
           assets: [
             {
               name: "Health-9.9.9.apk",
-              url: "https://api.github.com/repos/husainlab/Health-app/releases/assets/999",
               browser_download_url: "https://github.com/husainlab/Health-app/releases/download/v9.9.9/Health-9.9.9.apk",
             },
           ],
-        }),
-      } as unknown as Response;
-    });
+        },
+      ],
+    } as unknown as Response);
 
     const notice = await checkForAppUpdate(true);
-    expect(sentHeaders?.Authorization).toBe("Bearer github_pat_1234567890abcdef");
-    expect(notice?.assetUrl).toBe("https://api.github.com/repos/husainlab/Health-app/releases/assets/999");
+    expect(notice?.apk).toBe("https://github.com/husainlab/Health-app/releases/download/v9.9.9/Health-9.9.9.apk");
 
-    // Test installUpdate with private asset URL & headers
     createDownloadTaskMock.mockClear();
     await installUpdate();
     expect(createDownloadTaskMock).toHaveBeenCalledWith(
-      "https://api.github.com/repos/husainlab/Health-app/releases/assets/999",
+      "https://github.com/husainlab/Health-app/releases/download/v9.9.9/Health-9.9.9.apk",
       expect.anything(),
       expect.objectContaining({
-        headers: expect.objectContaining({
-          Authorization: "Bearer github_pat_1234567890abcdef",
-          Accept: "application/octet-stream",
-          "User-Agent": "Health-App",
-        }),
+        onProgress: expect.any(Function),
       })
     );
+    const lastCall = (createDownloadTaskMock.mock.calls as any[])[0];
+    const callOptions = lastCall?.[2] as { headers?: Record<string, string> } | undefined;
+    expect(callOptions?.headers).toBeUndefined();
   });
 
-  it("identifies no update when repository returns empty releases array", async () => {
+  it("falls back to repository tags when releases endpoint returns empty array", async () => {
+    global.fetch = vi.fn().mockImplementation(async (url: string) => {
+      if (url.includes("/releases")) {
+        return {
+          status: 200,
+          ok: true,
+          json: async () => [],
+        } as unknown as Response;
+      }
+      if (url.includes("/tags")) {
+        return {
+          status: 200,
+          ok: true,
+          json: async () => [{ name: "v9.9.9" }],
+        } as unknown as Response;
+      }
+      return { ok: false, status: 404 } as unknown as Response;
+    });
+
+    const notice = await checkForAppUpdate(true);
+    expect(notice).not.toBeNull();
+    expect(notice?.version).toBe("9.9.9");
+    expect(notice?.apk).toBe("https://raw.githubusercontent.com/husainlab/Health-app/main/Health-release.apk");
+  });
+
+  it("identifies no update when repository returns empty releases and tags arrays", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       status: 200,
       ok: true,

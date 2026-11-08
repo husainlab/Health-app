@@ -180,7 +180,8 @@ describe("parity with the web app", () => {
     // 30: Pulse Age's VO2 max falls back to the estimate (the seed has Fitbit's, so only the version moves). Version 29's value was "22839852f7ee4661".
     // Version 31: restore SpO2 to Health Monitor with 95 % floor and baseline range. Version 30's value was "25a36d10947fc464".
     // Version 32: Health Monitor without SpO2. Version 31's value was "9d8a77fc84882991".
-    "daily_scores.scoring_version": "ae95b29d44b502c1",
+    // Version 33: Blood pressure in Health Monitor. Version 32's value was "ae95b29d44b502c1".
+    "daily_scores.scoring_version": "d67ef409b32b162f",
     // Version 15: Activity Strain is the session's Banister TRIMP plus its muscular load through 5.05 · ln(1 + 0.09 · T)
     // (a seeded 45-minute strength session goes from 8.2 to 9.9 on 0–21), each activity stores its `cardioTrimp` and
     // `muscularTrimp`, and its zone seconds count Zone 1 from 40 % of the reserve. Version 14's value was "cb2d75373aaf4d20".
@@ -248,7 +249,8 @@ describe("parity with the web app", () => {
     // value was "3a2163c7f92d4dab".
     // Version 29: HRV and resting HR are Fitbit's, the values every screen shows. Version 28's value was "47289fc792ec11ef".
     // Version 32: Health Monitor without SpO2.
-    "daily_scores.health_monitor": "4d132dadfd15bf77",
+    // Version 33: Health Monitor persists causal daily blood pressure spot reading (`bloodPressure`). Version 32's value was "4d132dadfd15bf77".
+    "daily_scores.health_monitor": "c17d856a2509354f",
     // Mobile rebuilds Pulse Age on WHOOP's Healthspan method (src/core/algorithms/healthspan.ts): 6.0 years per ln HR
     // (WHOOP's 10 × an overlap factor of 0.6) with no 9/n rescaling (a missing term counts 0), WHOOP's references and
     // curves (sleep from 7 h, Arem and Ahmadi zone curves, strength flat after 40 min, lean mass as body fat %), zone time
@@ -646,6 +648,44 @@ describe("incremental runs", () => {
     expect(await run(later)).toMatchObject({ days: 181 });
     expect(await dump(later, dayAt(179))).toBe(before);
     expect(morning((await later.getScores(dayAt(179)))!.recovery!)).toBe(todayRecovery);
+  });
+
+  it("causally scores blood pressure into health_monitor using the latest reading of the day", async () => {
+    const store = await seeded();
+    const targetDay = dayAt(150);
+    const midTs = Date.parse(`${targetDay}T00:00:00Z`) / 1000;
+    await store.upsertBloodPressure([
+      {
+        id: "bp-early",
+        ts: midTs + 8 * 3600,
+        day: targetDay,
+        systolicMmhg: 118,
+        diastolicMmhg: 78,
+        quality: "manual",
+        importedAt: 1,
+      },
+      {
+        id: "bp-late",
+        ts: midTs + 18 * 3600,
+        day: targetDay,
+        systolicMmhg: 135,
+        diastolicMmhg: 88,
+        quality: "manual",
+        importedAt: 1,
+      },
+    ]);
+    await run(store);
+    const scored = (await store.getScores(targetDay))!.health_monitor as HealthMonitorRow;
+    expect(scored.bloodPressure).toEqual({
+      systolic: 135,
+      diastolic: 88,
+      category: "stage1",
+      readingId: "bp-late",
+      ts: midTs + 18 * 3600,
+    });
+    // Day without BP has null bloodPressure
+    const prevDayScored = (await store.getScores(dayAt(149)))!.health_monitor as HealthMonitorRow;
+    expect(prevDayScored.bloodPressure).toBeNull();
   });
 
   it("an empty store runs to nothing", async () => {

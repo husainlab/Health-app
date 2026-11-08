@@ -1,3 +1,5 @@
+import enWidgets from "./locales/en/widgets.json";
+import enWorkouts from "./locales/en/workouts.json";
 // English resources, bundled statically.
 import enCommon from "./locales/en/common.json";
 import enReasons from "./locales/en/reasons.json";
@@ -46,5 +48,7 @@ export const resources = {
     errors: enErrors,
     ui: enUi,
     coachTools: enCoachTools,
+    widgets: enWidgets,
+    workouts: enWorkouts,
   },
 };

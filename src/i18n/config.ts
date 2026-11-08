@@ -6,7 +6,7 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { resources } from "./resources";
 
-export const NAMESPACES = ["common", "reasons", "metrics", "home", "sleep", "recovery", "strain", "health", "journal", "trends", "nutrition", "goals", "reports", "coach", "settings", "onboarding", "more", "howItWorks", "notifications", "errors", "ui", "coachTools"] as const;
+export const NAMESPACES = ["common", "reasons", "metrics", "home", "sleep", "recovery", "strain", "health", "journal", "trends", "nutrition", "goals", "reports", "coach", "settings", "onboarding", "more", "howItWorks", "notifications", "errors", "ui", "coachTools", "widgets", "workouts"] as const;
 
 
 /** English is the sole supported language. */
