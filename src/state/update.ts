@@ -18,8 +18,25 @@ export const TAGS_URL = "https://api.github.com/repos/husainlab/Health-app/tags?
 /** GitHub's commit endpoint for the original upstream open-source Pulse repository. */
 export const UPSTREAM_COMMITS_URL = "https://api.github.com/repos/adityaongit/pulse-mobile/commits?per_page=1";
 
-/** Upstream commit base that our Health app was forked from (Pulse mobile release v0.4.1). */
-export const UPSTREAM_BASE_COMMIT = "6fe93bf6d15fe021e6674abe59f7696ed5231d8f";
+/** Upstream commit base that our Health app is synchronized with (Pulse mobile main commit b369ad4). */
+export const UPSTREAM_BASE_COMMIT = "b369ad46ba2a0259582d408c1f3d909afb3a4b88";
+
+/** Known historic upstream baseline commits that have been integrated into this app. */
+export const INTEGRATED_UPSTREAM_COMMITS = new Set([
+  "6fe93bf6d15fe021e6674abe59f7696ed5231d8f",
+  "b369ad46ba2a0259582d408c1f3d909afb3a4b88",
+]);
+
+/** Returns whether an upstream commit SHA has already been integrated into this app. */
+export function isUpstreamCommitIntegrated(sha: string): boolean {
+  const norm = sha.toLowerCase();
+  for (const integrated of INTEGRATED_UPSTREAM_COMMITS) {
+    if (norm === integrated || norm.startsWith(integrated.slice(0, 7)) || integrated.startsWith(norm.slice(0, 7))) {
+      return true;
+    }
+  }
+  return false;
+}
 
 const TIMEOUT_MS = 15_000;
 /** The last check: when, and the release it found ({ checkedAt, release }). */
@@ -90,6 +107,14 @@ export const getUpdate = () => state;
 /** Retrieves the upstream commit SHA that the user chose to skip/ignore on this device. */
 export async function getIgnoredUpstreamSha(): Promise<string | null> {
   const sha = await AsyncStorage.getItem(IGNORED_UPSTREAM_KEY).catch(() => null);
+  // If the previously ignored SHA is now part of the baseline commit, automatically clean it up.
+  if (sha && isUpstreamCommitIntegrated(sha)) {
+    await AsyncStorage.removeItem(IGNORED_UPSTREAM_KEY).catch(() => {});
+    if (state.ignoredUpstreamSha !== null) {
+      patch({ ignoredUpstreamSha: null });
+    }
+    return null;
+  }
   if (state.ignoredUpstreamSha !== sha) {
     patch({ ignoredUpstreamSha: sha });
   }
@@ -202,12 +227,16 @@ export async function fetchUpstreamLatest(): Promise<UpstreamUpdate | null> {
     if (typeof c.sha !== "string") return null;
     const sha = c.sha;
     const ignoredSha = await getIgnoredUpstreamSha();
-    // If the latest commit is the baseline commit or has been skipped/ignored, upstream has no new updates.
-    if (
-      sha.toLowerCase() === UPSTREAM_BASE_COMMIT.toLowerCase() ||
-      sha.startsWith(UPSTREAM_BASE_COMMIT.slice(0, 7)) ||
-      (ignoredSha && (sha.toLowerCase() === ignoredSha.toLowerCase() || sha.startsWith(ignoredSha.slice(0, 7))))
-    ) {
+    const isBaseline = isUpstreamCommitIntegrated(sha);
+    const normSha = sha.toLowerCase();
+    const isIgnored =
+      Boolean(ignoredSha) &&
+      (normSha === ignoredSha!.toLowerCase() ||
+        normSha.startsWith(ignoredSha!.slice(0, 7).toLowerCase()) ||
+        ignoredSha!.toLowerCase().startsWith(normSha.slice(0, 7)));
+
+    // If the latest commit is already integrated into the baseline or has been skipped/ignored, upstream has no new updates.
+    if (isBaseline || isIgnored) {
       return null;
     }
     const shortSha = sha.slice(0, 7);
@@ -245,6 +274,8 @@ export async function checkForUpstreamUpdate(force = false): Promise<UpstreamUpd
   const update = await fetchUpstreamLatest();
   if (update) {
     await AsyncStorage.setItem(UPSTREAM_CACHE_KEY, JSON.stringify({ checkedAt: Date.now(), update })).catch(() => {});
+  } else {
+    await AsyncStorage.removeItem(UPSTREAM_CACHE_KEY).catch(() => {});
   }
   const notice = upstreamDismissed ? null : update;
   patch({ upstreamUpdate: notice });

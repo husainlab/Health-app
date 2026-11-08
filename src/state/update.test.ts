@@ -9,8 +9,10 @@ import {
   fetchUpstreamLatest,
   getIgnoredUpstreamSha,
   getUpdate,
+  IGNORED_UPSTREAM_KEY,
   ignoreUpstreamUpdate,
   installUpdate,
+  isUpstreamCommitIntegrated,
   putOffUpdate,
   UPSTREAM_BASE_COMMIT,
 } from "./update";
@@ -57,6 +59,14 @@ describe("update state (update.ts)", () => {
     vi.restoreAllMocks();
   });
 
+  it("correctly identifies integrated upstream commits", () => {
+    expect(isUpstreamCommitIntegrated("b369ad46ba2a0259582d408c1f3d909afb3a4b88")).toBe(true);
+    expect(isUpstreamCommitIntegrated("b369ad4")).toBe(true);
+    expect(isUpstreamCommitIntegrated("6fe93bf6d15fe021e6674abe59f7696ed5231d8f")).toBe(true);
+    expect(isUpstreamCommitIntegrated("6fe93bf")).toBe(true);
+    expect(isUpstreamCommitIntegrated("0000000000000000000000000000000000000000")).toBe(false);
+  });
+
   it("identifies upstream is up to date when latest commit matches baseline commit", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
@@ -64,8 +74,8 @@ describe("update state (update.ts)", () => {
         {
           sha: UPSTREAM_BASE_COMMIT,
           commit: {
-            message: "fix: include sleep and naps in expanded activities",
-            author: { date: "2026-10-26T06:31:52Z" },
+            message: "chore(scripts): export parity fixtures for the native port",
+            author: { date: "2026-10-24T14:54:20Z" },
           },
           html_url: `https://github.com/adityaongit/pulse-mobile/commit/${UPSTREAM_BASE_COMMIT}`,
         },
@@ -74,6 +84,33 @@ describe("update state (update.ts)", () => {
 
     const update = await fetchUpstreamLatest();
     expect(update).toBeNull();
+  });
+
+  it("identifies upstream is up to date when latest commit is short SHA matching baseline", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [
+        {
+          sha: UPSTREAM_BASE_COMMIT.slice(0, 7),
+          commit: {
+            message: "chore(scripts): export parity fixtures for the native port",
+            author: { date: "2026-10-24T14:54:20Z" },
+          },
+          html_url: `https://github.com/adityaongit/pulse-mobile/commit/${UPSTREAM_BASE_COMMIT.slice(0, 7)}`,
+        },
+      ],
+    } as unknown as Response);
+
+    const update = await fetchUpstreamLatest();
+    expect(update).toBeNull();
+  });
+
+  it("automatically clears ignoredUpstreamSha when it matches integrated baseline commit", async () => {
+    storage.set(IGNORED_UPSTREAM_KEY, UPSTREAM_BASE_COMMIT);
+    const sha = await getIgnoredUpstreamSha();
+    expect(sha).toBeNull();
+    expect(getUpdate().ignoredUpstreamSha).toBeNull();
+    expect(storage.get(IGNORED_UPSTREAM_KEY)).toBeUndefined();
   });
 
   it("identifies new upstream updates when latest commit differs from baseline", async () => {
