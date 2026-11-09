@@ -9,6 +9,8 @@ import { useSyncExternalStore } from "react";
 import { apkFor, isNewer, parseRelease, type Release } from "@/lib/release";
 import { APP_VERSION } from "@/queries/settings";
 
+import upstreamConfig from "../upstream.json";
+
 /** GitHub's latest-release endpoint for Health's repository. Uses releases list to reliably detect empty releases. */
 export const RELEASES_URL = "https://api.github.com/repos/husainlab/Health-app/releases?per_page=1";
 
@@ -16,22 +18,37 @@ export const RELEASES_URL = "https://api.github.com/repos/husainlab/Health-app/r
 export const TAGS_URL = "https://api.github.com/repos/husainlab/Health-app/tags?per_page=1";
 
 /** GitHub's commit endpoint for the original upstream open-source Pulse repository. */
-export const UPSTREAM_COMMITS_URL = "https://api.github.com/repos/adityaongit/pulse-mobile/commits?per_page=1";
+export const UPSTREAM_COMMITS_URL = `https://api.github.com/repos/${upstreamConfig.repo || "adityaongit/pulse-mobile"}/commits?per_page=1`;
 
-/** Upstream commit base that our Health app is synchronized with (Pulse mobile main commit b369ad4). */
-export const UPSTREAM_BASE_COMMIT = "b369ad46ba2a0259582d408c1f3d909afb3a4b88";
+/** Upstream commit base that our Health app is synchronized with. */
+export const UPSTREAM_BASE_COMMIT = upstreamConfig.baseCommit;
 
 /** Known historic upstream baseline commits that have been integrated into this app. */
-export const INTEGRATED_UPSTREAM_COMMITS = new Set([
-  "6fe93bf6d15fe021e6674abe59f7696ed5231d8f",
-  "b369ad46ba2a0259582d408c1f3d909afb3a4b88",
-]);
+export const INTEGRATED_UPSTREAM_COMMITS = new Set(
+  (upstreamConfig.integratedCommits || [UPSTREAM_BASE_COMMIT]).map((s: string) => s.toLowerCase())
+);
+
+/** Bundled list of upstream commits marked as ignored. */
+export const BUNDLED_IGNORED_UPSTREAM_COMMITS = new Set(
+  (upstreamConfig.ignoredCommits || []).map((s: string) => s.toLowerCase())
+);
 
 /** Returns whether an upstream commit SHA has already been integrated into this app. */
 export function isUpstreamCommitIntegrated(sha: string): boolean {
   const norm = sha.toLowerCase();
   for (const integrated of INTEGRATED_UPSTREAM_COMMITS) {
     if (norm === integrated || norm.startsWith(integrated.slice(0, 7)) || integrated.startsWith(norm.slice(0, 7))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/** Returns whether an upstream commit SHA was bundled as ignored in this build. */
+export function isUpstreamCommitBundledIgnored(sha: string): boolean {
+  const norm = sha.toLowerCase();
+  for (const ignored of BUNDLED_IGNORED_UPSTREAM_COMMITS) {
+    if (norm === ignored || norm.startsWith(ignored.slice(0, 7)) || ignored.startsWith(norm.slice(0, 7))) {
       return true;
     }
   }
@@ -230,10 +247,11 @@ export async function fetchUpstreamLatest(): Promise<UpstreamUpdate | null> {
     const isBaseline = isUpstreamCommitIntegrated(sha);
     const normSha = sha.toLowerCase();
     const isIgnored =
-      Boolean(ignoredSha) &&
-      (normSha === ignoredSha!.toLowerCase() ||
-        normSha.startsWith(ignoredSha!.slice(0, 7).toLowerCase()) ||
-        ignoredSha!.toLowerCase().startsWith(normSha.slice(0, 7)));
+      isUpstreamCommitBundledIgnored(sha) ||
+      (Boolean(ignoredSha) &&
+        (normSha === ignoredSha!.toLowerCase() ||
+          normSha.startsWith(ignoredSha!.slice(0, 7).toLowerCase()) ||
+          ignoredSha!.toLowerCase().startsWith(normSha.slice(0, 7))));
 
     // If the latest commit is already integrated into the baseline or has been skipped/ignored, upstream has no new updates.
     if (isBaseline || isIgnored) {

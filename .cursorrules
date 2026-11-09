@@ -1,0 +1,7 @@
+All rules, coding guidelines, commands, and architecture specifications for this repository are defined in AGENTS.md.
+
+Always follow AGENTS.md.
+When updating according to new open source commits or ignoring an upstream commit:
+- Run `pnpm upstream:sync` (or `pnpm upstream:sync <sha>`)
+- Run `pnpm upstream:ignore <sha>`
+- The baseline is in `src/upstream.json` and auto-synchronized by CI.

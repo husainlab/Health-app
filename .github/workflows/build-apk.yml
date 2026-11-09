@@ -4,6 +4,16 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      sync_upstream:
+        description: 'Force sync upstream baseline to latest HEAD'
+        required: false
+        type: boolean
+        default: false
+      ignore_commit:
+        description: 'Upstream commit SHA to ignore'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -59,6 +69,16 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Auto-detect and sync upstream baseline
+        run: |
+          if [ "${{ inputs.sync_upstream }}" = "true" ]; then
+            pnpm upstream sync
+          elif [ -n "${{ inputs.ignore_commit }}" ]; then
+            pnpm upstream ignore "${{ inputs.ignore_commit }}"
+          else
+            pnpm upstream detect-and-sync || true
+          fi
 
       - name: Bump Version Number
         id: bump_version
@@ -172,7 +192,10 @@ jobs:
             cp "$APK_SRC" "./Health-${FINAL_VER}.apk"
             cp "$APK_SRC" "./Health-release.apk"
 
-            git add -f "Health-${FINAL_VER}.apk" "Health-release.apk" app.json package.json
+            # Re-apply any upstream sync in retry if origin had newer commits
+            pnpm upstream detect-and-sync || true
+
+            git add -f "Health-${FINAL_VER}.apk" "Health-release.apk" app.json package.json src/upstream.json
             git commit -m "chore(release): bump version to ${FINAL_VER} and update APK [skip ci]"
 
             if git push origin main; then

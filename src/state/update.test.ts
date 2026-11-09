@@ -12,6 +12,7 @@ import {
   IGNORED_UPSTREAM_KEY,
   ignoreUpstreamUpdate,
   installUpdate,
+  isUpstreamCommitBundledIgnored,
   isUpstreamCommitIntegrated,
   putOffUpdate,
   UPSTREAM_BASE_COMMIT,
@@ -65,6 +66,7 @@ describe("update state (update.ts)", () => {
     expect(isUpstreamCommitIntegrated("6fe93bf6d15fe021e6674abe59f7696ed5231d8f")).toBe(true);
     expect(isUpstreamCommitIntegrated("6fe93bf")).toBe(true);
     expect(isUpstreamCommitIntegrated("0000000000000000000000000000000000000000")).toBe(false);
+    expect(isUpstreamCommitBundledIgnored("0000000000000000000000000000000000000000")).toBe(false);
   });
 
   it("identifies upstream is up to date when latest commit matches baseline commit", async () => {

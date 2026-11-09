@@ -22,6 +22,9 @@ Expo ships breaking changes every SDK release. APIs you remember are likely rena
 | `pnpm typecheck` | `tsc --noEmit` |
 | `pnpm lint` | ESLint |
 | `pnpm test` | Vitest in Node (`src/**/*.test.ts`, `scripts/**/*.test.ts`) |
+| `pnpm upstream:check` | Check upstream Pulse status against baseline in `src/upstream.json` |
+| `pnpm upstream:sync [sha]` | Sync baseline in `src/upstream.json` to latest (or specified) upstream commit |
+| `pnpm upstream:ignore <sha>` | Mark an upstream commit as ignored in `src/upstream.json` |
 | `npx expo install <pkg>` | Add a dependency. Always use this instead of `pnpm add` for anything native: it picks the version that matches the SDK |
 | `npx expo install --fix` | Fix package versions that do not match the SDK |
 | `npx expo-doctor` | Diagnose dependency and config issues |
@@ -74,6 +77,11 @@ docs/         rewrite-plan.md, plan.md, design/spec.md, learning.md, onboarding.
 - **No native edits.** `android/` is generated (Continuous Native Generation) and git-ignored. Never create or edit it by hand. Configure native behavior in `app.json` and config plugins (`plugins/`).
 - **Development builds.** Health Connect is a native module, so the app needs a development build (`pnpm android` or `npx eas-cli@latest build --profile development`), not Expo Go.
 - **Prefer Expo modules** over third-party libraries. Docs: https://docs.expo.dev/versions/latest/index.md
+- **Upstream Open-Source Baseline Synchronization.** Whenever you update code according to an upstream open-source commit, or ignore an upstream commit:
+  - Run `pnpm upstream:sync` (or `pnpm upstream:sync <sha>`) to update `src/upstream.json`.
+  - Run `pnpm upstream:ignore <sha>` if asked to ignore an upstream commit.
+  - Or mention "upstream" / "open source" in your commit message.
+  GitHub Actions CI (`.github/workflows/build-apk.yml`) automatically runs `node scripts/upstream.js detect-and-sync` on push to detect and bake the updated baseline into the release APK, ensuring the pushed app automatically knows the new baseline without false update notices.
 
 ## Git
 

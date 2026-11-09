@@ -83,7 +83,11 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "export-fixtures": "tsx scripts/export-fixtures.ts"
+    "export-fixtures": "tsx scripts/export-fixtures.ts",
+    "upstream": "tsx scripts/upstream.ts",
+    "upstream:sync": "tsx scripts/upstream.ts sync",
+    "upstream:ignore": "tsx scripts/upstream.ts ignore",
+    "upstream:check": "tsx scripts/upstream.ts check"
   },
   "private": true,
   "packageManager": "pnpm@11.17.0",
