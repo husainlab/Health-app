@@ -19,10 +19,12 @@ import {
   type Inputs,
   newFold,
   recordOutcomes,
+  scoreCircadian,
   scoreFitness,
   scoreHealthMonitor,
   scoreHealthspan,
   scoreHrvStatus,
+  scoreMetabolicRisk,
   scoreTraining,
   scorePlanner,
   scoreSleep,
@@ -76,6 +78,12 @@ export async function stage2(store: Store, data: Data, opts: PipelineOptions, on
   };
 
   onProgress?.("stage2", 0, days.length);
+  let prevHr: { day: string; start: number; mins: (number | null)[] } | null = null;
+  if (start > 0) {
+    const prevDay = days[start - 1];
+    const mins = await store.getSeries(prevDay, "hr");
+    if (mins) prevHr = { day: prevDay, start: data.dayStart(prevDay), mins };
+  }
   // Order matters: each scorer reads the fold as earlier scorers left it for today. The scorers are synchronous; the
   // loops here await slice() between days and between a day's scorers, so a run gives the JS thread back to the screen
   // every few milliseconds (src/lib/yield.ts). Nothing else touches the fold meanwhile, so the results don't change.
@@ -118,6 +126,16 @@ export async function stage2(store: Store, data: Data, opts: PipelineOptions, on
     const healthMonitor = engineMonitor(f, scoreHealthMonitor(f, d, inputs, recovery));
     const healthspan = scoreEnginePulseAge(f, d, engineSleep, scoreHealthspan(data, f, d, sleep, opts, recovery), opts, data);
     const fitness = scoreFitness(f, d, opts);
+    const metabolic_risk = scoreMetabolicRisk(f, d, recovery, sleep, opts);
+    const todayHr = hrSeries.get(day) ?? null;
+    const hrNadirOffsetH = d.mainSession
+      ? findHrNadirOffsetH(d.mainSession.startTs, d.mainSession.endTs, prevHr?.day === addDays(day, -1) ? prevHr : null, {
+          start: d.start,
+          mins: todayHr,
+        })
+      : null;
+    const circadian = scoreCircadian(f, d, hrNadirOffsetH);
+    prevHr = todayHr ? { day, start: d.start, mins: todayHr } : null;
     recordOutcomes(f, d, recovery, sleep, trainingLoad);
     out.set(day, {
       recovery,
@@ -132,6 +150,8 @@ export async function stage2(store: Store, data: Data, opts: PipelineOptions, on
       fitness,
       hrv_status: hrvStatusRow,
       training,
+      metabolic_risk,
+      circadian,
     });
 
     // Fold today's nightly values into the baselines (after scoring today).
@@ -199,6 +219,34 @@ export async function stage2(store: Store, data: Data, opts: PipelineOptions, on
 }
 
 const sameJson = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+
+function findHrNadirOffsetH(
+  startTs: number,
+  endTs: number,
+  prev: { start: number; mins: (number | null)[] } | null,
+  curr: { start: number; mins: (number | null)[] | null },
+): number | null {
+  let minBpm = Infinity;
+  let minTs: number | null = null;
+  const scan = (seriesStart: number, mins: (number | null)[] | null) => {
+    if (!mins) return;
+    const m0 = Math.max(0, Math.floor((startTs - seriesStart) / 60));
+    const m1 = Math.min(mins.length, Math.ceil((endTs - seriesStart) / 60));
+    for (let m = m0; m < m1; m++) {
+      const bpm = mins[m];
+      if (bpm == null) continue;
+      const ts = seriesStart + m * 60;
+      if (ts < startTs || ts >= endTs) continue;
+      if (bpm < minBpm) {
+        minBpm = bpm;
+        minTs = ts;
+      }
+    }
+  };
+  if (prev && startTs < curr.start) scan(prev.start, prev.mins);
+  scan(curr.start, curr.mins);
+  return minTs == null ? null : (minTs - startTs) / 3600;
+}
 
 /**
  * Mobile: Activity Cost over all history (activityCost.ts), each kind of workout (the screens' run, ride, walk, strength,

@@ -60,13 +60,14 @@ export async function askNotificationPermission(): Promise<NotificationPermissio
   }
 }
 
-export type Payload = { title: string; body: string; url: string };
+export type Payload = { title: string; body: string; url: string; identifier?: string };
 
 /** Shows `payload` now; a tap opens `url`. Never throws; false when it couldn't be shown. */
 export async function sendNow(p: Payload): Promise<boolean> {
   try {
     await ensureChannel();
     await Notifications.scheduleNotificationAsync({
+      ...(p.identifier && { identifier: p.identifier }),
       content: { title: p.title, body: p.body, data: { url: p.url } },
       trigger: Platform.OS === "android" ? { channelId: CHANNEL_ID } : null,
     });

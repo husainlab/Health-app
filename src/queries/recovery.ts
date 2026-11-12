@@ -5,9 +5,11 @@ import type { ChargeDriver } from "@/core/scoring/drivers";
 import { addDays } from "@/lib/time";
 import {
   type DayRow,
+  dayStrainOf,
   finite,
   fromReason,
   loadDays,
+  meanSd,
   none,
   priorStats,
   ok,
@@ -90,7 +92,50 @@ export async function getRecovery(day: string, ctx: QueryCtx): Promise<RecoveryV
     },
     drivers,
     forecast,
+    dehydrationFlag: dehydrationFlagOf(rows, day),
   };
+}
+
+const DEHYDRATION_MIN_PRIOR = 14;
+const DEHYDRATION_RHR_SD_FLOOR = 1.25;
+const DEHYDRATION_HRV_SD_FLOOR = 0.05;
+
+/** Flag elevated RHR + suppressed HRV unexplained by yesterday's strain, illness, or poor sleep. */
+export function dehydrationFlagOf(rows: Map<string, DayRow>, day: string): RecoveryVM["dehydrationFlag"] {
+  const row = rows.get(day);
+  const rhrToday = row?.rhr;
+  const hrvToday = row?.metrics?.hrvMs;
+  if (!finite(rhrToday) || !finite(hrvToday) || hrvToday <= 0) return null;
+
+  const rhrPrior: number[] = [];
+  const lnHrvPrior: number[] = [];
+  for (let k = 1; k <= 30; k++) {
+    const p = rows.get(addDays(day, -k));
+    if (!p) continue;
+    if (finite(p.rhr)) rhrPrior.push(p.rhr);
+    if (finite(p.metrics?.hrvMs) && p.metrics.hrvMs > 0) lnHrvPrior.push(Math.log(p.metrics.hrvMs));
+  }
+  if (rhrPrior.length < DEHYDRATION_MIN_PRIOR || lnHrvPrior.length < DEHYDRATION_MIN_PRIOR) return null;
+
+  const rhrStats = meanSd(rhrPrior);
+  const hrvStats = meanSd(lnHrvPrior);
+  if (rhrStats.mean === null || hrvStats.mean === null) return null;
+
+  const zRhr = (rhrToday - rhrStats.mean) / Math.max(rhrStats.sd ?? 0, DEHYDRATION_RHR_SD_FLOOR);
+  const zHrv = (Math.log(hrvToday) - hrvStats.mean) / Math.max(hrvStats.sd ?? 0, DEHYDRATION_HRV_SD_FLOOR);
+
+  const yesterdayStrain = dayStrainOf(rows.get(addDays(day, -1))?.s1);
+  const hm = row?.healthMonitor;
+  const illnessLevel = hm && hm.reason === null ? hm.illness.level : null;
+  const sleepPerf = row?.sleep?.performance ?? (row?.recovery?.inputs.sleepPerf != null ? row.recovery.inputs.sleepPerf * 100 : null);
+
+  if (zRhr > 1.5 && zHrv < -1.5 && yesterdayStrain !== null && yesterdayStrain < 60 && illnessLevel !== "raised" && sleepPerf !== null && sleepPerf > 60) {
+    return {
+      flagged: true,
+      reason: i18n.t("recovery:dehydration.reason"),
+    };
+  }
+  return null;
 }
 
 /**

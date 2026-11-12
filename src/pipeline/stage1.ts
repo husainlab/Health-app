@@ -117,6 +117,8 @@ export const emptyScoreRow = (day: string): ScoreRow => ({
   journal_impact: null,
   hrv_status: null,
   training: null,
+  metabolic_risk: null,
+  circadian: null,
 });
 
 /**

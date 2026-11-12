@@ -19,6 +19,7 @@
     "measurements": "Measurements",
     "ecgReading": "ECG reading",
     "hrvStatus": "HRV Status",
+    "metabolicRisk": "Metabolic Risk",
     "timeInZones": "Time in zones",
     "bloodPressure": "Blood pressure"
   },
@@ -136,7 +137,9 @@
     "nutritionBody": "Today’s food against your calorie and protein targets. Log a meal from a photo, a few words or its numbers.",
     "shortResp": "Resp",
     "shortTemp": "Temp",
-    "goHealthspan": "Go to Healthspan"
+    "goHealthspan": "Go to Healthspan",
+    "illnessBanner": "Your body looks strained — consider an easy day today.",
+    "illnessBannerSignals": "Body signals strained ({{signals}}) — consider taking it easy."
   },
   "load": {
     "detraining": "Detraining",
@@ -164,7 +167,21 @@
     "chartEmpty": "No training load data yet.",
     "ctl": "Fitness",
     "atl": "Fatigue",
-    "tsb": "Form"
+    "tsb": "Form",
+    "aerobicBaseTitle": "Aerobic Base Trend",
+    "aerobicBaseInfoTitle": "Aerobic Base Trend",
+    "aerobicBaseInfoBody": "Tracks your 28-day VO2 max slope weighted toward recent days. Changes above +2.0 mL/kg/min indicate improving aerobic fitness; drops below −2.0 suggest detraining.",
+    "trend": {
+      "improving": "Improving",
+      "stable": "Stable",
+      "detraining": "Detraining",
+      "up": "Up {{delta}} mL/kg/min over the last 4 weeks.",
+      "down": "Down {{delta}} mL/kg/min over the last 4 weeks.",
+      "flat": "Steady over the last 4 weeks.",
+      "detrainingHint": "Your aerobic base is declining — consider more Zone 2 work.",
+      "tileLabel": "4-week change",
+      "sparkCaption": "28d"
+    }
   },
   "healthspan": {
     "needsInputs": "Health Age needs at least 5 of its 9 inputs over the 4 weeks before a Monday.",
@@ -196,7 +213,11 @@
     "hrTitle": "About heart rate",
     "hrBody1": "Your band records heart rate through the day. The Google Health app shares it with Health Connect, and Health reads it from there.",
     "hrBody2": "While this screen is open on today, Health checks for new readings every minute. A reading usually arrives one to three minutes after your band takes it, so the newest one is never quite now.",
-    "hrBody3": "The chart shows each minute’s average. Minutes without a reading, when the band was off or not syncing, stay blank."
+    "hrBody3": "The chart shows each minute’s average. Minutes without a reading, when the band was off or not syncing, stay blank.",
+    "metabolicTitle": "About Metabolic Risk",
+    "metabolicBody1": "Metabolic Risk is a weekly autonomic proxy (0 to 100, with 50 at your personal average) computed every Monday from five wearable signals: resting heart rate, overnight HRV, sleep performance, daily steps, and respiratory rate.",
+    "metabolicBody2": "Each signal is z-scored against your causal 30-day personal baseline. Higher resting heart rate and respiratory rate push the score higher, while higher HRV, sleep performance, and daily movement pull it lower.",
+    "metabolicBody3": "These autonomic signals correlate with cardiometabolic load in wearable studies, but this score is an on-device wellness estimate — not a clinical test or medical diagnosis."
   },
   "hrv": {
     "infoTitle": "HRV Status",
@@ -260,6 +281,28 @@
     "levelsInfoBody": "Scored time outside workouts, split into low, medium and high activation. When available, the faded bar compares the same weekday in your recent history.",
     "trendInfoTitle": "Daily stress trend",
     "trendInfoBody": "Average activation across each day's scored time over the last 30 days. Days without enough data remain gaps."
+  },
+  "ansBalance": {
+    "title": "ANS Balance",
+    "infoTitle": "ANS Balance Index",
+    "infoBody": "Combines daytime stress activation, overnight HRV against your 30-day baseline, and your 7-day HRV Status on a 0–100 scale where 50 is balanced.",
+    "band": {
+      "parasympathetic": "Parasympathetic",
+      "balanced": "Balanced",
+      "sympathetic": "Sympathetic"
+    },
+    "daytimeCalm": "Daytime calm %",
+    "overnightHrv": "Overnight HRV",
+    "aboveBaseline": "Above baseline",
+    "belowBaseline": "Below baseline",
+    "atBaseline": "At baseline",
+    "hrvStatus": "HRV Status",
+    "status": {
+      "balanced": "Balanced",
+      "unbalanced_high": "Unbalanced (high)",
+      "unbalanced_low": "Unbalanced (low)",
+      "low": "Low"
+    }
   },
   "hsLabel": {
     "sleepHours": "Hours of sleep",
@@ -393,6 +436,38 @@
       "stage1": "130–139 or 80–89 mmHg",
       "stage2": "140+ or 90+ mmHg",
       "crisis": "> 180 and/or > 120 mmHg"
+    }
+  },
+  "metabolic": {
+    "calibrating": "Metabolic Risk needs 21 days of resting heart rate or HRV to learn your personal baseline.",
+    "hubCaption": "Personal metabolic proxy · Updated {{day}}",
+    "updatedCaption": "Updated {{day}}",
+    "disclaimer": "On-device estimate — not a medical diagnosis.",
+    "scaleTitle": "Risk index",
+    "scaleLow": "0 (Low)",
+    "scaleMid": "50",
+    "scaleHigh": "100 (High)",
+    "baselineRef": "Baseline",
+    "historyTitle": "Weekly history",
+    "historyEmpty": "Weekly history builds one Monday at a time.",
+    "signalsTitle": "Contributing signals",
+    "signalsLegend": "Published week vs. prior 30-day average",
+    "priorAverage": "prior 30-day average",
+    "insightTitle": "Top drivers",
+    "insightTop": "Driven most by {{signals}} compared with your personal 30-day baseline.",
+    "insightBalanced": "Your signals are close to your personal 30-day baseline.",
+    "band": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "elevated": "Elevated",
+      "high": "High"
+    },
+    "contributor": {
+      "rhr": "RHR",
+      "hrv": "HRV",
+      "sleep": "Sleep",
+      "steps": "Steps",
+      "resp": "Resp rate"
     }
   }
 }

@@ -9,7 +9,7 @@ import { generateNotificationInsight } from "./briefing";
 import { decide, EMPTY_MARKERS, markSent, type Alert, type AlertSource, type Markers, type RecoveryStats } from "./decide";
 import { cancelBedtime, notificationPermission, scheduleBedtime, sendNow } from "./notify";
 import { readSettings, type BackgroundSettings } from "./settings";
-import { decideSmart, MONITOR_LOOKBACK_DAYS, monitorBefore, monitorState, planBedtime, strainOf, type BedtimeAction, type BedtimeReminder } from "./smart";
+import { decideSmart, illnessWarningAlert, MONITOR_LOOKBACK_DAYS, monitorBefore, monitorState, planBedtime, strainOf, type BedtimeAction, type BedtimeReminder } from "./smart";
 
 export const MARKERS_KEY = "pulse.notifications.markers";
 
@@ -128,6 +128,9 @@ export async function notifyAfterRun(store: Store, timeZone: string, now = Math.
     }
     const sent: Alert[] = [];
     for (const a of due) if (await sendNow(a)) sent.push(a);
+    const yesterdayRow = rows.find((r) => r.day === addDays(today, -1)) ?? null;
+    const warning = settings.healthMonitor ? illnessWarningAlert(row, yesterdayRow, today, source, markers) : null;
+    if (warning && (await sendNow(warning))) sent.push(warning);
     const bedtime = await applyPlan(bedtimePlan(settings, source, markers, rows, today, timeZone, now));
     // Re-read before writing: the other runtime (app or task) may have marked something since.
     if (sent.length || bedtime) await writeMarkers(markSent({ ...(await readMarkers()), ...bedtime }, sent));

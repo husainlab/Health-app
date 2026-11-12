@@ -10,10 +10,12 @@ import { creditedSleepMin, hypnogramMetrics, ledger, minNeedNights, personalized
 import { toStrainScale } from "@/core/scoring/strain";
 import { foldDaytimeBaseline } from "@/core/scoring/stressBase";
 import type { BaselineState } from "@/core/scoring/types";
+import { circadianScore, type CircadianNight } from "@/core/algorithms/circadian";
 import { fitnessEstimate as fitnessEstimateOf, type FitnessEstimateDay, fitnessLevel } from "@/core/algorithms/fitnessLevel";
 import { healthMonitor, healthMonitorConfig, type HealthMonitorDay, type VitalKey } from "@/core/algorithms/healthMonitor";
 import { HEALTHSPAN_STRENGTH_TYPES, healthspan, type HealthspanDay } from "@/core/algorithms/healthspan";
 import type { OutcomeDay } from "@/core/algorithms/journalImpact";
+import { METABOLIC_MIN_DAYS, metabolicRisk, type MetabolicRiskDay, type MetabolicRiskResult } from "@/core/algorithms/metabolicRisk";
 import type { ReportDay } from "@/core/algorithms/reports";
 import { sleepPlan, type SleepPlan } from "@/core/algorithms/sleepPlanner";
 import { laggedPairs, poolPairs, sriOf, sriPairs, type SriPair, WHOOP_CONSISTENCY_DAYS, whoopConsistency } from "@/core/algorithms/sleepRegularity";
@@ -35,10 +37,12 @@ import { byteOrder, type Data, round, type Segment, type Session } from "./data"
 import { newEngineFold } from "./engine";
 import { dayRestingHr } from "./restingHr";
 import type {
+  CircadianRow,
   FitnessRow,
   HealthMonitorRow,
   HealthspanRow,
   HrvStatusRow,
+  MetabolicRiskRow,
   PipelineOptions,
   RecoveryRow,
   SleepPlannerRow,
@@ -108,6 +112,11 @@ export const newFold = () => ({
   weeklyPace: null as { day: string; value: number | null } | null,
   /** Version 20: the Pulse engine's state (engine.ts). */
   engine: newEngineFold(),
+  /** Version 34: Metabolic Risk Score (60-day input history and Monday's weekly result). */
+  metabolicDays: [] as MetabolicRiskDay[],
+  weeklyMetabolic: null as { day: string; result: MetabolicRiskResult | null; reason: ReasonCode | null } | null,
+  /** Version 34: Circadian Rhythm Score (up to 14 prior/current nights). */
+  circadianNights: [] as CircadianNight[],
 });
 
 /** One day's inputs. */
@@ -658,4 +667,55 @@ export function recordOutcomes(f: Fold, d: Day, rec: RecoveryRow, sleep: SleepRo
     loadStatus: tl.cardio?.status ?? null,
     sleepConsistency: sleep.consistency,
   });
+}
+
+// ── Metabolic Risk (weekly, Monday) & Circadian Rhythm (daily, 7-night) ──────
+
+export function scoreMetabolicRisk(
+  f: Fold,
+  d: Day,
+  rec: RecoveryRow,
+  sleep: SleepRow,
+  opts: PipelineOptions,
+): MetabolicRiskRow {
+  f.metabolicDays.push({
+    day: d.day,
+    rhr: d.rhr,
+    hrv: rec.inputs.hrv,
+    sleepPct: sleep.performance,
+    steps: d.dm?.steps ?? null,
+    resp: d.dm?.respBpm ?? null,
+  });
+  if (f.metabolicDays.length > 60) f.metabolicDays.splice(0, f.metabolicDays.length - 60);
+
+  const usableDays = f.metabolicDays.filter((x) => x.rhr != null || x.hrv != null).length;
+  if (isMonday(d.day)) {
+    const result = metabolicRisk(f.metabolicDays, { sex: opts.profile.sex });
+    f.weeklyMetabolic = result
+      ? { day: d.day, result, reason: null }
+      : { day: d.day, result: null, reason: usableDays < METABOLIC_MIN_DAYS ? "calibrating" : "no_data" };
+  }
+
+  const weekly = f.weeklyMetabolic && f.weeklyMetabolic.day > addDays(d.day, -7) ? f.weeklyMetabolic : null;
+  if (weekly?.result) return { reason: null, ...weekly.result, publishedDay: weekly.day };
+  if (weekly?.reason) return { reason: weekly.reason };
+  return { reason: usableDays < METABOLIC_MIN_DAYS ? "calibrating" : "no_data" };
+}
+
+export function scoreCircadian(f: Fold, d: Day, hrNadirOffsetH: number | null): CircadianRow {
+  const night: CircadianNight = d.mainSession
+    ? {
+        sleepOnsetTs: d.mainSession.startTs,
+        sleepMidTs: (d.mainSession.startTs + d.mainSession.endTs) / 2,
+        tempNadirOffsetH: null,
+        hrNadirOffsetH,
+      }
+    : { sleepOnsetTs: null, sleepMidTs: null, tempNadirOffsetH: null, hrNadirOffsetH: null };
+  f.circadianNights.push(night);
+  if (f.circadianNights.length > 14) f.circadianNights.splice(0, f.circadianNights.length - 14);
+
+  const res = circadianScore(f.circadianNights);
+  if (res) return { reason: null, ...res };
+  if (f.circadianNights.length < 7) return { reason: "calibrating" };
+  return { reason: !d.mainSession ? "band_not_worn" : "calibrating" };
 }

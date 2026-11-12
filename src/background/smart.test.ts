@@ -8,6 +8,7 @@ import type { SleepPlannerRow, Stage1Day } from "@/pipeline/types";
 import { DEEP_LINK, EMPTY_MARKERS, markSent } from "./decide";
 import {
   decideSmart,
+  illnessWarningAlert,
   leadOf,
   MONITOR_LOOKBACK_DAYS,
   monitorBefore,
@@ -326,5 +327,28 @@ describe("planBedtime", () => {
     expect(planBedtime({ ...input, plans: [] }).action).toBe("cancel");
     expect(planBedtime({ ...input, plans: [{ day: TODAY, planner: null }] }).action).toBe("cancel");
     expect(planBedtime({ ...input, plans: [{ day: TODAY, planner: { ...plan(-75), wakeMin: null, plans: [] } }] }).action).toBe("cancel");
+  });
+});
+
+describe("illnessWarningAlert", () => {
+  const YESTERDAY = "2026-10-06";
+  const raisedToday = row(TODAY, { health_monitor: hm({}, { level: "raised", score: 65, signalCount: 2, firedSignals: ["RHR up", "HRV down"] }) });
+  const quietYesterday = row(YESTERDAY, { health_monitor: hm({}, { level: "quiet", score: 0, signalCount: 0 }) });
+  const raisedYesterday = row(YESTERDAY, { health_monitor: hm({}, { level: "raised", score: 60, signalCount: 2 }) });
+
+  it("fires on rising edge with flagged signals and deduplicating identifier", () => {
+    const a = illnessWarningAlert(raisedToday, quietYesterday, TODAY, "health_connect", EMPTY_MARKERS);
+    expect(a).toMatchObject({
+      title: "Body signals shifted overnight",
+      body: "Your body looks strained — RHR up, HRV down. Consider an easy day today.",
+      identifier: `illness_warning_${TODAY}`,
+      mark: { illnessWarningDay: TODAY },
+    });
+  });
+
+  it("stays quiet when yesterday was also raised, already sent today, or demo source", () => {
+    expect(illnessWarningAlert(raisedToday, raisedYesterday, TODAY, "health_connect", EMPTY_MARKERS)).toBeNull();
+    expect(illnessWarningAlert(raisedToday, quietYesterday, TODAY, "health_connect", { ...EMPTY_MARKERS, illnessWarningDay: TODAY })).toBeNull();
+    expect(illnessWarningAlert(raisedToday, quietYesterday, TODAY, "demo", EMPTY_MARKERS)).toBeNull();
   });
 });

@@ -3,11 +3,13 @@
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { i18n } from "@/i18n/config";
+import type { ChipTone } from "@/lib/bands";
 import { DAY, formatDay, formatValue } from "@/lib/format";
 import { getFitness } from "@/queries/health";
 import type { FitnessVM } from "@/queries/types";
 import { TrendChart, TrendChartSkeleton } from "@/ui/charts/TrendChart";
 import { cn } from "@/ui/cn";
+import { KeyStatRow } from "@/ui/metrics/KeyStatRow";
 import { CAPTION, LABEL, StatusChip, ValueUnit } from "@/ui/metrics/primitives";
 import { ReasonPlaceholder } from "@/ui/metrics/ReasonPlaceholder";
 import { TickScale, TickScaleSkeleton } from "@/ui/metrics/TickScale";
@@ -47,6 +49,52 @@ function Hero({ vo2 }: { vo2: FitnessVM["vo2"] }) {
   );
 }
 
+const TREND_TONE: Record<NonNullable<FitnessVM["vo2maxTrend"]>["direction"], ChipTone> = {
+  improving: "optimal",
+  stable: "neutral",
+  detraining: "warning",
+};
+
+function AerobicBaseCard({ tr, fallbackSeries }: { tr: NonNullable<FitnessVM["vo2maxTrend"]>; fallbackSeries: (number | null)[] }) {
+  const { t } = useTranslation("health");
+  const tone = TREND_TONE[tr.direction];
+  const rounded = Number(tr.slopePer28Days.toFixed(1));
+  const delta = formatValue("signed1", tr.slopePer28Days);
+  const baseSentence =
+    rounded > 0
+      ? t("fitness.trend.up", { delta })
+      : rounded < 0
+        ? t("fitness.trend.down", { delta })
+        : t("fitness.trend.flat");
+  const sentence = tr.direction === "detraining" ? `${baseSentence} ${t("fitness.trend.detrainingHint")}` : baseSentence;
+  const sparkValues = tr.series ?? fallbackSeries;
+
+  return (
+    <SectionShell
+      variant="card"
+      title={t("fitness.aerobicBaseTitle")}
+      info={{ title: t("fitness.aerobicBaseInfoTitle"), body: t("fitness.aerobicBaseInfoBody") }}
+    >
+      <View className="gap-3">
+        <StatusChip tone={tone}>{t(`fitness.trend.${tr.direction}`)}</StatusChip>
+        <Text className={BODY}>{sentence}</Text>
+        <KeyStatRow
+          variant="tile"
+          wide
+          label={t("fitness.trend.tileLabel")}
+          metric={{ value: tr.slopePer28Days, reason: null, provisional: false }}
+          customValue={delta}
+          unit="ml/kg/min"
+          format="signed1"
+          direction="none"
+          chip={{ tone, text: t(`fitness.trend.${tr.direction}`) }}
+          spark={{ values: sparkValues, caption: t("fitness.trend.sparkCaption") }}
+        />
+      </View>
+    </SectionShell>
+  );
+}
+
 export function FitnessScreen() {
   const { t } = useTranslation("health");
   const { data: vm, error, reload } = useScreen((ctx) => getFitness(ctx), ["fitness"]);
@@ -61,31 +109,36 @@ export function FitnessScreen() {
       info={FITNESS_INFO}
       hero={<Hero vo2={vm.vo2} />}
       summary={
-        v && (
-          <SectionShell variant="card" title={t("title.percentile")} info={cardInfo("Percentile")}>
-            <TickScale
-              variant="marker"
-              label={t("fitness.percentileLabel")}
-              metric={{ value: v.percentile, reason: null, provisional: false }}
-              min={0}
-              max={100}
-              format="int"
-              describe={t("fitness.describe", { category: categoryWord(v.category), sex: sexWord(v.sex), ageBand: v.ageBand })}
-              bands={[
-                { from: 0, to: 39.9, tone: "warning" },
-                { from: 60, to: 100, tone: "optimal" },
-              ]}
-              ends={["0", "50", "100"]}
-            />
-            <View accessibilityElementsHidden className="mt-2 flex-row">
-              {CATEGORIES.map((c) => (
-                <Text key={c} numberOfLines={1} className={cn(CAPTION, "flex-1 text-center", c === v.category.toLowerCase() && "font-bold text-foreground")}>
-                  {categoryWord(c)}
-                </Text>
-              ))}
-            </View>
-            <Text className={cn(CAPTION, "mt-3")}>{t("fitness.percentileLine", { ordinal: ordinal(v.percentile), sex: sexWord(v.sex), ageBand: v.ageBand })}</Text>
-          </SectionShell>
+        (v || vm.vo2maxTrend) && (
+          <View className="gap-3">
+            {v && (
+              <SectionShell variant="card" title={t("title.percentile")} info={cardInfo("Percentile")}>
+                <TickScale
+                  variant="marker"
+                  label={t("fitness.percentileLabel")}
+                  metric={{ value: v.percentile, reason: null, provisional: false }}
+                  min={0}
+                  max={100}
+                  format="int"
+                  describe={t("fitness.describe", { category: categoryWord(v.category), sex: sexWord(v.sex), ageBand: v.ageBand })}
+                  bands={[
+                    { from: 0, to: 39.9, tone: "warning" },
+                    { from: 60, to: 100, tone: "optimal" },
+                  ]}
+                  ends={["0", "50", "100"]}
+                />
+                <View accessibilityElementsHidden className="mt-2 flex-row">
+                  {CATEGORIES.map((c) => (
+                    <Text key={c} numberOfLines={1} className={cn(CAPTION, "flex-1 text-center", c === v.category.toLowerCase() && "font-bold text-foreground")}>
+                      {categoryWord(c)}
+                    </Text>
+                  ))}
+                </View>
+                <Text className={cn(CAPTION, "mt-3")}>{t("fitness.percentileLine", { ordinal: ordinal(v.percentile), sex: sexWord(v.sex), ageBand: v.ageBand })}</Text>
+              </SectionShell>
+            )}
+            {vm.vo2maxTrend && <AerobicBaseCard tr={vm.vo2maxTrend} fallbackSeries={vm.trend.points.slice(-28).map((p) => p.value)} />}
+          </View>
         )
       }
       primary={

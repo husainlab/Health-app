@@ -193,4 +193,7 @@ export type ScoreRow = {
   /** Version 19; absent on rows stored before. */
   hrv_status?: Stage2Row["hrv_status"] | null;
   training?: Stage2Row["training"] | null;
+  /** Version 34; absent on rows stored before. */
+  metabolic_risk?: Stage2Row["metabolic_risk"] | null;
+  circadian?: Stage2Row["circadian"] | null;
 };

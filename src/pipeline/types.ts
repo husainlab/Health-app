@@ -5,11 +5,13 @@ import type { RecoveryForecast } from "@/core/scoring/forecast";
 import type { HrRecoveryResult } from "@/core/scoring/hrRecovery";
 import type { BaselineState } from "@/core/scoring/types";
 import type { Drain, EnergyBand } from "@/core/engine/energyBank";
+import type { CircadianResult } from "@/core/algorithms/circadian";
 import type { FitnessCategory, FitnessEstimate } from "@/core/algorithms/fitnessLevel";
 import type { HealthMonitorResult } from "@/core/algorithms/healthMonitor";
 import type { BloodPressureCategory } from "@/core/scoring/bloodPressure";
 import type { HealthspanResult } from "@/core/algorithms/healthspan";
 import type { TagImpact } from "@/core/algorithms/journalImpact";
+import type { MetabolicBand, MetabolicRiskResult } from "@/core/algorithms/metabolicRisk";
 import type { SleepPlan } from "@/core/algorithms/sleepPlanner";
 import type { Interval } from "@/core/algorithms/stress";
 import type { HrvStatus } from "@/core/algorithms/hrvStatus";
@@ -84,8 +86,9 @@ import type { LoadStatus } from "@/core/engine/strain";
  * 31: Restore SpO2 to Health Monitor with 95% clinical floor and personal baseline range.
  * 32: Health Monitor without SpO2 (Health Connect does not sync it from Fitbit).
  * 33: Blood pressure in Health Monitor (causal spot readings persisted in health_monitor, AHA/ACC classifications).
+ * 34: Metabolic Risk Score (`metabolic_risk`, weekly Monday composite) and Circadian Rhythm Score (`circadian`, 7-night circular phase).
  */
-export const SCORING_VERSION = 33;
+export const SCORING_VERSION = 34;
 
 export type PipelineOptions = {
   timeZone: string;
@@ -414,6 +417,14 @@ export type TrainingRow = {
   status: ({ reason: null } & TrainingStatus) | { reason: ReasonCode };
 };
 
+/** Version 34: weekly Metabolic Risk Score (published Monday, carried through the week). */
+export type MetabolicRiskRow =
+  | ({ reason: null; score: number; band: MetabolicBand; topContributors: string[]; publishedDay: string } & MetabolicRiskResult)
+  | { reason: ReasonCode };
+
+/** Version 34: daily Circadian Rhythm Score (7-night circular phase consistency and nadir alignment). */
+export type CircadianRow = ({ reason: null } & CircadianResult) | { reason: ReasonCode };
+
 /** One day's stage-2 columns, keyed by their daily_scores column name. */
 export type Stage2Row = {
   recovery: RecoveryRow;
@@ -429,6 +440,8 @@ export type Stage2Row = {
   journal_impact: JournalImpactRow;
   hrv_status: HrvStatusRow;
   training: TrainingRow;
+  metabolic_risk: MetabolicRiskRow;
+  circadian: CircadianRow;
 };
 
 /** Every Stage2Row key, once: `satisfies` fails the build when a column is added to one and not the other. */
@@ -446,4 +459,6 @@ export const STAGE2_COLUMNS = Object.keys({
   journal_impact: 1,
   hrv_status: 1,
   training: 1,
+  metabolic_risk: 1,
+  circadian: 1,
 } satisfies Record<keyof Stage2Row, 1>) as (keyof Stage2Row)[];

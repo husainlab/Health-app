@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 import { i18n } from "@/i18n/config";
 import { Activity, Check, Droplet, Heart, Stethoscope, Thermometer, TriangleAlert, Wind, type LucideIcon } from "lucide-react-native";
 import type { ChipTone } from "@/lib/bands";
-import { formatValue, hmm } from "@/lib/format";
+import { DAY, formatDay, formatValue, hmm } from "@/lib/format";
+import type { MetabolicBand } from "@/core/algorithms/metabolicRisk";
 import type { QueryCtx } from "@/queries/common";
 import { getHealthHub } from "@/queries/health";
 import type { HealthHubVM, VitalKey } from "@/queries/types";
@@ -15,6 +16,7 @@ import { StressChart, StressChartSkeleton } from "@/ui/charts/StressChart";
 import { cn } from "@/ui/cn";
 import { Icon } from "@/ui/Icon";
 import { CAPTION, LABEL, StatusChip, ValueUnit } from "@/ui/metrics/primitives";
+import { ReasonPlaceholder } from "@/ui/metrics/ReasonPlaceholder";
 import { TickScale, TickScaleSkeleton } from "@/ui/metrics/TickScale";
 import { cardInfo } from "@/ui/shells/cardInfo";
 import { MetricState } from "@/ui/shells/MetricState";
@@ -26,6 +28,7 @@ import { useScreen } from "../useScreen";
 import { AgeOrb } from "./AgeOrb";
 import { CardButton } from "./CardButton";
 import { ErrorView } from "./ErrorView";
+import { metabolicContributorLabel } from "./info";
 import { categoryTone, categoryWord, ordinal } from "./format";
 import { LastReading } from "./LastReading";
 import { Fast, Slow } from "./pace";
@@ -40,6 +43,7 @@ const VITAL_ORDER: VitalKey[] = ["resp", "restingHr", "hrv", "skinTempDev", "bp"
 /** The tile's short name; RHR and HRV are glossary terms and stay as they are. */
 const shortOf = (key: VitalKey) => (key === "resp" ? i18n.t("health:hub.shortResp") : key === "skinTempDev" ? i18n.t("health:hub.shortTemp") : key === "bp" ? "BP" : key === "restingHr" ? "RHR" : "HRV");
 const ACWR_KEY: Record<ChipTone, "optimal" | "pushing" | "highRisk" | "detraining"> = { optimal: "optimal", warning: "pushing", alert: "highRisk", neutral: "detraining" };
+const METABOLIC_TONE: Record<MetabolicBand, ChipTone> = { low: "optimal", moderate: "neutral", elevated: "warning", high: "alert" };
 
 const skeleton = <Skeleton className="h-16 w-full" />;
 const Chip = () => <Skeleton className="h-6 w-24 rounded-md" />;
@@ -153,6 +157,12 @@ function Monitor({ m }: { m: HealthHubVM["monitor"] }) {
         const all = v.inRange === v.total;
         return (
           <View className="gap-4">
+            {v.illness?.level === "raised" && (
+              <View className="mb-3 flex-row items-center gap-2 rounded-lg bg-warning/10 px-3 py-2">
+                <Icon icon={TriangleAlert} size={16} tone="warning-text" />
+                <Text className="flex-1 text-sm text-warning-text">{v.illness.message ?? t("hub.illnessBanner")}</Text>
+              </View>
+            )}
             {readings(v)}
             <View className={cn(INSET_ROW, "flex-row items-center gap-3 py-2.5")}>
               <View className={cn("size-5 shrink-0 items-center justify-center rounded-sm", all ? "bg-optimal" : "bg-warning")}>
@@ -236,6 +246,42 @@ function HeartRate({ hr, now }: { hr: HealthHubVM["heartRate"]; now: number }) {
   );
 }
 
+/** Metabolic Risk Score hub card, linking to `/health/metabolic`. */
+function MetabolicRiskCard({ m }: { m: HealthHubVM["metabolicRisk"] }) {
+  const { t } = useTranslation("health");
+  return (
+    <SectionShell variant="card" title={t("title.metabolicRisk")} info={false} href="/health/metabolic">
+      <MetricState
+        metric={m}
+        skeleton={skeleton}
+        renderReason={(r, meta) => (
+          <ReasonPlaceholder reason={r} nightsLeft={meta.nightsLeft} size="md" copy={r === "calibrating" ? t("metabolic.calibrating") : undefined} />
+        )}
+      >
+        {(v) => (
+          <View className="gap-2.5">
+            <View className="flex-row items-center gap-3">
+              <Text className={cn(TILE, "tabular-nums")}>{formatValue("int", v.score)}</Text>
+              <StatusChip tone={METABOLIC_TONE[v.band]}>{t(`metabolic.band.${v.band}`)}</StatusChip>
+            </View>
+            <Text className={CAPTION}>{t("metabolic.hubCaption", { day: formatDay(v.publishedDay, DAY.monthDay) })}</Text>
+            {v.topContributors.length > 0 && (
+              <View className="flex-row flex-wrap gap-1.5">
+                {v.topContributors.map((c) => (
+                  <View key={c} className="rounded-md bg-secondary px-2 py-0.5">
+                    <Text className="text-xs font-medium text-foreground-secondary">{metabolicContributorLabel(c)}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+            <Text className={CAPTION}>{t("metabolic.disclaimer")}</Text>
+          </View>
+        )}
+      </MetricState>
+    </SectionShell>
+  );
+}
+
 /** The way to Nutrition (spec §7.22): static, so the hub's query stays as it is. */
 function NutritionCard() {
   const { t } = useTranslation("health");
@@ -269,6 +315,7 @@ export function HealthScreen() {
           <Monitor m={vm.monitor} />
         </SectionShell>
         <HrvStatusCard />
+        <MetabolicRiskCard m={vm.metabolicRisk} />
         <SectionShell variant="card" title={t("title.fitness")} info={cardInfo("Fitness")} href="/health/fitness">
           <Fitness m={vm.fitness} />
         </SectionShell>
@@ -328,6 +375,16 @@ function HealthLoading() {
               <Skeleton className="size-5 shrink-0 rounded-sm" />
               <SkeletonText lh={22} fs={15} className="w-32" />
             </View>
+          </View>
+        </SectionShell>
+        <SectionShell variant="card" title={t("title.metabolicRisk")} info={false} href="/health/metabolic">
+          <View accessibilityElementsHidden className="gap-2.5">
+            <View className="flex-row items-center gap-3">
+              <SkeletonText lh={40} fs={36} className="w-[52px]" />
+              <Chip />
+            </View>
+            <SkeletonText lh={16} fs={12} className="w-44" />
+            <SkeletonText lh={16} fs={12} className="w-48" />
           </View>
         </SectionShell>
         <SectionShell variant="card" title={t("title.fitness")} info={cardInfo("Fitness")} href="/health/fitness">

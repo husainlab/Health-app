@@ -5,6 +5,8 @@
 import type { ChipTone, DashboardKey, FormatKey, GoodDirection, RecoveryBand as Band, StressLevel } from "./_lib";
 import type { Metric, MetricTag, ReasonCode } from "@/lib/reasons";
 import type { EnergyBand } from "@/core/engine/energyBank";
+import type { CircadianPhase } from "@/core/algorithms/circadian";
+import type { MetabolicBand } from "@/core/algorithms/metabolicRisk";
 import type { BloodPressureCategory } from "@/core/scoring/bloodPressure";
 import type { BloodPressureSummary } from "./bloodPressure";
 
@@ -186,6 +188,10 @@ export type RecoveryVM = {
   trend: Trend;
   drivers: Metric<DriverItem[]>;
   forecast: Metric<{ value: number; low: number; high: number; band: Band }>;
+  dehydrationFlag?: {
+    flagged: boolean;
+    reason: string;
+  } | null;
 };
 
 // ── Strain and Activity ──────────────────────────────────────────────────────
@@ -334,6 +340,16 @@ export type SleepVM = {
   details: KeyStat[];
   debtTrend: Trend;
   planner: Metric<SleepPlanVM & { weekdayWake: boolean }>;
+  circadian: Metric<{
+    score: number;
+    phase: CircadianPhase;
+    consistencyScore: number;
+    alignmentScore: number;
+    nadirScore: number;
+    sleepOnsetMin: number | null;
+    sleepMidMin: number | null;
+    hrNadirOffsetH: number | null;
+  }>;
 };
 
 // ── Health ───────────────────────────────────────────────────────────────────
@@ -366,11 +382,28 @@ export type HealthHubVM = {
   day: string;
   /** `paceDelta`: this week's Pace of Aging minus last week's; null without both. `pace` is null without 21 of 30 days. */
   healthspan: Metric<{ pulseAge: number; deltaYears: number; pace: number | null; paceDelta: number | null }>;
-  monitor: Metric<{ vitals: { key: VitalKey; short: string; status: Vital["status"] }[]; inRange: number; total: number }>;
+  monitor: Metric<{ vitals: { key: VitalKey; short: string; status: Vital["status"] }[]; inRange: number; total: number; illness?: { level: string; score: number; message?: string } | null }>;
   stress: Metric<{ highMin: number; typicalHighMin: number | null; /** Today’s weekday, short ("Mon"). */ weekday: string; spark: TimePoint[] }>;
   fitness: Metric<{ vo2max: number; category: string; percentile: number; acwr: number | null; acwrTone: ChipTone | null }>;
+  metabolicRisk?: Metric<{ score: number; band: MetabolicBand; topContributors: string[]; publishedDay: string }>;
   /** The newest band reading (epoch ms), today or not. */
   heartRate: { t: number; bpm: number } | null;
+};
+
+export type MetabolicRiskVM = {
+  day: string;
+  result: Metric<{ score: number; band: MetabolicBand; topContributors: string[]; publishedDay: string }>;
+  history: DayPoint[];
+  contributors: {
+    key: string;
+    label: string;
+    metric: Metric<number>;
+    unit?: string;
+    format: FormatKey;
+    direction: GoodDirection;
+    average: number | null;
+    sd?: number;
+  }[];
 };
 /** Alias: the task's name for the Health hub view model. */
 export type HealthVM = HealthHubVM;
@@ -426,7 +459,7 @@ export type MonitorVM = {
   day: string;
   isToday: boolean;
   count: Metric<{ inRange: number; total: number; status: "within" | "out" | "illness"; outOfRange: number }>;
-  illness: { level: string; score: number } | null;
+  illness: { level: string; score: number; message?: string } | null;
   vitals: Vital[];
   bloodPressure: BloodPressureSummary;
   heartRhythm: HeartRhythm;
@@ -475,6 +508,13 @@ export type StressVM = {
     typical: { lowMin: number; mediumMin: number; highMin: number } | null;
   }>;
   trend: Trend;
+  ansBalance?: {
+    score: number; // 0-100, 50=balanced
+    band: "parasympathetic" | "balanced" | "sympathetic";
+    sympatheticFraction: number; // fraction of waking slots with rawStress > 40
+    overnightHrvZ: number | null; // z-score of last night's HRV vs baseline
+    hrvStatus?: "balanced" | "unbalanced_high" | "unbalanced_low" | "low" | null;
+  } | null;
 };
 
 export type FitnessVM = {
@@ -483,6 +523,13 @@ export type FitnessVM = {
   /** Mobile: Fitness Age from resting heart rate and activity (Nes 2011, after noop), and the VO2 max it estimates. */
   fitnessAge: Metric<{ fitnessAge: number; age: number; vo2max: number; method: "nes" | "uth"; activityIndex: number; restingHr: number; day: string }>;
   trend: Trend;
+  vo2maxTrend?: {
+    slopePer28Days: number; // mL/kg/min change over 28 days (positive=improving)
+    direction: "improving" | "stable" | "detraining";
+    dataPoints: number; // how many non-null values in 28 days
+    displayDelta: string; // e.g. "+1.4 mL/kg/min over 4 weeks" or "−0.8 mL/kg/min over 4 weeks"
+    series?: (number | null)[];
+  } | null;
   trainingLoad: Metric<{ acwr: number; status: "detraining" | "optimal" | "pushing" | "high_risk"; tone: ChipTone }>;
   /** 90 days of CTL ("Fitness"), ATL ("Fatigue") and TSB ("Form"). */
   load: { day: string; ctl: number | null; atl: number | null; tsb: number | null }[];

@@ -45,7 +45,8 @@ create table if not exists intraday_dirty (day text primary key);
 create table if not exists daily_scores (
   day text primary key, scoring_version integer not null, strain text, activities text, session_rhr_bpm real,
   recovery text, sleep text, training_load text, strain_target text, sleep_planner text, energy_bank text, stress text,
-  health_monitor text, healthspan text, fitness text, journal_impact text, detected text, hrv_status text, training text
+  health_monitor text, healthspan text, fitness text, journal_impact text, detected text, hrv_status text, training text,
+  metabolic_risk text, circadian text
 );
 create table if not exists intraday_series (day text not null, kind text not null, data text not null, primary key (day, kind));
 create table if not exists reports (period text primary key, data text not null);
@@ -99,6 +100,9 @@ const MIGRATIONS = [
   "create index if not exists blood_pressure_ts on blood_pressure_readings (ts)",
   // An unused view an earlier build created.
   "drop view if exists blood_pressure",
+  // Metabolic Risk Score and Circadian Rhythm Score, version 34.
+  "alter table daily_scores add column metabolic_risk text",
+  "alter table daily_scores add column circadian text",
 ];
 
 const DAY = 86_400;
@@ -146,6 +150,7 @@ type ScoresRow = {
   recovery: string | null; sleep: string | null; training_load: string | null; strain_target: string | null; sleep_planner: string | null;
   energy_bank: string | null; stress: string | null; health_monitor: string | null; healthspan: string | null; fitness: string | null;
   journal_impact: string | null; detected: string | null; hrv_status: string | null; training: string | null;
+  metabolic_risk: string | null; circadian: string | null;
 };
 
 const metricsOf = (r: MetricsRow): Metrics => ({
@@ -221,7 +226,7 @@ const bloodPressureOf = (r: BloodPressureRow): BloodPressureReading => ({
   importedAt: r.imported_at,
 });
 
-const SCORE_JSON = ["strain", "activities", "recovery", "sleep", "training_load", "strain_target", "sleep_planner", "energy_bank", "stress", "health_monitor", "healthspan", "fitness", "journal_impact", "detected", "hrv_status", "training"] as const;
+const SCORE_JSON = ["strain", "activities", "recovery", "sleep", "training_load", "strain_target", "sleep_planner", "energy_bank", "stress", "health_monitor", "healthspan", "fitness", "journal_impact", "detected", "hrv_status", "training", "metabolic_risk", "circadian"] as const;
 const scoreOf = (r: ScoresRow): ScoreRow => ({
   day: r.day,
   scoringVersion: r.scoring_version,
@@ -242,6 +247,8 @@ const scoreOf = (r: ScoresRow): ScoreRow => ({
   detected: parse(r.detected),
   hrv_status: parse(r.hrv_status),
   training: parse(r.training),
+  metabolic_risk: parse(r.metabolic_risk),
+  circadian: parse(r.circadian),
 });
 const SCORES_SQL = `insert or replace into daily_scores (day, scoring_version, session_rhr_bpm, ${SCORE_JSON.join(", ")}) values (${Array(3 + SCORE_JSON.length).fill("?").join(", ")})`;
 

@@ -8,7 +8,8 @@
   "status": {
     "poor": "Poor",
     "sufficient": "Sufficient",
-    "optimal": "Optimal"
+    "optimal": "Optimal",
+    "highDebt": "High debt"
   },
   "stat": {
     "hours": "Hours vs. needed",
@@ -43,6 +44,7 @@
     "vsPrior30": "vs. prior 30 days",
     "hoursVsNeeded": "Hours vs. needed",
     "consistency": "Sleep consistency",
+    "circadian": "Circadian rhythm",
     "efficiency": "Sleep efficiency",
     "tonight": "Tonight’s sleep"
   },
@@ -106,5 +108,31 @@
     "maxHr": "Max HR",
     "calories": "Calories",
     "hrr": "Heart rate recovery"
+  },
+  "circadian": {
+    "calibrating": "Circadian rhythm needs 7 nights of sleep onset to learn your phase.",
+    "info": "Measures how consistent your sleep onset is over the last 7 nights using circular statistics, and flags shifts earlier or later than your prior week.",
+    "phase": {
+      "aligned": "Aligned",
+      "shifted_early": "Shifted early",
+      "shifted_late": "Shifted late",
+      "irregular": "Irregular"
+    },
+    "explain": {
+      "aligned": "Your bedtime has stayed closely aligned with your prior week.",
+      "alignedTemp": "Your bedtime and skin temperature rhythm are well aligned with your prior week.",
+      "shifted_early": "Your average sleep onset shifted more than 30 minutes earlier than your prior week.",
+      "shifted_earlyTemp": "Your sleep onset and temperature nadir shifted more than 30 minutes earlier than your prior week.",
+      "shifted_late": "Your average sleep onset shifted more than 30 minutes later than your prior week.",
+      "shifted_lateTemp": "Your sleep onset and temperature nadir shifted more than 30 minutes later than your prior week.",
+      "irregular": "Your sleep onset varied widely across the last 7 nights.",
+      "irregularTemp": "Your sleep onset and overnight temperature rhythm varied widely across the last 7 nights."
+    },
+    "onsetConsistency": "Onset consistency",
+    "sleepOnset": "Sleep onset",
+    "midSleep": "Mid-sleep",
+    "tempAlignment": "Temp alignment",
+    "ariaScore": "Circadian rhythm score {{score}}, {{phase}}",
+    "ariaRow": "{{label}}: {{value}}"
   }
 }

@@ -181,7 +181,8 @@ describe("parity with the web app", () => {
     // Version 31: restore SpO2 to Health Monitor with 95 % floor and baseline range. Version 30's value was "25a36d10947fc464".
     // Version 32: Health Monitor without SpO2. Version 31's value was "9d8a77fc84882991".
     // Version 33: Blood pressure in Health Monitor. Version 32's value was "ae95b29d44b502c1".
-    "daily_scores.scoring_version": "d67ef409b32b162f",
+    // Version 34: Metabolic Risk Score (`metabolic_risk`) and Circadian Rhythm Score (`circadian`). Version 33's value was "d67ef409b32b162f".
+    "daily_scores.scoring_version": "d26a5f9b186528ab",
     // Version 15: Activity Strain is the session's Banister TRIMP plus its muscular load through 5.05 · ln(1 + 0.09 · T)
     // (a seeded 45-minute strength session goes from 8.2 to 9.9 on 0–21), each activity stores its `cardioTrimp` and
     // `muscularTrimp`, and its zone seconds count Zone 1 from 40 % of the reserve. Version 14's value was "cb2d75373aaf4d20".
@@ -432,6 +433,31 @@ describe("the last 30 days", () => {
       expect(t.high, d).toBeLessThanOrEqual(120);
       expect(t.high, d).toBeGreaterThan(t.low);
     }
+  });
+
+  it("publishes Metabolic Risk Score on Mondays after 21 calibrating days and carries publishedDay through the week", () => {
+    for (let i = 0; i < 21; i++) {
+      expect(col(dayAt(i), "metabolic_risk")).toEqual({ reason: "calibrating" });
+    }
+    const lastMonday = allDays.filter((d) => new Date(`${d}T00:00:00Z`).getUTCDay() === 1).at(-1)!;
+    const m = col(lastMonday, "metabolic_risk");
+    if (m.reason !== null) throw new Error(`no metabolic_risk on ${lastMonday}: ${m.reason}`);
+    expect(m.score).toBeGreaterThanOrEqual(0);
+    expect(m.score).toBeLessThanOrEqual(100);
+    expect(m.publishedDay).toBe(lastMonday);
+    const tuesday = dayAt(allDays.indexOf(lastMonday) + 1);
+    expect(col(tuesday, "metabolic_risk")).toEqual(m);
+  });
+
+  it("computes Circadian Rhythm Score after 7 nights of sleep onset", () => {
+    for (let i = 0; i < 6; i++) {
+      expect(col(dayAt(i), "circadian")).toEqual({ reason: "calibrating" });
+    }
+    const c = col(TODAY, "circadian");
+    if (c.reason !== null) throw new Error(`no circadian on ${TODAY}: ${c.reason}`);
+    expect(c.score).toBeGreaterThanOrEqual(0);
+    expect(c.score).toBeLessThanOrEqual(100);
+    expect(["aligned", "shifted_late", "shifted_early", "irregular"]).toContain(c.phase);
   });
 });
 

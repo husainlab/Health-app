@@ -3,14 +3,19 @@
 import { View } from "react-native";
 import { Trans, useTranslation } from "react-i18next";
 import { i18n } from "@/i18n/config";
-import { clock, dayLabel, durationWords, hmm } from "@/lib/format";
+import type { ChipTone } from "@/lib/bands";
+import { clock, dayLabel, durationWords, formatValue, hmm } from "@/lib/format";
 import { getStress } from "@/queries/health";
 import type { StressVM } from "@/queries/types";
 import { StressChart, StressChartSkeleton } from "@/ui/charts/StressChart";
 import { TrendChart, TrendChartSkeleton } from "@/ui/charts/TrendChart";
 import { cn } from "@/ui/cn";
+import { Divided } from "@/ui/Divided";
 import { InsightCard, InsightCardSkeleton } from "@/ui/metrics/InsightCard";
+import { KeyStatRow } from "@/ui/metrics/KeyStatRow";
+import { StatusChip } from "@/ui/metrics/primitives";
 import { ScoreDial, ScoreDialSkeleton } from "@/ui/metrics/ScoreDial";
+import { TickScale } from "@/ui/metrics/TickScale";
 import { DetailShell } from "@/ui/shells/DetailShell";
 import { EmptyState } from "@/ui/shells/EmptyState";
 import { MetricState } from "@/ui/shells/MetricState";
@@ -91,6 +96,75 @@ function TotalDay({ l, day }: { l: NonNullable<StressVM["levels"]["value"]>; day
   );
 }
 
+const ANS_TONE: Record<NonNullable<StressVM["ansBalance"]>["band"], ChipTone> = {
+  parasympathetic: "optimal",
+  balanced: "neutral",
+  sympathetic: "warning",
+};
+
+function AnsBalanceCard({ ab }: { ab: NonNullable<StressVM["ansBalance"]> }) {
+  const { t } = useTranslation("health");
+  const bandWord = t(`ansBalance.band.${ab.band}`);
+  const calmPct = Math.round((1 - ab.sympatheticFraction) * 100);
+  const hrvCaption =
+    ab.overnightHrvZ === null
+      ? undefined
+      : Math.abs(ab.overnightHrvZ) < 0.05
+        ? t("ansBalance.atBaseline")
+        : ab.overnightHrvZ > 0
+          ? t("ansBalance.aboveBaseline")
+          : t("ansBalance.belowBaseline");
+
+  return (
+    <SectionShell
+      variant="card"
+      title={t("ansBalance.title")}
+      aside={<StatusChip tone={ANS_TONE[ab.band]}>{bandWord}</StatusChip>}
+      info={{ title: t("ansBalance.infoTitle"), body: t("ansBalance.infoBody") }}
+    >
+      <View className="gap-4">
+        <TickScale
+          variant="meter"
+          label={t("ansBalance.title")}
+          metric={{ value: ab.score, reason: null, provisional: false }}
+          min={0}
+          max={100}
+          format="int"
+          describe={bandWord}
+          ends={["0", "50", "100"]}
+        />
+        <Divided>
+          <KeyStatRow
+            variant="row"
+            label={t("ansBalance.daytimeCalm")}
+            metric={{ value: calmPct, reason: null, provisional: false }}
+            unit="%"
+            format="int"
+            direction="none"
+          />
+          <KeyStatRow
+            variant="row"
+            label={t("ansBalance.overnightHrv")}
+            caption={hrvCaption}
+            metric={ab.overnightHrvZ === null ? { value: null, reason: "no_data", provisional: false } : { value: ab.overnightHrvZ, reason: null, provisional: false }}
+            customValue={ab.overnightHrvZ === null ? undefined : `${formatValue("signed1", ab.overnightHrvZ)} SD`}
+            format="signed1"
+            direction="none"
+          />
+          <KeyStatRow
+            variant="row"
+            label={t("ansBalance.hrvStatus")}
+            metric={ab.hrvStatus ? { value: 0, reason: null, provisional: false } : { value: null, reason: "no_data", provisional: false }}
+            customValue={ab.hrvStatus ? t(`ansBalance.status.${ab.hrvStatus}`) : undefined}
+            format="int"
+            direction="none"
+          />
+        </Divided>
+      </View>
+    </SectionShell>
+  );
+}
+
 export function StressScreen() {
   const { t } = useTranslation("health");
   const { data, error, reload } = useDayScreen("stress", getStress);
@@ -125,6 +199,7 @@ export function StressScreen() {
         </SectionShell>
       }
       secondary={[
+        ...(vm.ansBalance ? [<AnsBalanceCard key="ans-balance" ab={vm.ansBalance} />] : []),
         <SectionShell key="levels" variant="card" title={t("title.totalDay")} info={{ title: t("stress.levelsInfoTitle"), body: t("stress.levelsInfoBody") }}>
           <MetricState metric={vm.levels} skeleton={<Skeleton className="h-24 w-full" />} renderReason={() => <EmptyState body={t("stress.empty")} />}>
             {(l) => <TotalDay l={l} day={dayWord} />}

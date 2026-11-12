@@ -55,5 +55,10 @@
     "heldBack": "{{phrase}}, which held Recovery back today.",
     "mixed": "{{good}}, but {{bad}}. Together they shaped today’s Recovery.",
     "steady": "Your signals sit close to your baseline, so Recovery is near your usual level."
+  },
+  "dehydration": {
+    "reason": "RHR elevated and HRV suppressed without strain or sleep explanation",
+    "body": "RHR is elevated and HRV is lower than your strain and sleep explain — possible dehydration or under-fueling.",
+    "action": "Log water"
   }
 }

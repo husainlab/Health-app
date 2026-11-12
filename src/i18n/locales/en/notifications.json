@@ -42,5 +42,10 @@
   "windDown": {
     "title": "Wind down",
     "body": "Bed by {{time}} to meet tonight’s sleep need."
+  },
+  "illnessWarning": {
+    "title": "Body signals shifted overnight",
+    "body": "Your body looks strained — {{signals}}. Consider an easy day today.",
+    "fallbackSignals": "multiple signals shifted"
   }
 }

@@ -67,7 +67,7 @@ export {
   type TrainingEffectVM,
   type HrvStatusVM,
 } from "./training";
-export { getHealthHub, getHealth, getHealthspan, getMonitor, getStress, getFitness, getHeartRate, hrMinutes, acwrStatus, ECG_RESULT, NO_RESULT } from "./health";
+export { getHealthHub, getHealth, getHealthspan, getMonitor, getStress, getFitness, getHeartRate, getMetabolicRisk, hrMinutes, acwrStatus, ECG_RESULT, NO_RESULT } from "./health";
 export { getTrends, parseTrendMetric, TREND_GROUPS, TREND_METRICS, type TrendGroup, type TrendMetric, type TrendMetricKey, type TrendsVM } from "./trends";
 export {
   getMetricDetail,

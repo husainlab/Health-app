@@ -82,3 +82,31 @@ export const HEART_RATE_INFO: InfoContent = {
     );
   },
 };
+
+export const METABOLIC_INFO: InfoContent = {
+  get title() {
+    return i18n.t("health:info.metabolicTitle");
+  },
+  get body() {
+    return (
+      <>
+        <P>{i18n.t("health:info.metabolicBody1")}</P>
+        <P>{i18n.t("health:info.metabolicBody2")}</P>
+        <P>{i18n.t("health:info.metabolicBody3")}</P>
+      </>
+    );
+  },
+};
+
+const METABOLIC_CONTRIBUTOR_KEYS = {
+  rhr: "health:metabolic.contributor.rhr",
+  hrv: "health:metabolic.contributor.hrv",
+  sleep: "health:metabolic.contributor.sleep",
+  steps: "health:metabolic.contributor.steps",
+  resp: "health:metabolic.contributor.resp",
+} as const;
+
+export function metabolicContributorLabel(key: string): string {
+  const k = METABOLIC_CONTRIBUTOR_KEYS[key as keyof typeof METABOLIC_CONTRIBUTOR_KEYS];
+  return k ? i18n.t(k) : key;
+}

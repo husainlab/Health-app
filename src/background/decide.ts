@@ -25,6 +25,8 @@ export type Markers = {
   /** The plan day and fire time (unix s) of the bedtime reminder last put on the schedule. */
   bedtimeDay: string | null;
   bedtimeAt: number | null;
+  /** The local day of the last illness rising-edge warning notification. */
+  illnessWarningDay?: string | null;
 };
 export const EMPTY_MARKERS: Markers = {
   recoveryDay: null,
@@ -35,6 +37,7 @@ export const EMPTY_MARKERS: Markers = {
   reportPeriod: null,
   bedtimeDay: null,
   bedtimeAt: null,
+  illnessWarningDay: null,
 };
 
 export type AlertSource = "health_connect" | "demo" | null;

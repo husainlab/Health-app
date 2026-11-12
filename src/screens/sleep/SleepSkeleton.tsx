@@ -65,6 +65,22 @@ const loadingSecondary = (t: TFunction<"sleep">) => [
       <Skeleton className="h-52 rounded-lg" />
     </View>
   </CardSkeleton>,
+  <CardSkeleton key="circadian" title={t("cards.circadian")} info={cardInfoFor("Circadian rhythm", t("cards.circadian"))}>
+    <View className="gap-4">
+      <View className="flex-row items-center gap-3">
+        <SkeletonText lh={40} fs={36} className="w-[60px]" />
+        <Skeleton className="h-6 w-20 rounded-md" />
+      </View>
+      <SkeletonText lh={22} fs={15} className="w-full" />
+      <View className="gap-1">
+        <KeyStatRowSkeleton variant="row" label={t("circadian.onsetConsistency")} />
+        <View className="h-px bg-border" />
+        <KeyStatRowSkeleton variant="row" label={t("circadian.sleepOnset")} />
+        <View className="h-px bg-border" />
+        <KeyStatRowSkeleton variant="row" label={t("circadian.midSleep")} />
+      </View>
+    </View>
+  </CardSkeleton>,
   <CardSkeleton key="efficiency" title={t("cards.efficiency")} info={cardInfoFor("Sleep efficiency", t("cards.efficiency"))}>
     <View accessibilityElementsHidden className="gap-4">
       <SkeletonText lh={40} fs={36} className="w-24" />
@@ -117,7 +133,7 @@ export function SleepSkeleton() {
       hero={<ScoreDialSkeleton size="lg" variant="sleep" />}
       summary={
         <Card className="gap-0 px-4 py-1">
-          {(["hours", "consistency", "efficiency"] as const).map((l, i) => (
+          {(["hours", "debt", "consistency", "efficiency"] as const).map((l, i) => (
             <Fragment key={l}>
               {i > 0 && <View className="h-px bg-border" />}
               <KeyStatRowSkeleton variant="row" label={t(`stat.${l}`)} />

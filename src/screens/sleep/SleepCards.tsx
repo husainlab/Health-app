@@ -7,19 +7,22 @@ import { useState } from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import Svg, { Path } from "react-native-svg";
-import { deltaTone } from "@/lib/bands";
-import { hmm } from "@/lib/format";
+import { deltaTone, type ChipTone } from "@/lib/bands";
+import type { CircadianPhase } from "@/core/algorithms/circadian";
+import { formatValue, hmm, timeOfDay } from "@/lib/format";
 import type { SleepExtras } from "@/queries/mobileExtras";
 import type { KeyStat, SleepVM } from "@/queries/types";
 import { cn } from "@/ui/cn";
 import { alpha } from "@/ui/color";
+import { Divided } from "@/ui/Divided";
 import { Gradient } from "@/ui/Gradient";
 import { Hatch } from "@/ui/Hatch";
-import { CAPTION, DeltaMark, LABEL } from "@/ui/metrics/primitives";
+import { CAPTION, DeltaMark, LABEL, StatusChip } from "@/ui/metrics/primitives";
 import { ReasonPlaceholder } from "@/ui/metrics/ReasonPlaceholder";
 import { Text } from "@/ui/Text";
 import { useTheme } from "@/ui/theme";
 import { INSET_ROW } from "@/ui/Card";
+import { StatRow } from "../strain/TrainingCards";
 
 const BAR = "h-3.5 rounded-[3px]";
 const signed = (min: number, sign: "+" | "−") => `${sign}${hmm(Math.abs(min))}`;
@@ -285,6 +288,84 @@ export function SleepEfficiency({ vm }: { vm: Pick<SleepExtras, "efficiency"> })
         <Text className={cn(LABEL, "flex-1")}>{t("efficiency.wakeEvents")}</Text>
         <Text className="font-numeric text-xl font-bold leading-6 tabular-nums">{e.wakeEvents ?? "--"}</Text>
       </View>
+    </View>
+  );
+}
+
+const PHASE_TONE: Record<CircadianPhase, ChipTone> = {
+  aligned: "optimal",
+  shifted_early: "warning",
+  shifted_late: "warning",
+  irregular: "alert",
+};
+
+const formatClockMin = (min: number) => {
+  const m = ((Math.round(min) % 1440) + 1440) % 1440;
+  return timeOfDay(Math.floor(m / 60), m % 60);
+};
+
+export function CircadianCard({ vm }: { vm: Pick<SleepVM, "circadian"> }) {
+  const { t } = useTranslation("sleep");
+  const m = vm.circadian;
+  if (m.value === null) {
+    return (
+      <ReasonPlaceholder
+        reason={m.reason}
+        nightsLeft={m.nightsLeft}
+        size="md"
+        copy={m.reason === "calibrating" ? t("circadian.calibrating") : undefined}
+      />
+    );
+  }
+  const c = m.value;
+  const phaseLabel = t(`circadian.phase.${c.phase}`);
+  const explain = t(`circadian.explain.${c.phase}${c.alignmentScore > 0 ? "Temp" : ""}`);
+  const onsetStr = c.sleepOnsetMin !== null ? formatClockMin(c.sleepOnsetMin) : null;
+  const midStr = c.sleepMidMin !== null ? formatClockMin(c.sleepMidMin) : null;
+
+  return (
+    <View className="gap-4">
+      <View
+        accessible
+        accessibilityLabel={t("circadian.ariaScore", { score: Math.round(c.score), phase: phaseLabel })}
+        className="flex-row items-center gap-3"
+      >
+        <Text className="font-numeric text-4xl font-bold leading-10 tracking-[-0.01em] tabular-nums">
+          {formatValue("int", c.score)}
+        </Text>
+        <StatusChip tone={PHASE_TONE[c.phase]}>{phaseLabel}</StatusChip>
+      </View>
+      <Text className="text-[15px] leading-[22px] text-foreground-secondary">{explain}</Text>
+      <Divided>
+        <StatRow
+          label={t("circadian.onsetConsistency")}
+          value={formatValue("int", c.consistencyScore)}
+          unit="%"
+          spoken={t("circadian.ariaRow", { label: t("circadian.onsetConsistency"), value: `${Math.round(c.consistencyScore)}%` })}
+        />
+        {onsetStr !== null && (
+          <StatRow
+            label={t("circadian.sleepOnset")}
+            value={onsetStr}
+            spoken={t("circadian.ariaRow", { label: t("circadian.sleepOnset"), value: onsetStr })}
+          />
+        )}
+        {midStr !== null && (
+          <StatRow
+            label={t("circadian.midSleep")}
+            value={midStr}
+            spoken={t("circadian.ariaRow", { label: t("circadian.midSleep"), value: midStr })}
+          />
+        )}
+        {c.alignmentScore > 0 && (
+          <StatRow
+            label={t("circadian.tempAlignment")}
+            value={formatValue("int", c.alignmentScore)}
+            unit="%"
+            spoken={t("circadian.ariaRow", { label: t("circadian.tempAlignment"), value: `${Math.round(c.alignmentScore)}%` })}
+          />
+        )}
+      </Divided>
     </View>
   );
 }

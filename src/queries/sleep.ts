@@ -70,6 +70,7 @@ export async function getSleep(day: string, ctx: QueryCtx): Promise<SleepVM> {
   // Each row leads to its own section further down the page (`#need`, `#consistency`, …).
   const summary = [
     { ...stat("hours", i18n.t("sleep:stat.hours"), hoursPct, "%", (v) => status(v, 85, 70)), href: "#need" },
+    { ...stat("debt", i18n.t("sleep:stat.debt"), (r) => (r.sleep?.main ? r.sleep.debtMin : null), "min"), direction: "down" as const, href: "/chart?metric=debt&r=w" },
     { ...stat("consistency", i18n.t("sleep:stat.consistency"), (r) => r.sleep?.consistency, "%", (v) => status(v, 80, 70), main ? "calibrating" : reason), href: "#consistency" },
     { ...stat("efficiency", i18n.t("sleep:stat.efficiency"), efficiencyPct, "%", (v) => status(v, 85, 75)), href: "#efficiency" },
     { ...stat("restorative", i18n.t("sleep:stat.restorative"), restorativePct, "%", (v) => status(v, 40, 30)), href: "#restorative" },
@@ -102,6 +103,39 @@ export async function getSleep(day: string, ctx: QueryCtx): Promise<SleepVM> {
 
   const plan = planVM(ctx, row, isToday);
   const [stages, nightHr] = await Promise.all([stagesOf(ctx, row, noNight), main ? nightHrOf(ctx, main.start, main.end) : fromReason<never>(noNight, isToday)]);
+
+  let hrNadirOffsetH: number | null = null;
+  if (main && nightHr.value) {
+    const bedMs = ms(main.start);
+    const wakeMs = ms(main.end);
+    let minBpm = Infinity;
+    let minT: number | null = null;
+    for (const p of nightHr.value.points) {
+      if (p.v != null && p.t >= bedMs && p.t < wakeMs && p.v < minBpm) {
+        minBpm = p.v;
+        minT = p.t;
+      }
+    }
+    if (minT !== null) hrNadirOffsetH = (minT - bedMs) / 3_600_000;
+  }
+
+  const circ = row?.circadian;
+  const sleepOnsetMin = main ? localMinutes(main.start, ctx.timeZone) : null;
+  const sleepMidMin = main ? localMinutes((main.start + main.end) / 2, ctx.timeZone) : null;
+  const circadian: SleepVM["circadian"] =
+    circ && circ.reason === null
+      ? ok({
+          score: circ.score,
+          phase: circ.phase,
+          consistencyScore: circ.consistencyScore,
+          alignmentScore: circ.alignmentScore,
+          nadirScore: circ.nadirScore,
+          sleepOnsetMin,
+          sleepMidMin,
+          hrNadirOffsetH,
+        })
+      : fromReason(circ?.reason ?? (main ? "calibrating" : (noNight ?? "no_data")), isToday);
+
   return {
     day,
     isToday,
@@ -123,6 +157,7 @@ export async function getSleep(day: string, ctx: QueryCtx): Promise<SleepVM> {
       points: trendPoints(rows, day, (r) => (r.sleep?.main ? r.sleep.debtMin / 60 : null)),
     },
     planner: plan.value ? ok({ ...plan.value, weekdayWake: !plan.value.weekend }) : (plan as Metric<never>),
+    circadian,
   };
 }
 

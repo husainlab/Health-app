@@ -38,6 +38,7 @@ describe("getSleepExtras", () => {
   it("gives restorative minutes and the efficiency card, with wake spells inside the night", async () => {
     const day = addDays(TODAY, -1);
     const sleep = await getSleep(day, ctx);
+    expect(sleep.summary.map((s) => s.key)).toContain("debt");
     const { restorative, efficiency } = await getSleepExtras(day, ctx, sleep.stages);
     expect(restorative.value!.minutes).toBeGreaterThan(0);
     const e = efficiency.value!;
@@ -58,5 +59,41 @@ describe("getNap", () => {
     expect(await getNap("nope", ctx)).toBeNull();
     const nap = sessions.find((s) => !s.isMain);
     if (nap) expect((await getNap(nap.id, ctx))!.hours.value!.asleepMin).toBeGreaterThan(0);
+  });
+});
+
+describe("getSleep circadian", () => {
+  it("returns circadian score, phase, and timing on calibrated days of the 180-day seed", async () => {
+    const vm = await getSleep(addDays(TODAY, -1), ctx);
+    expect(vm.circadian.reason).toBeNull();
+    expect(vm.circadian.value).not.toBeNull();
+    const c = vm.circadian.value!;
+    expect(c.score).toBeGreaterThanOrEqual(0);
+    expect(c.score).toBeLessThanOrEqual(100);
+    expect(["aligned", "shifted_late", "shifted_early", "irregular"]).toContain(c.phase);
+    expect(c.consistencyScore).toBeGreaterThanOrEqual(0);
+    expect(c.consistencyScore).toBeLessThanOrEqual(100);
+    expect(c.sleepOnsetMin).not.toBeNull();
+    expect(c.sleepOnsetMin!).toBeGreaterThanOrEqual(0);
+    expect(c.sleepOnsetMin!).toBeLessThan(1440);
+    expect(c.sleepMidMin).not.toBeNull();
+    expect(c.sleepMidMin!).toBeGreaterThanOrEqual(0);
+    expect(c.sleepMidMin!).toBeLessThan(1440);
+    if (c.hrNadirOffsetH !== null) {
+      expect(Number.isFinite(c.hrNadirOffsetH)).toBe(true);
+    }
+  });
+
+  it("reports calibrating during the initial 7-night baseline window", async () => {
+    const vm = await getSleep(addDays(TODAY, -179), ctx);
+    expect(vm.circadian.value).toBeNull();
+    expect(vm.circadian.reason).toBe("calibrating");
+  });
+
+  it("reports an honest reason when no sleep session exists", async () => {
+    const emptyCtx: QueryCtx = { ...ctx, store: new MemoryStore() };
+    const vm = await getSleep(TODAY, emptyCtx);
+    expect(vm.circadian.value).toBeNull();
+    expect(vm.circadian.reason).not.toBeNull();
   });
 });

@@ -17,7 +17,7 @@ import { cn } from "@/ui/cn";
 import { Card, INSET_ROW } from "@/ui/Card";
 import { InsightCard } from "@/ui/metrics/InsightCard";
 import { KeyStatRow } from "@/ui/metrics/KeyStatRow";
-import { CAPTION, LABEL } from "@/ui/metrics/primitives";
+import { CAPTION, LABEL, StatusChip } from "@/ui/metrics/primitives";
 import { ReasonPlaceholder } from "@/ui/metrics/ReasonPlaceholder";
 import { ScoreDial } from "@/ui/metrics/ScoreDial";
 import { SleepStages } from "@/ui/metrics/SleepStages";
@@ -26,11 +26,12 @@ import { useSelectedDay } from "@/ui/shells/DateSwitcher";
 import { SectionShell } from "@/ui/shells/SectionShell";
 import { useShellCalendar } from "@/ui/shells/ShellStatus";
 import { Text } from "@/ui/Text";
+import { chartHref } from "@/screens/chart/href";
 import { SLEEP_INFO, TONIGHT_INFO } from "../_lib/info";
 import { statProps } from "../_lib/view";
 import { useScreen } from "../useScreen";
 import { cardInfoFor } from "./cardInfoFor";
-import { HoursVsNeed, SleepConsistency, SleepEfficiency } from "./SleepCards";
+import { CircadianCard, HoursVsNeed, SleepConsistency, SleepEfficiency } from "./SleepCards";
 import { WeeklyTrends } from "../trends/WeeklyTrends";
 import { SLEEP_BODY_SKELETON, SleepSkeleton } from "./SleepSkeleton";
 
@@ -47,15 +48,20 @@ const STATUS_LEGEND = [
 export const sleepQuery = (d: string) => async (ctx: QueryCtx) => {
   const [sleep, weekly] = await Promise.all([getSleep(d, ctx), getWeeklyTrends(WEEKLY, d, ctx)]);
   const extras = await getSleepExtras(d, ctx, sleep.stages);
-  // The reference app's three rows, each opening its Trend View (restorative sleep sits under the stages instead; the
-  // Sleep Stress row stays out, as on the PWA).
-  const summary = sleep.summary.flatMap((k) => (k.key in SUMMARY_TREND ? [{ ...k, href: trendHref(SUMMARY_TREND[k.key]) }] : []));
+  // The summary rows, each opening its Trend View or Chart Explorer (restorative sleep sits under the stages instead;
+  // the Sleep Stress row stays out, as on the PWA).
+  const summary = sleep.summary.flatMap((k) => {
+    if (!SUMMARY_KEYS.has(k.key)) return [];
+    const href = k.key in SUMMARY_TREND ? trendHref(SUMMARY_TREND[k.key]) : chartHref({ metric: "debt", r: "w" });
+    return [{ ...k, href }];
+  });
   const vm: SleepPageVM = { ...sleep, ...extras, summary };
   return { vm, weekly };
 };
 
-/** The summary rows the page shows, by key, and the Trend View each opens. */
+/** The summary rows the page shows, by key, and the Trend View each opens (debt opens the chart explorer). */
 const SUMMARY_TREND: Record<string, TrendViewKey> = { hours: "hours_need", consistency: "consistency", efficiency: "efficiency" };
+const SUMMARY_KEYS = new Set(["hours", "debt", "consistency", "efficiency"]);
 
 /** halo's SleepVM with Pulse's Restorative Sleep row and Sleep Efficiency card (src/queries/mobileExtras.ts). */
 type SleepPageVM = Omit<SleepVM, "restorative"> & SleepExtras;
@@ -104,7 +110,16 @@ function Sleep({ vm, weekly, timeZone }: { vm: SleepPageVM; weekly: TrendViewVM[
             {vm.summary.map((k, i) => (
               <Fragment key={k.key}>
                 {i > 0 && <View className="h-px bg-border" />}
-                <KeyStatRow variant="row" {...statProps(k, { d, today })} average={null} direction="none" />
+                {k.key === "debt" && k.metric.value !== null && k.metric.value > 60 ? (
+                  <View className="flex-row items-center gap-2">
+                    <KeyStatRow variant="row" {...statProps(k, { d, today })} average={null} direction="none" className="flex-1" />
+                    <StatusChip tone="warning" className="self-center">
+                      {t("status.highDebt")}
+                    </StatusChip>
+                  </View>
+                ) : (
+                  <KeyStatRow variant="row" {...statProps(k, { d, today })} average={null} direction="none" />
+                )}
               </Fragment>
             ))}
             <View className={cn(INSET_ROW, "mb-3 mt-1 flex-row flex-wrap items-center gap-x-4 gap-y-1 py-2")}>
@@ -129,6 +144,9 @@ function Sleep({ vm, weekly, timeZone }: { vm: SleepPageVM; weekly: TrendViewVM[
           </SectionShell>,
           <SectionShell key="consistency" variant="card" title={t("cards.consistency")} info={cardInfoFor("Sleep consistency", t("cards.consistency"))}>
             <SleepConsistency vm={vm} />
+          </SectionShell>,
+          <SectionShell key="circadian" variant="card" title={t("cards.circadian")} info={cardInfoFor("Circadian rhythm", t("cards.circadian"))}>
+            <CircadianCard vm={vm} />
           </SectionShell>,
           <SectionShell key="efficiency" variant="card" title={t("cards.efficiency")} info={cardInfoFor("Sleep efficiency", t("cards.efficiency"))}>
             <SleepEfficiency vm={vm} />

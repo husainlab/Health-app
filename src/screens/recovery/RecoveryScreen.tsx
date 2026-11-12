@@ -62,7 +62,18 @@ export function RecoveryScreen() {
       }
       insight={vm.insight ? <InsightCard body={vm.insight} action={{ label: t("exploreInsights"), href: trendHref("recovery", { d, today }) }} /> : null}
       primary={<BehaviorInsights chips={extras.behaviors} href={dayHref("/journal/insights", d, today)} />}
-      secondary={[<HrvStatusCard key="hrv" d={d} />]}
+      secondary={[
+        ...(vm.dehydrationFlag?.flagged
+          ? [
+              <InsightCard
+                key="dehydration"
+                body={t("dehydration.body")}
+                action={{ label: t("dehydration.action"), href: dayHref("/log?kind=water", d, today) }}
+              />,
+            ]
+          : []),
+        <HrvStatusCard key="hrv" d={d} />,
+      ]}
       footer={<WeeklyTrends cards={weekly} d={d} today={today} />}
     />
   )

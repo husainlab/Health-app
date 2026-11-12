@@ -8,12 +8,14 @@ import type { Exercise, Metrics } from "@/data/types";
 import type { Metric, MetricTag, ReasonCode } from "@/lib/reasons";
 import { addDays, localMidnight, wholeYears } from "@/lib/time";
 import type {
+  CircadianRow,
   EnergyBankRow,
   FitnessRow,
   HrvStatusRow,
   TrainingRow,
   HealthMonitorRow,
   HealthspanRow,
+  MetabolicRiskRow,
   RecoveryRow,
   SleepPlannerRow,
   SleepRow,
@@ -79,6 +81,9 @@ export type DayRow = {
   /** Version 19: HRV Status and the Garmin-style training row; null on older rows. */
   hrvStatus: HrvStatusRow | null;
   training: TrainingRow | null;
+  /** Version 34: Metabolic Risk Score (weekly Monday) and Circadian Rhythm Score (7-night circular phase). */
+  metabolicRisk: MetabolicRiskRow | null;
+  circadian: CircadianRow | null;
   metrics: MetricsRow | null;
   /** Shown-only daily roll-ups (`_lib.ts` EXTRA_METRICS); a key is absent when that day has none. */
   extra: Partial<Record<ExtraKey, number>>;
@@ -143,6 +148,8 @@ export async function loadDays(ctx: QueryCtx, from: string, to: string): Promise
       fitness: r?.fitness ?? null,
       hrvStatus: r?.hrv_status ?? null,
       training: r?.training ?? null,
+      metabolicRisk: r?.metabolic_risk ?? null,
+      circadian: r?.circadian ?? null,
       metrics: metrics.get(d) ?? null,
       extra: extra.get(d) ?? {},
     });

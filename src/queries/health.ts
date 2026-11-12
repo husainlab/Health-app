@@ -1,4 +1,5 @@
 // Health hub and its four detail screens (spec §7.6–7.10). Ported from Pulse's src/server/queries/health.ts.
+import { formatValue } from "@/lib/format";
 import { localeFixed } from "@/lib/locale";
 import { i18n } from "@/i18n/config";
 import { inUnits, quantity, shownValue } from "@/lib/units";
@@ -7,8 +8,9 @@ import { fitnessLevel } from "@/core/algorithms/fitnessLevel";
 import { HEALTHSPAN_TERM_COUNT, healthspanConfig, type HealthspanContribution } from "@/core/algorithms/healthspan";
 import { minuteMeanHr } from "@/core/algorithms/stress";
 import type { LoadStatus } from "@/core/engine/strain";
+import { illnessSdFloor } from "@/core/scoring/illness";
 import { addDays, daysBetween, fractionalYears, localMidnight } from "@/lib/time";
-import { acwrTone, clock, dayLabel, formatDay, weekOf } from "./_lib";
+import { acwrTone, clock, dayLabel, formatDay, type FormatKey, type GoodDirection, weekOf } from "./_lib";
 import {
   type DayRow,
   dayStartOf,
@@ -17,16 +19,19 @@ import {
   loadDays,
   loadSeries,
   maxHrOf,
+  maybe,
   meanSd,
   minutePoints,
   ms,
   nightReason,
   none,
   ok,
+  priorStats,
   type QueryCtx,
   stressNow,
   todayOf,
   vitalReason,
+  vo2Of,
   trendPoints,
   daySpansOf,
   exercisesBetween,
@@ -36,6 +41,7 @@ import { zoneBounds, zoneNote, zoneRows } from "./strain";
 import { getBloodPressureSummary } from "./bloodPressure";
 import type {
   ChipTone,
+  DayPoint,
   EcgReading,
   FitnessVM,
   HeartRhythm,
@@ -45,8 +51,10 @@ import type {
   HealthspanVM,
   HeartRateLive,
   HeartRateVM,
+  MetabolicRiskVM,
   Metric,
   MonitorVM,
+  Span,
   StressVM,
   Vital,
   VitalKey,
@@ -60,13 +68,20 @@ export async function getHealthHub(ctx: QueryCtx): Promise<HealthHubVM> {
   const today = todayOf(ctx);
   const rows = await loadDays(ctx, addDays(today, -35), today);
   const row = rows.get(today);
-  const [hsVm, monitor, fit, stressSeries, heartRate] = await Promise.all([
+  const [last, hsVm, monitor, fit, stressSeries, heartRate] = await Promise.all([
+    lastStored(ctx, today),
     getHealthspan(today, ctx),
     getMonitor(today, ctx, rows),
     getFitness(ctx),
     loadSeries(ctx, today, "stress"),
     latestHr(ctx),
   ]);
+  const lastRow = rows.get(last) ?? (await loadDays(ctx, last, last)).get(last);
+  const mr = lastRow?.metabolicRisk;
+  const metabolicRisk: HealthHubVM["metabolicRisk"] =
+    mr && mr.reason === null
+      ? ok({ score: mr.score, band: mr.band, topContributors: mr.topContributors, publishedDay: mr.publishedDay }, false)
+      : none(mr?.reason ?? "calibrating");
   const hs = hsVm.result;
   // Healthspan updates weekly: compare the shown week's pace with the stored week before it.
   const prevDay = addDays(hsVm.asOf, -7);
@@ -79,7 +94,7 @@ export async function getHealthHub(ctx: QueryCtx): Promise<HealthHubVM> {
     day: today,
     healthspan: hs.value ? ok({ pulseAge: hs.value.pulseAge, deltaYears: hs.value.deltaYears, pace: hs.value.pace, paceDelta: prevPace == null || hs.value.pace == null ? null : hs.value.pace - prevPace }, hs.provisional) : none(hs.reason ?? "no_data", hs.nightsLeft),
     monitor: monitor.count.value
-      ? ok({ vitals: monitor.vitals.map((v) => ({ key: v.key, short: v.short, status: v.status })), inRange: monitor.count.value.inRange, total: VITALS.length })
+      ? ok({ vitals: monitor.vitals.map((v) => ({ key: v.key, short: v.short, status: v.status })), inRange: monitor.count.value.inRange, total: VITALS.length, illness: monitor.illness })
       : none(monitor.count.reason ?? "no_data"),
     stress:
       st && st.average != null
@@ -96,12 +111,73 @@ export async function getHealthHub(ctx: QueryCtx): Promise<HealthHubVM> {
     fitness: fit.vo2.value
       ? ok({ vo2max: fit.vo2.value.value, category: fit.vo2.value.category, percentile: fit.vo2.value.percentile, acwr: tl?.acwr ?? null, acwrTone: tl?.tone ?? null })
       : none("no_data"),
+    metabolicRisk,
     heartRate,
   };
 }
 
 /** Alias: the task's name for the Health hub query. */
 export const getHealth = getHealthHub;
+
+// ── Metabolic Risk ──────────────────────────────────────────────────────────
+
+const isMonday = (d: string) => new Date(`${d}T00:00:00Z`).getUTCDay() === 1;
+
+const METABOLIC_SIGNALS: {
+  key: string;
+  label: () => string;
+  pick: (r: DayRow) => number | null | undefined;
+  unit?: string;
+  format: FormatKey;
+  direction: GoodDirection;
+}[] = [
+  { key: "rhr", label: () => metricLabel("rhr"), pick: (r) => r.rhr, unit: "bpm", format: "int", direction: "down" },
+  { key: "hrv", label: () => metricLabel("hrv"), pick: (r) => r.recovery?.inputs.hrv ?? r.metrics?.hrvMs, unit: "ms", format: "int", direction: "up" },
+  { key: "sleep", label: () => metricLabel("sleep"), pick: (r) => r.sleep?.performance, unit: "%", format: "int", direction: "up" },
+  { key: "steps", label: () => metricLabel("steps"), pick: (r) => r.metrics?.steps, format: "grouped", direction: "up" },
+  { key: "resp", label: () => metricLabel("resp"), pick: (r) => r.recovery?.inputs.resp ?? r.metrics?.respBpm, unit: "rpm", format: "decimal1", direction: "down" },
+];
+
+/** Metabolic Risk Score `/health/metabolic`: latest weekly composite, Monday history, and 5 contributing signals. */
+export async function getMetabolicRisk(ctx: QueryCtx): Promise<MetabolicRiskVM> {
+  const today = todayOf(ctx);
+  const last = await lastStored(ctx, today);
+  const rows = await loadDays(ctx, addDays(last, -59), last);
+  const days = [...rows.keys()].sort();
+  const latestDay = [...days].reverse().find((d) => rows.get(d)?.metabolicRisk != null) ?? last;
+  const mr = rows.get(latestDay)?.metabolicRisk;
+
+  const result: MetabolicRiskVM["result"] =
+    mr && mr.reason === null
+      ? ok({ score: mr.score, band: mr.band, topContributors: mr.topContributors, publishedDay: mr.publishedDay }, false)
+      : none(mr?.reason ?? "calibrating");
+
+  const history: DayPoint[] = days
+    .filter(isMonday)
+    .flatMap((d) => {
+      const r = rows.get(d)?.metabolicRisk;
+      return r && r.reason === null ? [{ day: d, value: r.score }] : [];
+    });
+
+  const refDay = mr && mr.reason === null && rows.has(mr.publishedDay) ? mr.publishedDay : latestDay;
+  const refRow = rows.get(refDay);
+  const contributors = METABOLIC_SIGNALS.map((s) => {
+    const val = refRow ? s.pick(refRow) : null;
+    const { mean, sd } = priorStats(rows, refDay, s.pick, 30);
+    return {
+      key: s.key,
+      label: s.label(),
+      metric: maybe(val, "no_data"),
+      ...(s.unit !== undefined && { unit: s.unit }),
+      format: s.format,
+      direction: s.direction,
+      average: mean,
+      ...(sd !== undefined && { sd }),
+    };
+  });
+
+  return { day: latestDay, result, history, contributors };
+}
 
 /** The newest stored band reading, whenever it was. */
 async function latestHr(ctx: QueryCtx) {
@@ -521,7 +597,16 @@ export async function getMonitor(day: string, ctx: QueryCtx, preloaded?: Map<str
     day,
     isToday,
     count,
-    illness: hm && hm.reason === null && illnessRaised(hm) ? { level: hm.illness.level, score: hm.illness.score } : null,
+    illness:
+      hm && hm.reason === null && illnessRaised(hm)
+        ? {
+            level: hm.illness.level,
+            score: hm.illness.score,
+            message: hm.illness.firedSignals.length
+              ? i18n.t("health:hub.illnessBannerSignals", { signals: hm.illness.firedSignals.join(", ") })
+              : i18n.t("health:hub.illnessBanner"),
+          }
+        : null,
     vitals: allVitals,
     bloodPressure: bpSummary,
     heartRhythm: rhythm,
@@ -626,7 +711,7 @@ async function measurements(ctx: QueryCtx, day: string, today: string): Promise<
 export async function getStress(day: string, ctx: QueryCtx): Promise<StressVM> {
   const today = todayOf(ctx);
   const isToday = day === today;
-  const [rows, series, exs] = await Promise.all([loadDays(ctx, addDays(day, -29), day), loadSeries(ctx, day, "stress"), exercisesBetween(ctx, day, day)]);
+  const [rows, series, exs] = await Promise.all([loadDays(ctx, addDays(day, -30), day), loadSeries(ctx, day, "stress"), exercisesBetween(ctx, day, day)]);
   const row = rows.get(day);
   const st = row?.stress;
   const gauge = stressNow(row, isToday);
@@ -661,6 +746,76 @@ export async function getStress(day: string, ctx: QueryCtx): Promise<StressVM> {
     trend: {
       points: trendPoints(rows, day, (r) => r.stress?.average, 30),
     },
+    ansBalance: scored ? computeAnsBalance(day, rows, series, start, spans) : null,
+  };
+}
+
+/** ANS Balance Index (0–100, 50 = balanced) combining daytime sympathetic fraction, overnight HRV z-score, and HRV Status. */
+function computeAnsBalance(
+  day: string,
+  rows: Map<string, DayRow>,
+  series: (number | null)[] | null,
+  start: number,
+  spans: Span[],
+): StressVM["ansBalance"] {
+  const row = rows.get(day);
+  const st = row?.stress;
+  if (!st || st.average == null) return null;
+
+  const sleepSpans = spans.filter((sp) => sp.kind === "sleep" || sp.kind === "nap");
+  let symCount = 0;
+  let totalAwake = 0;
+  if (series) {
+    for (let m = 0; m < series.length; m++) {
+      const v = series[m];
+      if (!finite(v)) continue;
+      const t = ms(start + m * 60);
+      if (sleepSpans.some((sp) => t >= sp.start && t < sp.end)) continue;
+      totalAwake++;
+      if (v > 40) symCount++;
+    }
+  }
+  let sympatheticFraction: number;
+  if (totalAwake > 0) {
+    sympatheticFraction = symCount / totalAwake;
+  } else if (!series && st.lowMin + st.mediumMin + st.highMin > 0) {
+    sympatheticFraction = st.highMin / (st.lowMin + st.mediumMin + st.highMin);
+  } else {
+    return null;
+  }
+  const A = (1 - sympatheticFraction) * 100;
+
+  const hrvToday = row?.metrics?.hrvMs;
+  const hrvPrior = priorStats(rows, day, (r) => r.metrics?.hrvMs, 30);
+  const overnightHrvZ =
+    finite(hrvToday) && hrvPrior.mean !== null
+      ? (hrvToday - hrvPrior.mean) / Math.max(hrvPrior.sd ?? 0, illnessSdFloor.hrv)
+      : null;
+  const B = overnightHrvZ === null ? 50 : Math.min(100, Math.max(0, 50 + 15 * overnightHrvZ));
+
+  const hs = row?.hrvStatus;
+  const hrvStatus: NonNullable<StressVM["ansBalance"]>["hrvStatus"] =
+    !hs || hs.status === null
+      ? null
+      : hs.status === "balanced"
+        ? "balanced"
+        : hs.status === "low"
+          ? "low"
+          : hs.direction === "high"
+            ? "unbalanced_high"
+            : "unbalanced_low";
+  const C = hrvStatus === "unbalanced_high" ? 70 : hrvStatus === "unbalanced_low" ? 30 : hrvStatus === "low" ? 15 : 50;
+
+  const score = Math.round(Math.min(100, Math.max(0, 0.4 * A + 0.4 * B + 0.2 * C)));
+  const band: NonNullable<StressVM["ansBalance"]>["band"] =
+    score >= 65 ? "parasympathetic" : score >= 40 ? "balanced" : "sympathetic";
+
+  return {
+    score,
+    band,
+    sympatheticFraction,
+    overnightHrvZ,
+    hrvStatus,
   };
 }
 
@@ -739,9 +894,59 @@ export async function getFitness(ctx: QueryCtx): Promise<FitnessVM> {
     trend: {
       points: measured.some((p) => p.value !== null) ? measured : trendPoints(rows, last, (r) => r.healthspan?.fitnessEstimate?.vo2max, 182, () => true),
     },
+    vo2maxTrend: computeVo2maxTrend(last, rows),
     trainingLoad,
     load,
     loadReason: load.some((p) => p.ctl != null) ? null : { reason: "calibrating" },
+  };
+}
+
+/** 28-day weighted OLS trend of VO2 max (exponential decay w_i = 0.95^(28 - dayIndex)). */
+function computeVo2maxTrend(last: string, rows: Map<string, DayRow>): FitnessVM["vo2maxTrend"] {
+  const series: (number | null)[] = [];
+  const pairs: { d: number; v: number }[] = [];
+  for (let dayIndex = 0; dayIndex < 28; dayIndex++) {
+    const day = addDays(last, dayIndex - 27);
+    const r = rows.get(day);
+    const v = r ? (vo2Of(r)?.value ?? null) : null;
+    const val = finite(v) ? v : null;
+    series.push(val);
+    if (val !== null) pairs.push({ d: dayIndex, v: val });
+  }
+  if (pairs.length < 7) return null;
+
+  let sumW = 0;
+  let sumWD = 0;
+  let sumWV = 0;
+  for (const p of pairs) {
+    const w = 0.95 ** (28 - p.d);
+    sumW += w;
+    sumWD += w * p.d;
+    sumWV += w * p.v;
+  }
+  const dMean = sumWD / sumW;
+  const vMean = sumWV / sumW;
+  let num = 0;
+  let den = 0;
+  for (const p of pairs) {
+    const w = 0.95 ** (28 - p.d);
+    const dd = p.d - dMean;
+    num += w * dd * (p.v - vMean);
+    den += w * dd * dd;
+  }
+  const slope = den === 0 ? 0 : num / den;
+  const rawSlopePer28 = slope * 28;
+  const slopePer28Days = Object.is(rawSlopePer28, -0) ? 0 : rawSlopePer28;
+  const direction: NonNullable<FitnessVM["vo2maxTrend"]>["direction"] =
+    slopePer28Days > 2 ? "improving" : slopePer28Days < -2 ? "detraining" : "stable";
+  const displayDelta = `${formatValue("signed1", slopePer28Days)} mL/kg/min over 4 weeks`;
+
+  return {
+    slopePer28Days,
+    direction,
+    dataPoints: pairs.length,
+    displayDelta,
+    series,
   };
 }
 

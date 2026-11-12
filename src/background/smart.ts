@@ -160,6 +160,32 @@ export function decideSmart(input: SmartInput): Alert[] {
   return [strainTargetAlert(input, day), monitorAlert(input, day), weeklyReportAlert(input, day)].filter((a): a is Alert => a !== null);
 }
 
+/** Rising-edge illness warning when today's illness signal becomes raised after not being raised yesterday. */
+export function illnessWarningAlert(
+  todayRow: ScoreRow | null | undefined,
+  yesterdayRow: ScoreRow | null | undefined,
+  today: string,
+  source: AlertSource,
+  markers: Markers,
+): (Alert & { identifier: string }) | null {
+  if (!isOwnData(source) || sentFor(markers.illnessWarningDay ?? null, today)) return null;
+  const todayHm = todayRow?.health_monitor;
+  const prevHm = yesterdayRow?.health_monitor;
+  const todayIllness = todayHm && todayHm.reason === null ? todayHm.illness : null;
+  const prevLevel = prevHm && prevHm.reason === null ? prevHm.illness.level : null;
+  if (todayIllness?.level !== "raised" || prevLevel === "raised") return null;
+  const signals = todayIllness.firedSignals.length ? todayIllness.firedSignals.join(", ") : i18n.t("notifications:illnessWarning.fallbackSignals");
+  return {
+    kind: "health_monitor",
+    title: i18n.t("notifications:illnessWarning.title"),
+    body: i18n.t("notifications:illnessWarning.body", { signals }),
+    url: DEEP_LINK.monitor,
+    day: today,
+    mark: { illnessWarningDay: today },
+    identifier: `illness_warning_${today}`,
+  };
+}
+
 // ── Bedtime reminder ─────────────────────────────────────────────────────────
 
 export type BedtimeInput = {
