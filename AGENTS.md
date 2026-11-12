@@ -40,19 +40,19 @@ app/          Expo Router routes: one file per screen, _layout.tsx files are nav
 src/
   health/     Health Connect: permissions, record → row mapping, sync, data check (halo)
   data/       the Store interface, the async expo-sqlite store, the in-memory store for tests, the demo seed (halo)
-  core/       pure TypeScript: engine/ (the Pulse engine, from the reference study: every score the screens show), scoring and algorithms (halo's, kept for the extras listed in docs/engine-plan.md Phase 7)
-  pipeline/   stage 1 and stage 2: imported rows to stored scores (halo)
+  core/       pure TypeScript: engine/ (the Pulse engine, from the reference study: every score the screens show), scoring and algorithms (halo's extras plus on-device derived algorithms such as metabolicRisk and circadian)
+  pipeline/   stage 1 and stage 2: imported rows to stored scores (`SCORING_VERSION` 34)
   queries/    view models (halo), plus Pulse-only extras the screens need (trendView, homeExtras, mobileExtras, journalExtras, shell)
   lib/        time, yield (time slicing), format, bands, reasons, url and the UI catalogues
   state/      app.ts: boot, status, the sync run, the data version, the query and action contexts
-  background/ runSync.ts (the shared sync + scoring run) and lock.ts; the background task comes later
+  background/ runSync.ts (the shared sync + scoring run), lock.ts, background sync task, and local alerts
   actions/    writes: journal, log, dashboard, profile, preferences, export, calendar
   screens/    the screens, built from src/ui; useScreen.ts is the view-model cache
   ui/         tokens, shells, kit, charts
   dev/        development screens (kit); the routes in app/dev/ load them in development builds only
 plugins/      config plugins (withHighRefreshRate)
 scripts/      release tooling
-docs/         rewrite-plan.md, plan.md, design/spec.md, learning.md, onboarding.md, runbooks
+docs/         rewrite-plan.md, plan.md, derived-features.md, design/spec.md, learning.md, onboarding.md, runbooks
 ```
 
 ## Rules

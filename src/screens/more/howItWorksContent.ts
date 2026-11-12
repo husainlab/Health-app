@@ -39,6 +39,8 @@ const SHAPES: Shape[] = [
   ["training-readiness", "trainingReadiness", "/strain", [[0,6],[3,0],[0,5],[1,0]]],
   ["training-effect", "trainingEffect", null, [[0,3],[2,0],[0,6],[1,0]]],
   ["training-status", "trainingStatus", "/strain", [[0,3],[1,0],[0,4],[1,0]]],
+  ["metabolic-risk", "metabolicRisk", "/health/metabolic", [[1,5],[1,0],[0,4],[1,0]]],
+  ["circadian-rhythm", "circadianRhythm", "/sleep", [[1,3],[1,3],[0,4],[1,0]]],
 ]
 
 function build([slug, group, href, shape]: Shape): ScoreDoc {

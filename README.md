@@ -29,9 +29,9 @@ No server, no account, no cloud: Health reads your Fitbit data from Health Conne
 
 ## What you get
 
-- **Sleep, Recovery and Strain** every morning, with a Strain Target for the day
-- **Health Age**, **Stress** and **Energy Bank** through the day
-- **Health Monitor**, **Journal**, **Trends**, **Reports** and **My Dashboard**
+- **Sleep, Recovery and Strain** every morning, with a Strain Target, **Circadian Rhythm**, **Sleep Debt** alerts and hydration recovery flags
+- **Health Age**, **Metabolic Risk**, **Stress** with **ANS Balance**, and **Energy Bank** through the day
+- **Health Monitor** (with rising-edge **Illness Risk** alerts), **Fitness** (**Aerobic Base** trend & Training Load), **Journal**, **Trends**, **Reports** and **My Dashboard**
 
 ## How it works
 
@@ -41,7 +41,7 @@ flowchart LR
   G --> HC[(Health Connect)]
   HC -->|read & write permissions| S[Sync on the phone]
   S --> DB[(SQLite: expo-sqlite, async)]
-  DB --> P[Pipeline: stage 1, stage 2, scoring v19]
+  DB --> P[Pipeline: stage 1, stage 2, scoring v34]
   P --> DB
   DB --> Q[View models]
   Q --> UI[Screens: Expo Router, Skia charts]

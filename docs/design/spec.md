@@ -1526,7 +1526,7 @@ Shell: `DetailShell title="Recovery" dateSwitcher={{ mode: "day" }} info={How Re
 |---|---|---|---|
 | hero | ScoreDial `recovery lg` | value, "Recovery", band word | reason: track + icon + short copy in the centre, long copy under the dial ("Calibrating: 4 nights left") |
 | summary | `Card ring-0 px-4 py-1` with five ContributorRow `recovery`, then an inset legend `rounded-lg bg-inset px-3 py-2 caption`: "Dot: today. Shaded: your normal range." | rows "Heart rate variability" ms, "Resting heart rate" bpm (sleeping RHR), "Respiratory rate" rpm, "Sleep performance" %, "Skin temperature" °C from baseline | missing input row: "Not measured: left out of today's score" |
-| insight | InsightCard | body from U10, e.g. "Your HRV is above your baseline while resting heart rate and sleep are typical, which lifted Recovery today." action "See what shaped it" (scrolls to the drivers card, `#drivers`) | hidden in reason state |
+| insight | InsightCard; plus conditional warning InsightCard when Hydration check (`dehydrationFlag`) fires (`zRhr > 1.5`, `zHrv < -1.5`, prior strain `< 60`, not ill, sleep > 60%) linking to `/log?kind=water` | body from U10, e.g. "Your HRV is above your baseline while resting heart rate and sleep are typical, which lifted Recovery today." action "See what shaped it" (scrolls to the drivers card, `#drivers`) | hidden in reason state |
 | primary | SectionShell `card` "Recovery trend" + TrendChart `colorBy="band"`, default range `m` | header "Average" | "No data in this range yet." |
 | secondary 1 | SectionShell `card` "What shaped it" (`id="drivers"`) + DriverList `recovery` | header "Lowered / Points / Raised" | "No drivers yet: Recovery needs 7 nights first." |
 | secondary 2 | SectionShell `card` "Tomorrow's forecast" + ScoreDial `stat sm` (band colour) + body | value; caption "Estimate. Based on today's strain and your recent trend." tag "Estimate" | before 14 nights: reason `calibrating` sm "Forecast starts after 14 nights." |
@@ -1787,13 +1787,14 @@ Shell: `DetailShell title="Sleep" dateSwitcher={{ mode: "day" }} info={How Sleep
 | Slot | Component | Copy | Empty / reason |
 |---|---|---|---|
 | hero | ScoreDial `sleep lg` | value; "Sleep performance" | `awaiting_sleep_sync` (today before sync), `band_not_worn` (past) |
-| summary | Card with KeyStatRow rows with `status` segments; legend inset "Poor · Sufficient · Optimal" with swatches | "Hours vs. needed" %, "Sleep consistency" %, "Sleep efficiency" %, "Restorative sleep" % | per-row reason |
+| summary | Card with KeyStatRow rows with `status` segments (plus Sleep debt right after Hours vs. needed, linking to `/chart?metric=debt&r=w`, with a warning `StatusChip` when > 60 min); legend inset "Poor · Sufficient · Optimal" with swatches | "Hours vs. needed" %, "Sleep debt" min, "Sleep consistency" %, "Sleep efficiency" %, "Restorative sleep" % | per-row reason |
 | insight | InsightCard | e.g. "Your sleep was sufficient. Consistency is the easiest win: you went to bed 70 minutes later than usual." | hidden in reason |
 | primary | SectionShell `card` "Sleep stages" + Hypnogram, then stage rows | stage rows (KeyStatRow row, no arrow): "Awake" `7%` caption "Typical 5-10%", "REM" `22%` "Typical 20-25%", "Light" `51%` "Typical 45-55%", "Deep" `20%` "Typical 13-23%"; each row's value in `--stage-*` colour swatch (8 px square before the label) | Hypnogram empty copy |
 | secondary 1 | SectionShell `card` "Hours vs. need" | value `7:12` (stat value tile role) + " of 8:24 needed" (stat unit); need breakdown rows (caption-size rows with `font-numeric` values): "Baseline need 8:00", "Yesterday's strain +0:12", "Sleep debt +0:12", "Naps −0:00" | calibrating under 7 nights: "Your need settles after 7 nights. Using 8:00 until then." |
 | secondary 2 | SectionShell `card` "Details" with KeyStatRow rows | "Time in bed" `h:mm`, "Wake events" integer, "Respiratory rate" rpm, "Sleep debt" `h:mm` | per-row reason |
 | secondary 3 | SectionShell `card` "Sleep debt" + TrendChart `colorBy="sleep"` (hours of debt, bars, W/M/6M) | n/a | TrendChart empty |
 | secondary 4 | SectionShell `card` "Tonight's sleep" (`id="planner"`) | the three goals as rows: "Peak" `22:10` caption "100% of need", "Perform" `22:58` "85%", "Get by" `23:46` "70%"; then "Typical wake" `06:45` (weekday / weekend caption "Weekday wake time"); caption "Need tonight: 8:24" | calibrating: "Sleep Planner needs 7 nights to learn your wake time." |
+| secondary 5 | `CircadianCard` (`sleep/SleepCards.tsx`): Circadian Rhythm Score (0–100), phase `StatusChip` (`aligned`, `shifted_late`, `shifted_early`, `irregular`), onset/midpoint/HR nadir summary, and Consistency / Temp Alignment / Nadir Coupling breakdown | "Circadian rhythm" | calibrating until 7 nights in the current 7-night window have sleep onset timestamps |
 
 Info sheet "How Sleep works": "Sleep Performance compares the sleep you got with the sleep you needed, adjusted for consistency, efficiency and restorative sleep. Your need is your personal baseline plus extra for yesterday's strain and any sleep debt, minus naps." Second paragraph: "Sleep consistency is the Sleep Regularity Index: how closely your sleep and wake times match from one day to the next, over the last 7 days."
 
@@ -1887,7 +1888,8 @@ Four cards, each a SectionShell `card` whose whole surface links to the detail s
 | Card | Content | Copy | Empty / reason |
 |---|---|---|---|
 | Healthspan → `/health/healthspan` | left: `29.9` (stat value tile role) + "Pulse Age" (stat-label); delta line "2.3 years younger" (`text-optimal`, body-strong); right: "Pace of Aging" (stat-label) over `0.8x` (`font-numeric text-xl font-bold`) | caption "Updated weekly" | under 20 days: value with "Provisional" tag; no data: "Healthspan needs 20 days of data." |
-| Health Monitor → `/health/monitor` | five vital icons in a row (`Wind`, `Droplet`, `Heart`, `Activity`, `Thermometer`), each over a 20 px status square (`bg-optimal/15 text-optimal` `Check`, or `bg-warning/15 text-warning` `TriangleAlert`) with stat-label abbreviations "Resp", "SpO2", "RHR", "HRV", "Temp"; footer inset row "5/5 metrics within range" with a `Check` chip | as left | no readings: icons with `--`, "No readings from last night" |
+| Health Monitor → `/health/monitor` | five vital icons in a row (`Wind`, `Droplet`, `Heart`, `Activity`, `Thermometer`), each over a 20 px status square (`bg-optimal/15 text-optimal` `Check`, or `bg-warning/15 text-warning` `TriangleAlert`) with stat-label abbreviations "Resp", "SpO2", "RHR", "HRV", "Temp"; footer inset row "5/5 metrics within range" with a `Check` chip; plus an elevated Illness Risk alert banner naming fired signals when `illness` is raised | as left | no readings: icons with `--`, "No readings from last night" |
+| Metabolic Risk → `/health/metabolic` | Latest Monday composite score (`0–100`), band `StatusChip` (`low`, `moderate`, `elevated`, `high`), top contributor pills, updated date caption | "Metabolic risk" | calibrating under 21 nights (`METABOLIC_MIN_DAYS`) |
 | Stress Monitor → `/health/stress` | left: "Today's high stress" (stat-label) over `0:24` (stat value tile) + " hrs"; status chip "▼ vs. typical Thu" (neutral/optimal/warning by direction); right: StressChart `spark` | n/a | "No still minutes yet today" |
 | Fitness → `/health/fitness` | `48.2` + " ml/kg/min" (stat value tile + unit); category word "Excellent" (stat-label, `text-optimal` for Excellent and Superior, `text-foreground` for Good, `text-warning` for Fair and Poor); caption "78th percentile for your age"; right: "Training load" over ACWR `1.12` + status chip | n/a | no VO2 max: "No VO2 max yet. Fitbit estimates it from runs and resting heart rate." |
 
@@ -2147,7 +2149,8 @@ Shell: `DetailShell title="Stress Monitor" dateSwitcher={{ mode: "day" }} info={
 | insight | InsightCard | e.g. "Most of your time was in low stress. Your longest high-stress stretch started at 14:20 and lasted 38 minutes." | hidden when empty |
 | primary | SectionShell `card` "Today" (past: the date) + StressChart `full` | n/a | StressChart empty copy |
 | secondary 1 | SectionShell `card` "Time in each level" + ZoneBars `stacked` (minutes; low, medium, high) + caption "vs. your typical {weekday}: {delta}" | legend labels "Low (0-29)", "Medium (30-59)", "High (60-100)" | "No still minutes to score yet today." |
-| secondary 2 | SectionShell `card` "30-day trend" + TrendChart (daily average stress as bars, coloured by level; fixed range `m`, toggle hidden) | header "Average" | TrendChart empty |
+| secondary 2 | `AnsBalanceCard`: ANS Balance Index (0–100, 50 = balanced), band chip (`sympathetic`, `balanced`, `parasympathetic`), 0–100 `TickScale` meter, and daytime calm % / overnight HRV z-score / HRV Status summary | "ANS balance" | hidden when stress data is missing |
+| secondary 3 | SectionShell `card` "30-day trend" + TrendChart (daily average stress as bars, coloured by level; fixed range `m`, toggle hidden) | header "Average" | TrendChart empty |
 
 Info sheet "About Stress Monitor": "Stress Monitor scores how activated your body is, from 0 to 3, by comparing your heart rate with your daytime resting baseline." Three rows with swatches: "Low, 0.0 - 0.9: you might be feeling calm, relaxed or sleepy." "Medium, 1.0 - 1.9: neutral, alert or mildly activated." "High, 2.0 - 3.0: excited, stressed or highly activated." Then: "Pulse only scores still minutes. Movement, workouts and sleep are left out, so a walk never counts as stress."
 
@@ -2215,7 +2218,7 @@ Shell: `DetailShell title="Fitness" info={About Fitness}` (latest values; no dat
 | Slot | Component | Copy | Empty / reason |
 |---|---|---|---|
 | hero | value block: `48.2` (dial-hero role) + " ml/kg/min" (stat unit) + "VO2 max" (dial-label) + category word (dial-label, coloured as §7.6); caption "From a run on Sep 21" or "Daily estimate from Fitbit" | n/a | "No VO2 max yet. Fitbit estimates it from runs and resting heart rate." |
-| summary | Card "Percentile" + TickScale `marker` 0-100 with end labels "0", "50", "100", category bands as tick colours (Poor < 20 `bg-warning/50`, Fair 20-39 `bg-warning/30`, Good 40-59 `bg-foreground-secondary/40`, Excellent 60-79 `bg-optimal/40`, Superior ≥ 80 `bg-optimal/70`) and category labels under the scale in five equal columns (caption) | caption "78th percentile for men 30-39 (FRIEND registry)." | n/a |
+| summary | Card "Percentile" + TickScale `marker` 0-100 with end labels "0", "50", "100", category bands as tick colours (Poor < 20 `bg-warning/50`, Fair 20-39 `bg-warning/30`, Good 40-59 `bg-foreground-secondary/40`, Excellent 60-79 `bg-optimal/40`, Superior ≥ 80 `bg-optimal/70`) and category labels under the scale in five equal columns (caption); followed by `AerobicBaseCard` showing 28-day weighted VO2 max slope (`improving`, `stable`, `detraining`), 4-week delta, and observation count when ≥ 7 days exist | caption "78th percentile for men 30-39 (FRIEND registry)." | n/a |
 | insight | none | | |
 | primary | SectionShell `card` "VO2 max trend" + TrendChart (line, default `6m`) | n/a | TrendChart empty |
 | secondary 1 | SectionShell `card` "Training load" + ACWR value (`font-numeric text-4xl font-bold`) + status chip + TickScale `marker` 0.5-2.0 with bands (0.8-1.3 optimal, > 1.5 warning) + body | status copy: < 0.8 "Detraining: your recent load is well below your usual. Fitness slowly drops if this lasts.", 0.8-1.3 "Optimal: your recent load matches what you are used to.", 1.3-1.5 "Pushing: load is rising faster than usual. Watch your Recovery.", > 1.5 "High risk: load jumped well above your usual. Injury and illness risk rise." | under 28 days: "Training load needs 28 days of strain." |
@@ -2680,6 +2683,10 @@ No PWA design; halo's phone additions on our kit. Targets live on the phone (Asy
 ### 7.27 Report share (halo)
 
 The report header's right action is a ghost `Share2` button: the report as plain text (period, averages against the period before, sleep, activity, biggest changes, focus) through the system share sheet.
+
+### 7.28 Metabolic Risk `/health/metabolic`
+
+`DetailShell title="Metabolic risk" info={METABOLIC_INFO}` (`src/screens/health/MetabolicScreen.tsx`, `app/health/metabolic.tsx`). Hero displays the latest Monday composite score (0–100), band `StatusChip` (`low` < 40, `moderate` 40–59, `elevated` 60–74, `high` >= 75), updated Monday caption, and disclaimer (or `ReasonPlaceholder` while calibrating under 21 nights). Summary renders a 0–100 `TickScale` meter; insight names up to 3 highest-impact contributing signals; primary renders the 6M Monday `TrendChart` (with 50 reference line) and the 5 contributing signal `KeyStatRow` items (RHR, HRV, Sleep Performance, Steps, Respiratory Rate) with 30-day prior averages.
 
 ---
 

@@ -20,7 +20,12 @@ Engine & Scoring Knowledge:
 - Energy Bank (1–100): Dynamic capacity model. Restorative sleep and calm awake hours recharge it; physical strain and stress drain it.
 - Health Age: Biological age estimate from 9 lifestyle and vital habits over a rolling 28-day window ending Sunday.
 - Training Load (ACWR): Acute workload (7 days fatigue) divided by chronic workload (28 days fitness). Above 1.4 indicates a rapid spike in injury/overtraining risk.
-- Health Monitor: Tracks 5 vitals against personal 30-night baseline ± 1 standard deviation. Deviations in multiple vitals simultaneously indicate potential illness before overt symptoms appear.
+- Health Monitor: Tracks 5 vitals against personal 30-night baseline ± 1 standard deviation. Deviations in multiple vitals simultaneously raise an illness signal banner on the Health Hub and trigger a rising-edge early-warning notification when enabled.
+- Metabolic Risk Score (0–100): Weekly Monday composite across resting heart rate (30%), HRV (30%), Sleep Performance (20%), steps (10%), and respiratory rate (10%) z-scored against personal 60-day baselines (Low <40, Moderate 40–59, Elevated 60–74, High >=75; requires 21 days).
+- Circadian Rhythm Score (0–100): Evaluates 7-night circular sleep-onset consistency (50%), nocturnal skin-temperature nadir timing (30%), and HR–temperature nadir coupling (20%), classifying phase as Aligned, Shifted late (>30 min), Shifted early (<-30 min), or Irregular.
+- ANS Balance Index (0–100): Combines calm awake fraction (40%), overnight HRV z-score vs. 30-day baseline (40%), and 7-day HRV Status (20%) to summarize parasympathetic vs. sympathetic tone (50 = balanced).
+- Aerobic Base Trend: 28-day exponentially weighted VO2 max slope classifying cardiorespiratory progression as Improving (>+2), Stable (-2 to +2), or Detraining (<-2 mL/kg/min over 4 weeks).
+- Hydration & Recovery Check: Recovery flags unexpected elevated RHR (>+1.5 SD) with suppressed HRV (<-1.5 SD) that isn't explained by yesterday's strain (<60%), raised illness signals, or poor sleep (>60%), prompting water logging.
 - Explaining how the app works: When the user asks how a metric, formula, weight, or band is calculated, call get_how_it_works.
 - For user history or internal app statistics: Call get_app_stats.
 - Logging via Coach:

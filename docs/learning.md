@@ -923,3 +923,11 @@ Each workout link starts a fresh Expo Router chat using `n`, carries the workout
 ## Sleep analysis uses the wake-up date
 
 Sleep Coach links carry the selected wake-up date in Expo Router params, then message metadata for saved follow-ups. The preview uses the existing sleep digest and a session-only cache keyed by night data, provider, model and instructions, including language and display units. Matching concurrent requests share one promise; failures are not cached. The shared activity Coach uses one automatic-analysis setting for every recorded workout type, main sleep and naps. Each link carries its activity kind and session ID or wake-up date; saved chats preserve that selection. Turning automatic analysis off keeps the Coach available on tap for every activity.
+
+## Derived insights: pipeline columns vs. query-time analytics
+
+New derived features (`docs/derived-features.md`) follow a strict split between stored Stage 2 scores and query-time analytics:
+
+- **Causal history or raw intraday scans belong in Stage 2.** **Metabolic Risk Score** (`metabolic_risk`, published Mondays using 60-day causal `foldHistory` baselines) and **Circadian Rhythm Score** (`circadian`, needing raw/minute sleeping HR nadir detection via `findHrNadirOffsetH` and 7/14-night circular statistics) are computed in `src/pipeline/stage2.ts` and persisted on `Stage2Row`, bumping `SCORING_VERSION` to `34`.
+- **Single-day or short-window combinations over existing daily rows live in `src/queries`.** **ANS Balance Index** (`computeAnsBalance`), **Aerobic Base Trend** (`computeVo2maxTrend`), **Dehydration / Recovery Flag** (`dehydrationFlagOf`), and surfacing **Sleep Debt** in Sleep's summary strip run purely in the query layer without altering SQLite schemas or triggering a 180-day rescore.
+- **Rising-edge illness warnings reuse Health Monitor's toggle.** `illnessWarningAlert` (`src/background/smart.ts`) fires once per local day via `markers.illnessWarningDay` when `illness.level` transitions into `"raised"` under the existing `healthMonitor` notification setting, keeping notification settings uncluttered.
