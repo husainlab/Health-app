@@ -26,6 +26,14 @@ Engine & Scoring Knowledge:
 - ANS Balance Index (0–100): Combines calm awake fraction (40%), overnight HRV z-score vs. 30-day baseline (40%), and 7-day HRV Status (20%) to summarize parasympathetic vs. sympathetic tone (50 = balanced).
 - Aerobic Base Trend: 28-day exponentially weighted VO2 max slope classifying cardiorespiratory progression as Improving (>+2), Stable (-2 to +2), or Detraining (<-2 mL/kg/min over 4 weeks).
 - Hydration & Recovery Check: Recovery flags unexpected elevated RHR (>+1.5 SD) with suppressed HRV (<-1.5 SD) that isn't explained by yesterday's strain (<60%), raised illness signals, or poor sleep (>60%), prompting water logging.
+- Health Tracks All Derived Health Metrics:
+  - When the user asks about metabolic risk, metabolic rate, metabolism, or cardiometabolic health: Health tracks this via the Metabolic Risk Score (0–100, optimal/moderate/elevated/high, weekly Monday evaluation). Call get_metabolic_risk or get_health (both expose current Metabolic Risk, band, top contributors, and history). Never say Health does not track metabolic rate or metabolic risk.
+  - When the user asks about circadian rhythm, body clock, sleep phase shift, or sleep debt: Health tracks this via the Circadian Rhythm Score (0–100, aligned/late/early/irregular) and sleep debt minutes. Call get_sleep or get_day (both expose circadian metrics, nadir offsets, and debt minutes).
+  - When the user asks about autonomic nervous system (ANS) tone, sympathetic vs parasympathetic balance, or autonomic recovery: Health tracks this via the ANS Balance Index (0–100, sympathetic/balanced/parasympathetic). Call get_day (exposes ansBalance under stress).
+  - When the user asks about aerobic base progression, cardiorespiratory trends, or VO2 max slope: Health tracks this via 28-day weighted Aerobic Base Trend (improving/stable/detraining). Call get_health (exposes aerobicBaseTrend).
+  - When the user asks about hydration, dehydration, or water-loss flags: Health flags unexplained high RHR with low HRV on good sleep and low strain. Call get_day (exposes dehydrationFlag under recovery).
+  - When the user asks about illness risk or early warning signals: Health detects multi-vital deviations. Call get_health (exposes illness level, isRaised flag, and alertMessage).
+  - Explaining how any metric works: Call get_how_it_works (e.g. topic "metabolic-risk", "circadian-rhythm", "recovery", "stress", "fitness"). Never claim an algorithm is untracked when get_how_it_works or get_health has it.
 - Explaining how the app works: When the user asks how a metric, formula, weight, or band is calculated, call get_how_it_works.
 - For user history or internal app statistics: Call get_app_stats.
 - Logging via Coach:
@@ -88,11 +96,11 @@ const END: Param = { type: "date (YYYY-MM-DD), optional", description: "Inclusiv
 
 export const TOOL_DOCS: Record<string, ToolDoc> = {
   get_day: {
-    description: "Read one day's readiness before explaining Recovery or planning today. Returns Recovery contributors and personal baselines, sleep overview, Strain Target, stress and Energy Bank. Nulls carry reasons; provisional scores can change. Use get_sleep for bedtime/debt and get_health plus workouts for training decisions.",
+    description: "Read one day's readiness before explaining Recovery or planning today. Returns Recovery contributors and personal baselines, dehydration flag, sleep overview with sleep debt and Circadian Rhythm Score, Strain Target, stress with ANS Balance Index, Energy Bank, and Metabolic Risk. Nulls carry reasons; provisional scores can change. Use get_sleep for bedtime/stages/nadir details, get_metabolic_risk for metabolic breakdown, and get_health plus workouts for training decisions.",
     params: { day: DAY },
   },
   get_sleep: {
-    description: "Investigate one night's sleep or plan that evening: measured sleep, need, stages, efficiency, consistency, debt, wake events and personal averages, plus calculated bedtime options and their wake time. Use for poor sleep, recovery actions and today's brief. Planner times are recommendations, not future observations.",
+    description: "Investigate one night's sleep or plan that evening: measured sleep, need, accumulated sleep debt in minutes, stages, efficiency, consistency, Circadian Rhythm Score (consistency, alignment, HR nadir offset, phase), wake events and personal averages, plus calculated bedtime options and their wake time. Use for poor sleep, circadian alignment, recovery actions and today's brief.",
     params: { day: DAY },
   },
   get_trend: {
@@ -112,8 +120,12 @@ export const TOOL_DOCS: Record<string, ToolDoc> = {
     params: { outcome: { type: "one of: recovery, hrv, sleep; default recovery", description: "Outcome to compare. HRV is baseline standard deviations (SD), recovery and sleep are percentage points." } },
   },
   get_health: {
-    description: "Read dated personal-range vitals and illness signal, Health Age, VO2 max and training-load status. Use alongside get_day and recent workouts for training advice or conflicting signals. Historical requests must use only measurements on or before that day. No diagnosis; unavailable or provisional signals cannot justify confident advice.",
+    description: "Read dated personal-range vitals, illness early warning signals and alert messages, Health Age, VO2 max, 28-day Aerobic Base Trend, Metabolic Risk Score and band, and training-load status. Use alongside get_day and recent workouts for training advice, fitness progression, metabolic health, or illness risk.",
     params: { day: DAY },
+  },
+  get_metabolic_risk: {
+    description: "Read the user's Metabolic Risk Score (0–100: optimal <40, moderate 40–59, elevated 60–74, high >=75), 5 contributing biological signals (resting HR, HRV, sleep performance, steps, respiratory rate), top risk contributors, published Monday date, and weekly history. Use when user asks about metabolic health, metabolic rate, metabolic risk, or cardiometabolic status.",
+    params: {},
   },
   get_report: {
     description: "Read the latest weekly or monthly report for a broad review: exact period, partial flag, score and metric averages, changes, training balance, best/worst days and habit effects. Use get_trend for a specific historical window. Do not treat a partial report as a complete period.",
@@ -124,8 +136,8 @@ export const TOOL_DOCS: Record<string, ToolDoc> = {
     params: {},
   },
   get_how_it_works: {
-    description: "Look up the exact calculation formulas, scientific weighting, score bands, and limits of any Health score or algorithm (recovery, strain, strain-target, sleep, sleep-planner, pulse-age/health-age, stress, energy-bank, health-monitor, fitness, training-load, training-readiness, training-effect, training-status). Call with a topic or empty to list available topics.",
-    params: { topic: { type: "string, optional", description: "The score or algorithm topic to look up (e.g. recovery, strain, sleep, health-age, energy-bank, training-load). Omit to list all available topics." } },
+    description: "Look up the exact calculation formulas, scientific weighting, score bands, and limits of any Health score or algorithm (recovery, strain, strain-target, sleep, sleep-planner, pulse-age/health-age, stress, energy-bank, health-monitor, fitness, training-load, training-readiness, training-effect, training-status, metabolic-risk, circadian-rhythm). Accepts aliases like 'metabolic rate', 'body clock', 'ANS balance', 'dehydration'. Call with a topic or empty to list available topics.",
+    params: { topic: { type: "string, optional", description: "The score or algorithm topic to look up (e.g. metabolic-risk, circadian-rhythm, recovery, strain, sleep, health-age). Omit to list all available topics." } },
   },
   get_app_stats: {
     description: "Read internal statistics and aggregate baseline summaries of the user's Health database: total days recorded, first sync day, 60-day HRV and RHR baselines, average recovery/strain/sleep, total workouts, and calibration progress. Use for big-picture summaries and overall health trends.",

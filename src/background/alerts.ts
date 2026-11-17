@@ -53,6 +53,23 @@ async function applyPlan(a: BedtimeAction): Promise<Partial<Markers> | null> {
   return Object.keys(a.mark).length ? a.mark : null;
 }
 
+function isDehydrated(row: ScoreRow | null, yesterdayRow: ScoreRow | null): boolean {
+  if (!row?.recovery?.inputs || !row.recovery.baselines) return false;
+  const { rhr, hrv, sleepPerf } = row.recovery.inputs;
+  const { rhr: rhrBase, hrv: hrvBase } = row.recovery.baselines;
+  if (rhr == null || hrv == null || !rhrBase || !hrvBase || hrv <= 0) return false;
+  if (rhrBase.nValid < 14 || hrvBase.nValid < 14) return false;
+
+  const zRhr = (rhr - rhrBase.mean) / Math.max(rhrBase.sd ?? 0, 1.25);
+  const zHrv = (Math.log(hrv) - hrvBase.mean) / Math.max(hrvBase.sd ?? 0, 0.05);
+
+  const yStrain = yesterdayRow?.strain?.engine?.strain?.value ?? 0;
+  const illness = row.health_monitor && row.health_monitor.reason === null ? row.health_monitor.illness.level : null;
+  const perf = sleepPerf != null ? sleepPerf * 100 : (row.sleep?.performance ?? null);
+
+  return zRhr > 1.5 && zHrv < -1.5 && yStrain < 60 && illness !== "raised" && perf !== null && perf > 60;
+}
+
 /** Sends what is due and returns it. `now` in unix seconds. */
 export async function notifyAfterRun(store: Store, timeZone: string, now = Math.floor(Date.now() / 1000)): Promise<Alert[]> {
   try {
@@ -71,6 +88,7 @@ export async function notifyAfterRun(store: Store, timeZone: string, now = Math.
       settings.weeklyReport ? store.getReports() : Promise.resolve([]),
     ]);
     const row = rows.find((r) => r.day === today) ?? null;
+    const yesterdayRow = rows.find((r) => r.day === addDays(today, -1)) ?? null;
     const target = strainOf(row).target;
     const recoveryVal = row?.recovery?.value;
     const recoveryStats: RecoveryStats | null =
@@ -83,6 +101,10 @@ export async function notifyAfterRun(store: Store, timeZone: string, now = Math.
             sleepPerformance: row.sleep?.performance ?? null,
             targetLow: target?.low ?? null,
             targetHigh: target?.high ?? null,
+            dehydrationFlag: isDehydrated(row, yesterdayRow),
+            sleepDebtMin: row.sleep?.debtMin ?? null,
+            circadianPhase: row.circadian && row.circadian.reason === null ? row.circadian.phase : null,
+            metabolicBand: row.metabolic_risk && row.metabolic_risk.reason === null ? row.metabolic_risk.band : null,
           }
         : null;
 
@@ -128,7 +150,6 @@ export async function notifyAfterRun(store: Store, timeZone: string, now = Math.
     }
     const sent: Alert[] = [];
     for (const a of due) if (await sendNow(a)) sent.push(a);
-    const yesterdayRow = rows.find((r) => r.day === addDays(today, -1)) ?? null;
     const warning = settings.healthMonitor ? illnessWarningAlert(row, yesterdayRow, today, source, markers) : null;
     if (warning && (await sendNow(warning))) sent.push(warning);
     const bedtime = await applyPlan(bedtimePlan(settings, source, markers, rows, today, timeZone, now));

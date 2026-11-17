@@ -164,10 +164,47 @@ describe("coach tools", () => {
     expect(ageDoc.topic).toBe("Health Age");
     expect(ageDoc.slug).toBe("health-age");
 
+    // Aliases and user terminology
+    const metabolicDoc = await call(tools.get_how_it_works, { topic: "metabolic rate drop" });
+    expect(metabolicDoc.topic).toBe("Metabolic Risk");
+    expect(metabolicDoc.slug).toBe("metabolic-risk");
+
+    const circadianDoc = await call(tools.get_how_it_works, { topic: "circadian" });
+    expect(circadianDoc.topic).toBe("Circadian Rhythm");
+    expect(circadianDoc.slug).toBe("circadian-rhythm");
+
+    const ansDoc = await call(tools.get_how_it_works, { topic: "ans balance" });
+    expect(ansDoc.topic).toBe("Stress Monitor");
+
     const allTopics = await call(tools.get_how_it_works, {});
     expect(allTopics.topic).toBeNull();
     expect(allTopics.availableTopics.length).toBeGreaterThanOrEqual(15);
     expect(allTopics.availableTopics.map((t) => t.slug)).toContain("health-age");
+  });
+
+  it("get_metabolic_risk returns weekly status, contributors, and history", async () => {
+    const tools = coachTools(ctx);
+    const mr = await call(tools.get_metabolic_risk, {});
+    expect(mr.asOf).toBe(TODAY);
+    expect(mr.contributors.length).toBe(5);
+    expect(mr.contributors.map((c) => c.key)).toContain("rhr");
+    expect(mr.contributors.map((c) => c.key)).toContain("hrv");
+  });
+
+  it("get_day and get_health expose the 7 derived health metrics", async () => {
+    const tools = coachTools(ctx);
+    const day = await call(tools.get_day, { day: TODAY });
+    expect(day.metabolicRisk).toBeDefined();
+    expect(day.sleep.debtMinutes).toBeDefined();
+    expect(day.sleep.circadian).toBeDefined();
+    expect(day.stress.ansBalance).toBeDefined();
+
+    const health = await call(tools.get_health, { day: TODAY });
+    expect(health.metabolicRisk).toBeDefined();
+    expect(health.aerobicBaseTrend).toBeDefined();
+    if (health.illness) {
+      expect(typeof health.illness.isRaised).toBe("boolean");
+    }
   });
 
   it("get_app_stats returns internal statistics, baselines and 60-day averages", async () => {

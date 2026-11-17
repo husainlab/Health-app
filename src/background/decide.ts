@@ -53,6 +53,10 @@ export type RecoveryStats = {
   sleepPerformance?: number | null;
   targetLow?: number | null;
   targetHigh?: number | null;
+  dehydrationFlag?: boolean | null;
+  sleepDebtMin?: number | null;
+  circadianPhase?: string | null;
+  metabolicBand?: string | null;
 };
 
 export type DecideInput = {
@@ -120,6 +124,26 @@ export function recoveryBody(value: number, stats?: RecoveryStats | null): strin
   }
   if (stats.targetLow != null && stats.targetHigh != null) {
     parts.push(`Target ${Math.round(stats.targetLow)}–${Math.round(stats.targetHigh)}%`);
+  }
+  if (stats.dehydrationFlag) {
+    parts.push(i18n.t("notifications:recovery.hydrationAlert"));
+  }
+  if (stats.sleepDebtMin != null && stats.sleepDebtMin >= 60) {
+    const hours = Math.floor(stats.sleepDebtMin / 60);
+    const mins = Math.round(stats.sleepDebtMin % 60);
+    parts.push(
+      mins > 0
+        ? i18n.t("notifications:recovery.sleepDebt", { hours, mins })
+        : i18n.t("notifications:recovery.sleepDebtHours", { hours }),
+    );
+  }
+  if (stats.circadianPhase && stats.circadianPhase !== "aligned") {
+    if (stats.circadianPhase === "late") parts.push(i18n.t("notifications:recovery.phaseShiftLate"));
+    else if (stats.circadianPhase === "early") parts.push(i18n.t("notifications:recovery.phaseShiftEarly"));
+    else parts.push(i18n.t("notifications:recovery.phaseShiftIrregular"));
+  }
+  if (stats.metabolicBand === "elevated" || stats.metabolicBand === "high") {
+    parts.push(i18n.t("notifications:recovery.metabolicRisk", { band: stats.metabolicBand }));
   }
   return parts.length ? `${base} · ${parts.join(" · ")}` : base;
 }

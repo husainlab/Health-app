@@ -26,7 +26,7 @@ export async function generateNotificationInsight(ctx: BriefingContext): Promise
 
     const typePrompt =
       ctx.type === "recovery"
-        ? "Give an encouraging, actionable morning recovery summary and daily guidance (under 160 characters)."
+        ? "Give an encouraging, actionable morning recovery summary and daily guidance (under 160 characters). If hydration alert, sleep debt, circadian shift, or metabolic risk appear in Stats, address the most important one directly."
         : ctx.type === "strain"
         ? "Give a motivating 1-sentence comment on reaching their strain target (under 140 characters)."
         : "Give a 1-sentence wind-down reminder to sleep well tonight (under 140 characters).";

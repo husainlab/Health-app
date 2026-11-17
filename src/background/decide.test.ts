@@ -37,6 +37,20 @@ describe("decide: Recovery ready", () => {
     expect(recoveryBody(60, stats)).toBe("60%: Yellow · Sleep 7h 12m · HRV 48ms · RHR 56bpm · Target 8–12%");
   });
 
+  it("enriches body with hydration alert, sleep debt, circadian shift and metabolic risk", () => {
+    const stats = {
+      value: 75,
+      sleepDurationMs: 6.5 * 3600000,
+      hrvRmssd: 52,
+      rhr: 60,
+      dehydrationFlag: true,
+      sleepDebtMin: 75,
+      circadianPhase: "late",
+      metabolicBand: "elevated",
+    };
+    expect(recoveryBody(75, stats)).toBe("75%: Green · Sleep 6h 30m · HRV 52ms · RHR 60bpm · Hydration alert · Sleep debt +1h 15m · Late phase shift · Metabolic risk elevated");
+  });
+
   it("waits while today has no Recovery yet", () => {
     expect(decide({ ...base, recoveryToday: null })).toEqual([]);
     expect(decide({ ...base, recoveryToday: Number.NaN })).toEqual([]);

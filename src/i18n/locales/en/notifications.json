@@ -1,7 +1,14 @@
 {
   "recovery": {
     "title": "Recovery ready",
-    "body": "{{percent}}%: {{band}}"
+    "body": "{{percent}}%: {{band}}",
+    "hydrationAlert": "Hydration alert",
+    "sleepDebt": "Sleep debt +{{hours}}h {{mins}}m",
+    "sleepDebtHours": "Sleep debt +{{hours}}h",
+    "phaseShiftLate": "Late phase shift",
+    "phaseShiftEarly": "Early phase shift",
+    "phaseShiftIrregular": "Circadian irregular",
+    "metabolicRisk": "Metabolic risk {{band}}"
   },
   "cantSync": {
     "title": "Health can’t sync",

@@ -12,7 +12,7 @@ import { getActivities } from "@/queries/activities";
 import { costDigest } from "@/queries/activityCost";
 import { getActivity } from "@/queries/activity";
 import { dayStartOf, firstDay, loadDays, maybe, meanSd, todayOf, type QueryCtx } from "@/queries/common";
-import { acwrStatus, getFitness, getHealthHub, getMonitor, getStress } from "@/queries/health";
+import { acwrStatus, getFitness, getHealthHub, getMetabolicRisk, getMonitor, getStress } from "@/queries/health";
 import { energyBankVM, latestReport } from "@/queries/home";
 import { getJournalInsights, tagRows, addTag } from "@/queries/journal";
 import { behavior } from "@/lib/behaviors";
@@ -52,6 +52,17 @@ export async function sleepDigest(ctx: QueryCtx, day: string) {
     performance: { ...num(s.performance), unit: "%" },
     asleepMinutes: num(s.hours.value ? { ...s.hours, value: s.hours.value.asleepMin } : { ...s.hours, value: null }),
     need: s.hoursVsNeed,
+    debtMinutes: Math.round(s.hoursVsNeed.value?.parts.debtMin ?? 0),
+    circadian: s.circadian.value ? {
+      score: s.circadian.value.score,
+      phase: s.circadian.value.phase,
+      consistencyScore: s.circadian.value.consistencyScore,
+      alignmentScore: s.circadian.value.alignmentScore,
+      nadirScore: s.circadian.value.nadirScore,
+      sleepOnsetMin: s.circadian.value.sleepOnsetMin,
+      sleepMidMin: s.circadian.value.sleepMidMin,
+      hrNadirOffsetH: s.circadian.value.hrNadirOffsetH,
+    } : { score: null, reason: s.circadian.reason },
     summary: s.summary.map((v) => ({ key: v.key, label: v.label, unit: v.unit ?? null, ...num(v.metric, 1), baseline: v.average, status: v.status ?? null })),
     details: s.details.map((v) => ({ key: v.key, label: v.label, unit: v.unit ?? null, ...num(v.metric, 1), baseline: v.average })),
     stages: s.stages?.value
@@ -93,6 +104,8 @@ export async function trendDigest(ctx: QueryCtx, metric: TrendMetricKey, start?:
 export async function dayDigest(ctx: QueryCtx, day: string) {
   const [rec, sleep, strain, stress, rows] = await Promise.all([getRecovery(day, ctx), getSleep(day, ctx), getStrain(day, ctx), getStress(day, ctx), loadDays(ctx, day, day)]);
   const bank = energyBankVM(ctx, rows.get(day), day, rec.isToday, null);
+  const row = rows.get(day);
+  const circ = sleep.circadian;
   return {
     day,
     isToday: rec.isToday,
@@ -108,6 +121,7 @@ export async function dayDigest(ctx: QueryCtx, day: string) {
       ...num(rec.recovery),
       unit: "%",
       band: rec.band,
+      dehydrationFlag: rec.dehydrationFlag ? { flagged: true, reason: rec.dehydrationFlag.reason } : null,
       contributors: rec.contributors.map((c) => ({
         label: c.label,
         unit: c.unit,
@@ -120,6 +134,14 @@ export async function dayDigest(ctx: QueryCtx, day: string) {
       performance: { ...num(sleep.performance), unit: "%" },
       hoursAsleep: sleep.hours.value ? round(sleep.hours.value.asleepMin / 60, 1) : null,
       hoursNeeded: sleep.hoursVsNeed.value ? round(sleep.hoursVsNeed.value.needMin / 60, 1) : null,
+      debtMinutes: Math.round(sleep.hoursVsNeed.value?.parts.debtMin ?? 0),
+      circadian: circ?.value ? {
+        score: circ.value.score,
+        phase: circ.value.phase,
+        consistencyScore: circ.value.consistencyScore,
+        alignmentScore: circ.value.alignmentScore,
+        nadirScore: circ.value.nadirScore,
+      } : { score: null, reason: circ?.reason ?? "no_data" },
       stages: sleep.stages?.value?.rows.map((r) => ({ stage: r.label, minutes: Math.round(r.minutes), pct: Math.round(r.pct) })) ?? null,
     },
     strain: {
@@ -130,9 +152,92 @@ export async function dayDigest(ctx: QueryCtx, day: string) {
       coachLine: strain.coach,
     },
     energyBank: { value: bank.value ? { current: round(bank.value.current), charged: round(bank.value.charged), drained: round(bank.value.drained), asOf: bank.value.until } : null, reason: bank.reason, provisional: bank.provisional },
-    stress: stress.gauge.value ? { ...num({ ...stress.gauge, value: stress.gauge.value.value }), level: stress.gauge.value.level } : num({ ...stress.gauge, value: null }),
+    stress: {
+      ...(stress.gauge.value ? { ...num({ ...stress.gauge, value: stress.gauge.value.value }), level: stress.gauge.value.level } : num({ ...stress.gauge, value: null })),
+      ansBalance: stress.ansBalance ? {
+        score: stress.ansBalance.score,
+        band: stress.ansBalance.band,
+        sympatheticFraction: round(stress.ansBalance.sympatheticFraction, 2),
+        overnightHrvZ: stress.ansBalance.overnightHrvZ != null ? round(stress.ansBalance.overnightHrvZ, 2) : null,
+        hrvStatus: stress.ansBalance.hrvStatus,
+      } : null,
+    },
+    metabolicRisk: row?.metabolicRisk?.reason === null ? {
+      score: row.metabolicRisk.score,
+      band: row.metabolicRisk.band,
+      topContributors: row.metabolicRisk.topContributors,
+      publishedDay: row.metabolicRisk.publishedDay,
+    } : { score: null, reason: row?.metabolicRisk?.reason ?? "calibrating" },
   };
 }
+
+const TOPIC_ALIASES: Record<string, string> = {
+  // Metabolic Risk & Metabolic Rate
+  "metabolic": "metabolic-risk",
+  "metabolic-rate": "metabolic-risk",
+  "metabolic-rate-drop": "metabolic-risk",
+  "metabolic-health": "metabolic-risk",
+  "metabolic-risk": "metabolic-risk",
+  "metabolism": "metabolic-risk",
+  "metabollic": "metabolic-risk",
+  "metabollic-rate": "metabolic-risk",
+  "metabollic-rate-drop": "metabolic-risk",
+  "metabollic-health": "metabolic-risk",
+  "metabollic-risk": "metabolic-risk",
+  "metabolic-syndrome": "metabolic-risk",
+
+  // Circadian Rhythm & Sleep Phase
+  "circadian": "circadian-rhythm",
+  "circadian-rhythm": "circadian-rhythm",
+  "circadian-score": "circadian-rhythm",
+  "body-clock": "circadian-rhythm",
+  "sleep-phase": "circadian-rhythm",
+  "chronotype": "circadian-rhythm",
+  "nadir": "circadian-rhythm",
+  "hr-nadir": "circadian-rhythm",
+  "temperature-nadir": "circadian-rhythm",
+  "sleep-consistency": "circadian-rhythm",
+  "consistency": "sleep-consistency",
+
+  // Sleep Debt
+  "sleep-debt": "sleep",
+  "sleep-deficit": "sleep",
+  "debt": "sleep",
+
+  // ANS Balance
+  "ans": "stress",
+  "ans-balance": "stress",
+  "autonomic": "stress",
+  "autonomic-nervous-system": "stress",
+  "sympathetic": "stress",
+  "parasympathetic": "stress",
+
+  // Aerobic Base
+  "aerobic-base": "fitness",
+  "aerobic-base-trend": "fitness",
+  "vo2-trend": "fitness",
+  "vo2max-trend": "fitness",
+  "vo2-max-trend": "fitness",
+  "cardiorespiratory": "fitness",
+
+  // Dehydration
+  "dehydration": "recovery",
+  "hydration": "recovery",
+  "water-loss": "recovery",
+
+  // Illness Risk Early Warning
+  "illness": "health-monitor",
+  "sick": "health-monitor",
+  "illness-risk": "health-monitor",
+  "fever": "health-monitor",
+  "infection": "health-monitor",
+
+  // Biological Age / Health Age
+  "health-age": "pulse-age",
+  "pulse-age": "pulse-age",
+  "biological-age": "pulse-age",
+  "pace-of-aging": "pulse-age",
+};
 
 export function howItWorksDigest(topic?: string) {
   const availableTopics = SCORE_DOCS.map((d) => ({
@@ -148,15 +253,21 @@ export function howItWorksDigest(topic?: string) {
     };
   }
 
-  const clean = topic.trim().toLowerCase().replace(/[\s_]+/g, "-");
-  const targetSlug = clean === "health-age" ? "pulse-age" : clean;
+  const rawClean = topic.trim().toLowerCase().replace(/[\s_]+/g, "-");
+  const aliased = TOPIC_ALIASES[rawClean] ?? TOPIC_ALIASES[topic.trim().toLowerCase()];
+  const targetSlug = aliased ?? (rawClean === "health-age" ? "pulse-age" : rawClean);
+  const cleanNoDash = targetSlug.replace(/-/g, "");
+  const topicLower = topic.trim().toLowerCase();
 
   const doc = SCORE_DOCS.find(
     (d) =>
       d.slug === targetSlug ||
-      d.slug.toLowerCase().replace(/-/g, "") === clean.replace(/-/g, "") ||
-      d.name.toLowerCase().includes(clean.replace(/-/g, " ")) ||
-      d.name.toLowerCase() === topic.trim().toLowerCase(),
+      d.slug.toLowerCase().replace(/-/g, "") === cleanNoDash ||
+      d.name.toLowerCase() === topicLower ||
+      d.name.toLowerCase().includes(topicLower) ||
+      topicLower.includes(d.name.toLowerCase()) ||
+      d.slug.toLowerCase().includes(targetSlug) ||
+      targetSlug.includes(d.slug.toLowerCase()),
   );
 
   if (!doc) {
@@ -230,6 +341,36 @@ export async function appStatsDigest(ctx: QueryCtx) {
       observedDays: recVals.length,
     },
     totalWorkouts: allExercises.length,
+    latestMetabolicRisk: (() => {
+      const mr = rows.get(today)?.metabolicRisk;
+      return mr && mr.reason === null ? mr.score : null;
+    })(),
+  };
+}
+
+export async function metabolicRiskDigest(ctx: QueryCtx) {
+  const mr = await getMetabolicRisk(ctx);
+  return {
+    asOf: mr.day,
+    status: mr.result.value
+      ? {
+          score: mr.result.value.score,
+          band: mr.result.value.band,
+          topContributors: mr.result.value.topContributors,
+          publishedDay: mr.result.value.publishedDay,
+        }
+      : null,
+    reason: mr.result.reason,
+    provisional: mr.result.provisional,
+    contributors: mr.contributors.map((c) => ({
+      key: c.key,
+      label: c.label,
+      value: c.metric.value,
+      unit: c.unit ?? null,
+      baseline: c.average ?? null,
+      sd: c.sd ?? null,
+    })),
+    history: mr.history.slice(-8),
   };
 }
 
@@ -333,12 +474,39 @@ export function coachTools(ctx: QueryCtx, t: Texts = defaultTexts) {
           asOf: hub.day,
           trainingLoad: fit.trainingLoad,
           vitals: mon.vitals.map((v) => ({ vital: v.label, unit: v.unit, ...num(v.metric, 1), status: v.status, range: v.range })),
-          illness: mon.illness,
+          illness: mon.illness
+            ? {
+                level: mon.illness.level,
+                isRaised: mon.illness.level === "raised",
+                alertMessage: hub.monitor.value?.illness?.message ?? mon.illness.message ?? null,
+              }
+            : null,
           pulseAge: { value: hub.healthspan.value ? { years: round(hub.healthspan.value.pulseAge, 1), vsActualAge: round(hub.healthspan.value.deltaYears, 1) } : null, reason: hub.healthspan.reason, provisional: hub.healthspan.provisional },
           vo2max: { value: hub.fitness.value ? { vo2max: round(hub.fitness.value.vo2max, 1), category: hub.fitness.value.category } : null, reason: hub.fitness.reason, provisional: hub.fitness.provisional },
+          aerobicBaseTrend: fit.vo2maxTrend
+            ? {
+                direction: fit.vo2maxTrend.direction,
+                slopePer28Days: round(fit.vo2maxTrend.slopePer28Days, 2),
+                displayDelta: fit.vo2maxTrend.displayDelta,
+                dataPoints: fit.vo2maxTrend.dataPoints,
+              }
+            : null,
+          metabolicRisk: hub.metabolicRisk?.value
+            ? {
+                score: hub.metabolicRisk.value.score,
+                band: hub.metabolicRisk.value.band,
+                topContributors: hub.metabolicRisk.value.topContributors,
+                publishedDay: hub.metabolicRisk.value.publishedDay,
+              }
+            : { score: null, reason: hub.metabolicRisk?.reason ?? "calibrating" },
           trainingLoadRatio: hub.fitness.value?.acwr ?? null,
         };
       },
+    }),
+    get_metabolic_risk: tool({
+      description: t("tool.get_metabolic_risk"),
+      inputSchema: z.object({}),
+      execute: async () => metabolicRiskDigest(ctx),
     }),
     get_report: tool({
       description: t("tool.get_report"),
