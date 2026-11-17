@@ -116,3 +116,67 @@ flowchart LR
     - `sleepPerformance > 60%`
 - **UI:** Renders a warning-toned `InsightCard` on `/recovery` (`src/screens/recovery/RecoveryScreen.tsx`) with a quick link directly to `/log?kind=water`.
 
+---
+
+## 8. Coach Integration & Natural Language Intelligence
+
+The on-device AI Health Coach (`src/coach`) has direct tool access, schema knowledge, and natural-language understanding for all 7 derived health metrics:
+
+### Tool Exposure Matrix
+
+| Tool | Derived Metrics Exposed | Implementation |
+|---|---|---|
+| `get_metabolic_risk` | Weekly composite score, risk band (`optimal`, `moderate`, `elevated`, `high`), 5 contributing signals (RHR, HRV, sleep performance, steps, respiratory rate), top risk contributors, and 8-week Monday history. | `src/coach/tools.ts` (`metabolicRiskDigest`) |
+| `get_health` | `metabolicRisk`, 28-day `aerobicBaseTrend` (`direction`, `slopePer28Days`, `displayDelta`, `dataPoints`), and enhanced `illness` (`level`, `isRaised`, `alertMessage`). | `src/coach/tools.ts` (`coachTools.get_health`) |
+| `get_day` | `recovery.dehydrationFlag` (flagged status and reason), `sleep.debtMinutes`, `sleep.circadian` (`score`, `phase`, `consistencyScore`, `alignmentScore`, `nadirScore`), `stress.ansBalance` (`score`, `band`, `sympatheticFraction`, `overnightHrvZ`), and `metabolicRisk`. | `src/coach/tools.ts` (`dayDigest`) |
+| `get_sleep` | Full `circadian` metrics (consistency, alignment, HR nadir offset, phase) and accumulated `debtMinutes`. | `src/coach/tools.ts` (`sleepDigest`) |
+| `get_app_stats` | `latestMetabolicRisk` alongside 60-day baseline averages. | `src/coach/tools.ts` (`appStatsDigest`) |
+| `get_how_it_works` | Deep explainer retrieval for all algorithms with fuzzy & alias matching. | `src/coach/tools.ts` (`howItWorksDigest`) |
+
+### Natural Language Alias Resolution in `howItWorksDigest`
+
+To prevent false "Health does not track that" responses when users ask colloquial or non-exact questions (e.g. "metabolic rate drop", "body clock", "ANS balance"), `howItWorksDigest` resolves user terms through `TOPIC_ALIASES`:
+
+- `"metabolic"`, `"metabolic-rate"`, `"metabolic-rate-drop"`, `"metabolic-health"`, `"metabolism"` → maps to `metabolic-risk`
+- `"circadian"`, `"body-clock"`, `"sleep-phase"`, `"chronotype"`, `"nadir"`, `"hr-nadir"` → maps to `circadian-rhythm`
+- `"ans"`, `"ans-balance"`, `"autonomic"`, `"sympathetic"`, `"parasympathetic"` → maps to `stress`
+- `"aerobic-base"`, `"aerobic-base-trend"`, `"vo2-trend"`, `"vo2max-trend"` → maps to `fitness`
+- `"dehydration"`, `"hydration"`, `"water-loss"` → maps to `recovery`
+- `"illness"`, `"sick"`, `"illness-risk"`, `"fever"` → maps to `health-monitor`
+- Substring and slug normalization ensure queries match even with minor differences.
+
+### Coach System Prompts (`src/coach/texts.ts`)
+
+`INSTRUCTIONS` and `TOOL_DOCS` explicitly teach the model:
+1. Health calculates all 7 metrics on-device with zero cloud processing.
+2. How each metric is calculated, its normal scale, and which tool queries it.
+3. Strict instructions never to claim that metabolic rate, circadian rhythm, autonomic tone, or dehydration flags are untracked.
+
+---
+
+## 9. Enriched Morning Recovery Notifications & Lock-Screen AI Briefings
+
+Health enriches the daily "Recovery ready" push notification and optional lock-screen AI summary with derived metrics whenever notable physiological events occur:
+
+```mermaid
+flowchart TD
+  S2[Daily Score Row] --> STATS[RecoveryStats]
+  STATS -->|"dehydrationFlag"| RB[recoveryBody]
+  STATS -->|"sleepDebtMin >= 60m"| RB
+  STATS -->|"circadianPhase != aligned"| RB
+  STATS -->|"metabolicBand in (elevated, high)"| RB
+  RB -->|"Formatted body string"| DECIDE[decide / alerts.ts]
+  DECIDE -->|"If AI Coach configured"| AI[generateNotificationInsight]
+  AI -->|"Concise actionable summary"| NOTIF[Lock Screen Notification]
+  DECIDE -->|"Fallback if offline/no key"| NOTIF
+```
+
+- **Notification Stat Formatting (`recoveryBody` in `src/background/decide.ts`):**
+  - **Hydration alert:** Appends `"Hydration alert"` when `dehydrationFlag` is true.
+  - **Sleep debt:** Appends `"Sleep debt +Xh Ym"` when debt accumulates to 60+ minutes.
+  - **Circadian phase shift:** Appends `"Late phase shift"` or `"Early phase shift"` when sleep onset deviates >30 minutes from the 7-day circular baseline.
+  - **Metabolic risk:** Appends `"Metabolic risk elevated"` or `"Metabolic risk high"` on elevated/high Monday scores.
+- **AI Lock-Screen Coaching Insight (`src/background/briefing.ts`):**
+  - When the user configures an AI provider, `generateNotificationInsight` reads the enriched stat string and prioritizes actionable guidance addressing hydration, debt, circadian alignment, or metabolic health within a strict 160-character budget.
+
+

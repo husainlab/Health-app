@@ -931,3 +931,12 @@ New derived features (`docs/derived-features.md`) follow a strict split between 
 - **Causal history or raw intraday scans belong in Stage 2.** **Metabolic Risk Score** (`metabolic_risk`, published Mondays using 60-day causal `foldHistory` baselines) and **Circadian Rhythm Score** (`circadian`, needing raw/minute sleeping HR nadir detection via `findHrNadirOffsetH` and 7/14-night circular statistics) are computed in `src/pipeline/stage2.ts` and persisted on `Stage2Row`, bumping `SCORING_VERSION` to `34`.
 - **Single-day or short-window combinations over existing daily rows live in `src/queries`.** **ANS Balance Index** (`computeAnsBalance`), **Aerobic Base Trend** (`computeVo2maxTrend`), **Dehydration / Recovery Flag** (`dehydrationFlagOf`), and surfacing **Sleep Debt** in Sleep's summary strip run purely in the query layer without altering SQLite schemas or triggering a 180-day rescore.
 - **Rising-edge illness warnings reuse Health Monitor's toggle.** `illnessWarningAlert` (`src/background/smart.ts`) fires once per local day via `markers.illnessWarningDay` when `illness.level` transitions into `"raised"` under the existing `healthMonitor` notification setting, keeping notification settings uncluttered.
+
+## Derived metrics in Coach & lock-screen briefings: tool access, synonym aliasing, and actionable notifications
+
+The on-device AI Coach and notification system expose the 7 derived metrics directly:
+
+- **Dedicated tool & digest fields:** Coach gains `get_metabolic_risk` for weekly 5-signal risk breakdown and history, while `get_health`, `get_day`, `get_sleep`, and `get_app_stats` expose Metabolic Risk, Circadian Rhythm Score & nadir metrics, ANS Balance Index, 28-day Aerobic Base Trend, Sleep Debt minutes, and dehydration flags.
+- **Natural-language synonym mapping (`howItWorksDigest`):** A `TOPIC_ALIASES` dictionary maps colloquial user queries (e.g. `"metabolic rate drop"`, `"metabolic rate"`, `"circadian"`, `"body clock"`, `"ans balance"`, `"dehydration"`) directly to the corresponding `SCORE_DOCS` slug so the Coach never falsely reports that Health does not track a metric.
+- **Actionable push notifications & AI lock-screen summaries:** `recoveryBody` formats hydration alerts, 60+ min sleep debt, circadian phase shifts, and elevated metabolic risk into the standard "Recovery ready" notification. When configured, `generateNotificationInsight` reads these signals to craft focused, 160-character lock-screen advice.
+
